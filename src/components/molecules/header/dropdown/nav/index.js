@@ -7,17 +7,17 @@ import Clock from "../../../../atoms/Clock/clock";
 function Nav({ isActive }) {
 
   const socialLinks = [
-    { text: "Contact", link: "/contact" },
+    { text: "Contact", link: "/#/contact" },
     { text: "Instagram", link: "https://www.instagram.com/" },
     { text: "Youtube", link: "https://www.youtube.com/" },
   ];
 
   const navigationLinks = [
     { text: "Home", link: "/" },
-    { text: "About", link: "/about" },
-    { text: "Archive", link: "/films" },
-    { text: "Contact", link: "/contact" },
-    { text: "Reference Peace", link: "/reference-peace", class:'reference-peace-link' },
+    { text: "About", link: "/#/about" },
+    { text: "Archive", link: "/#/films" },
+    { text: "Contact", link: "/#/contact" },
+    { text: "Reference Peace", link: "/#/reference-peace", class:'reference-peace-link' },
   ];
 
   const maxLinkCount = Math.max(navigationLinks.length, socialLinks.length);

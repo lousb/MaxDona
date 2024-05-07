@@ -7,7 +7,7 @@ import Films from "./films/films";
 import { ScrollTrigger } from "gsap/all";
 import AllProjects from './admin-pages/allProjects'
 import Contact from './contact/contact'
-import { BrowserRouter as Router, Routes, Route, Navigate} from 'react-router-dom';
+import { HashRouter as Router, Routes, Route, Navigate} from 'react-router-dom';
 import FooterSmall  from '../molecules/footer/small/footer'
 import DefaultFooter  from '../molecules/footer/large/footer'
 import {FooterContextProvider, useFooter} from '../../context/FooterContext';

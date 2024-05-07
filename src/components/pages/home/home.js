@@ -368,7 +368,7 @@ function Home() {
             <Section4 title={'About'}/>
             <div className="about-reference-wrap" ref={aboutReferenceSectionRef}>
               <div className="dynamic-video-player dynamic-video-player-5">
-                <DynamicVideoPlayer image={'/max-about.png'} section={5} />
+                <DynamicVideoPlayer image={'/Max-About.png'} section={5} />
              
               </div>
               <Section5 title={'About'}/>

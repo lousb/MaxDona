@@ -53,8 +53,8 @@ function FooterDefault() {
                 </div>
                 <div className={styles["country-wrap"]}>
                     <div className={styles["flag-wrap"]}>
-                        <img className={styles["flag"]} src='/icons/Minimal-aus.svg'/>
-                        <img className={styles["flag"]} src='/icons/Minimal-indigenous.svg'/>
+                        <img className={styles["flag"]} src='/icons/Minimal-Aus.svg'/>
+                        <img className={styles["flag"]} src='/icons/Minimal-Indigenous.svg'/>
                     </div>
                     <div className={styles["acknowledgement-of-country"]}>
                     I respectfully acknowledge the Gadigal people of the Eora Nation as the Traditional Custodians of the land I operate upon. I extend that respect to elders, both past, present & emerging. 
