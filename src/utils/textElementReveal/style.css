@@ -1,0 +1,10 @@
+.text-reveal-container{
+    display: flex;
+    overflow: hidden;
+    margin:-5px;
+    margin-bottom:-10px;
+}
+.text-reveal-container>*{
+    padding:5px !important;
+
+}

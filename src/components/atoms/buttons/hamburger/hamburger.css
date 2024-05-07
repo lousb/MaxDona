@@ -1,0 +1,30 @@
+.hamburger-button{
+    cursor: pointer !important;
+
+    transition: all 500ms ease;
+    overflow: hidden;
+    margin-inline:2.1vw;
+
+}
+
+.hamburger-button > path{
+
+    transition: all 500ms ease-out;
+    transition-delay: 100ms;
+    stroke: var(--primary-color) !important;
+
+}
+
+
+.active.hamburger-button *{
+
+    transition-delay: 100ms;
+}
+
+.hamburger-button:hover{
+
+    transform-origin: right center;
+}
+.hamburger-button.active .line-1, .hamburger-button.active .line-3  {
+    transform: translateX(110%);
+}

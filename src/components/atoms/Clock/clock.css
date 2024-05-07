@@ -1,0 +1,90 @@
+.menu-time-func{
+    display: block;
+    text-decoration: none;
+
+}
+.menu-time-func, .menu-country, .menu-location{
+  font-weight:700;
+  line-height: 22px;
+
+  font-family: 'Inter';
+  font-size: 20px;
+
+  color: var(--secondary-color);
+}
+.menu-time{
+  transform:translatey(10px);
+  margin:0;
+
+}
+.menu-time > .menu-location{
+  opacity: 0;
+  transition: all 500ms ease;
+  transition-delay: 250ms;
+}
+.menu-time > .menu-country{
+  opacity: 0;
+  transition: all 500ms ease;
+  transition-delay: 0ms;
+}
+.menu-time:hover > .menu-location{
+  opacity: 1;
+}
+.menu-time:hover > .menu-country{
+  opacity: 1;
+}
+.menu-location{
+  display: inline !important;
+}
+.menu-country{
+  
+  display: inline !important;
+}
+.menu-country{
+  padding-right: 3px;
+}
+.menu-time{
+  transition: 0ms !important;
+}
+.menu-time > span{
+  display: block;
+
+}
+.header-subtext-link > span{
+  min-width: 4px;
+}
+.header-menu-subtext > div > div > a, .menu-time{
+  text-decoration: none;
+  font-weight:500;
+  line-height: 22px;
+
+
+  font-size: var(--font-size-base);
+
+  color: var(--secondary-color);
+}
+.menu-time-func{
+  margin-bottom:-8px;
+  text-transform: uppercase;
+
+}
+.colon{
+  transition: all 200ms ease;
+  display: inline !important;
+}
+/* Define keyframe animation */
+@keyframes infiniteEaseLoop {
+  0%, 100% {
+      /* Start and end with opacity: 1 */
+      opacity: 1;
+    }
+    50% {
+      /* Midway point with opacity: 0.5 */
+      opacity: 0;
+    }
+}
+
+/* Apply the animation */
+.colon {
+  animation: infiniteEaseLoop 1000ms cubic-bezier(0.42, 0, 0.58, 1) infinite;
+}

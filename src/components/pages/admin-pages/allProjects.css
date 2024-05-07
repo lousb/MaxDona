@@ -1,0 +1,211 @@
+.all-projects-page-wrap{
+    width: 100svw;
+    min-height:calc(100svh - 120px);
+    display: flex;
+    justify-content: center;
+    padding-top:120px
+}
+.all-projects-content{
+    max-width: 1100px;
+    width:90vw;
+    height:500px;
+
+    display: flex;
+    gap:5%;
+}
+.all-projects-list{
+    width:47.5%;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    border-radius: 20px;
+    border:1px solid var(--outline-color);
+    background-color: white;
+    overflow: hidden;
+}
+.all-projects-list-title{
+    height:120px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    width: 80%;
+    margin-inline: 20%;
+}
+.list-wrap{
+    height:calc(500px - 120px);
+    overflow-x: hidden;
+    overflow-y: scroll;
+
+    width: 100%;
+}
+h2{
+    font-family: var(--title-family);
+    text-transform: uppercase;
+    font-size: 36px;
+}
+.list-item{
+    height: 64px;
+    border-radius: 5px;
+    border: 1px solid var(--outline-color);
+    width: calc(100% - 20px);
+    margin: 5px;
+    display: flex;
+    justify-content: space-between;
+  
+    align-items: center;
+}
+.list-item-title{
+    margin-left:32px
+}
+.list-item-actions{
+    opacity: 0;
+    margin-right:32px;
+    display: flex;
+    gap:1em;
+    transition-delay: 100ms;
+    transition: all 100ms ease;
+}
+.list-item-actions  div, .add-project{
+    height:24px;
+    aspect-ratio: 1;
+    cursor: pointer;
+    background-size: contain;
+    background-position: center;
+    background-repeat: no-repeat;
+}
+.list-item:hover .list-item-actions{
+    opacity: 1;
+}
+.view-list-item{
+    background-image: url(/public/icons/view.svg);
+}
+.edit-list-item{
+    background-image: url(/public/icons/update.svg);
+}
+.delete-list-item{
+    background-image: url(/public/icons/remove.svg);
+}
+.add-project{
+    background-image: url(/public/icons/add.svg);
+}
+.edit-list-item-link{
+    width: 100%;
+    height:100%;
+}
+.update-projects-content, .add-projects-content{
+    max-width: 1100px;
+    width: 90vw;
+}
+.update-projects-list,.add-projects-list{
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    border-radius: 20px;
+    border:1px solid var(--outline-color);
+    background-color: white;
+    overflow: hidden;
+    padding: 50px;
+
+}
+.update-projects-list>form, .add-projects-list>form{
+    width: 100%;
+}
+.update-projects-list>form  .formInput, .add-projects-list>form  .formInput{
+    display: flex;
+    justify-content: space-between;
+    width: 100%;
+}
+.add-projects-list>form .formInput > label, .update-projects-list>form .formInput > label{
+    font-family: var(--title-family);
+    text-transform: uppercase;
+    font-size: 28px;
+}
+.add-projects-list>form  .formInput > input, .update-projects-list>form  .formInput > input{
+    border: 0;
+    border-bottom: 1px solid var(--outline-color);
+    width: 50%;
+}
+.add-projects-list>form .formInput > input:focus, .update-projects-list>form  .formInput > input:focus{
+    outline: none;
+    border-bottom: 1px solid var(--primary-color);
+}
+.uploaded-section-wrap{
+    width:100%;
+    outline: 1px solid var(--outline-color);
+    overflow: hidden;
+    margin-top: 32px;
+    border-radius: 8px;
+    transition: 500ms ease all;
+}
+.uploaded-section-wrap:hover{
+    outline: 1px solid var(--primary-color); 
+}
+.uploaded-section-wrap>div{
+    padding: 16px;
+}
+.uploaded-section-wrap h2{
+    margin-top: 0px;
+}
+.update-projects-list>form  button, .add-projects-list button{
+    cursor: pointer;
+    margin-top: 40px;
+    width: 100%;
+    background-color: var(--primary-color);
+    border: none;
+    padding: 10px;
+    color: white;
+    font-family: var(--body-family);
+    text-transform: uppercase;
+    font-size: 20px;
+    letter-spacing: -1.5px;
+    position: relative;
+}
+.section-title, .add-projects-list h1{
+    font-family: var(--body-family);
+    text-transform: uppercase;
+    font-size: 16px;
+    letter-spacing: -1.5px;
+    color:var(--primary-color);
+    margin-bottom: 30px;
+    opacity: 0.5;
+}
+.list-item-title{
+    max-width: 70%;
+    text-overflow: ellipsis;
+    overflow: hidden;
+    white-space: nowrap;
+}
+.add-projects-list .formInput img{
+    max-height: 50px;
+ 
+}
+.image-section img{
+    max-height: 200px;
+    width: auto;
+    border-radius: 20px;
+    max-width: 70%;
+}
+.list-map-wrap{
+    display: flex;
+    justify-content: space-between;
+    width:calc(50% - 2.4svw);
+    
+}
+.file-label{
+    border-radius: 0px;
+    position: relative;
+    display: block;
+    height: 24px !important;
+    overflow: hidden;
+}
+
+.uploaded-image-section-wrap > div > div{
+    display: flex;
+    flex-wrap: wrap;
+    gap: 1.2svw;
+}
+.image-section-title > span{
+    display: block;
+    margin-bottom: 64px !important;
+    margin-top:16px;
+}

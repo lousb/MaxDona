@@ -1,0 +1,330 @@
+.film-page-wrap{
+    width:92%;
+    margin-inline:4%;
+    min-height:100vh;
+    min-height:100svh;
+    
+}
+.film-page-wrap.fast-active{
+      min-height:auto;
+}
+.view-bracket-wrap{
+    transition: 1000ms cubic-bezier(0.76, 0, 0.24, 1) all;
+  position:absolute;
+  top:0;
+
+  display: flex;
+  padding-top: 20px;
+  z-index: 21;
+  width: 80%;
+  left:10%;
+  justify-content: space-between;
+  pointer-events: none;
+
+}
+
+
+
+.film-page-title-wrap{
+    
+    width:100%;
+    height:fit-content;
+    display: flex;
+    justify-content: space-between;
+    pointer-events: all;
+    transition-delay: 500ms;
+}
+.film-page-title-wrap h2{
+    margin: 0;
+}
+.film-page-intro-desc{
+    margin-top:0px;
+    
+}
+.film-page-title-wrap> h2, .film-page-title-wrap >div{
+    width: 49.2%;
+}
+.film-page-intro-desc{
+    width: 300px;
+}
+.film-page-wrap .film-page-title-wrap .film-page-title{
+    margin-left: calc(8.5%);
+    margin-bottom: 0;
+}
+.scrolled .film-page-title{
+    opacity: 0;
+    line-height: 60px;
+
+}
+.film-project-item{
+    cursor: none;
+    margin-bottom: -2px;
+    padding-bottom: 4px;
+    background-size: cover;
+    background-position: center;
+    position: relative;
+
+}
+.film-project-item::before{
+    content: '';
+    left:0;
+    top:0;
+    position:absolute;
+background: rgb(0,0,0);
+background: linear-gradient(36deg, rgba(0,0,0,0.5228466386554622) 0%, rgba(255,255,255,0) 32%);
+        width: 100%;
+    height: 100%;
+}
+.film-project-item > h3, .film-project-item > h2, .film-project-item > div{
+    z-index: 2;
+    position: relative;
+}
+.film-project-item .film-project-cta::before{
+    display: none;
+}
+.film-project-scroll-wrap{
+    height: calc(100svh - 8vw);
+
+    display: flex;
+    align-items: end;
+}
+.infinite-film-project-item:hover h2{
+    transform: translateX(0.3em);
+}
+.film-project-scroll-container{
+
+    max-height:calc(100svh - 4vw - 90px);
+    margin-bottom: 4vw;
+    overflow-y: scroll;
+    overflow-x: hidden;
+    border-radius: 18px;
+    width: 100%;
+
+    pointer-events: all;
+    display: flex;
+    align-items: end;
+}
+.film-project-scroll-container a:nth-child(even) .film-project-item{
+    background-color: red;
+}
+.film-project-scroll-container a:nth-child(odd) .film-project-item{
+    background-color: blue;
+}
+.film-project-item p{
+    margin-block: 0em;
+}
+.film-project-item{
+    padding-left:26px;
+    width: 100%;
+    height: calc(80svh - 90px);
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+    justify-content: end;
+
+}
+
+.film-project-desc-item{
+    color: white;
+    margin:0;
+}
+.film-project-desc-item::after{
+    filter: invert(1);
+}
+
+.film-project-desc-item:last-child{
+    margin-bottom:26px;
+}
+.film-project-title{
+    margin: 0;
+    color: white;
+    padding-bottom: 8px;
+}
+a:has(.film-project-item) > .film-project-item:nth-child(2){
+    background-color: blue;
+}
+.film-project-item:hover .film-project-cta::after{
+    transform: translateY(-24px) !important;
+}
+.view-switcher-wrap{
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    border-radius: 10px;
+    position: fixed;
+    top: calc(100vh - 8vw - 140px);
+    right: 4vw;
+    z-index: 20;
+    pointer-events: all;
+    height: 100px;
+    padding: 10px;
+    padding-block:20px;
+    margin:2vw;
+    width: fit-content;
+    background-color: white;
+}
+.view-switcher-wrap button{
+    background-color: white;
+    border: none;
+    cursor: pointer;
+    transition: 500ms ease all;
+}
+.view-switcher-wrap:hover button{
+    opacity: 0.5;
+}
+.view-switcher-wrap > button:hover{
+    opacity: 1;
+}
+
+.film-page-wrap button.view-toggle-active{
+    opacity: 1;
+}
+
+.project-nav-wrap{
+    position: relative;
+    height: auto;
+    width: auto;
+}
+.project-wrap{
+    top:0;
+    width: 100%;
+}
+.infinite-project-scroll-wrap{
+    pointer-events: all;
+}
+.project-scroll-height{
+    display: block;
+    width: 100%;
+    overflow: hidden;
+    border-radius: 18px;
+}
+.infinite-film-project-item{
+    height:fit-content !important;
+    width: fit-content;
+}
+.infinite-film-project-item h2{
+    transition: all 500ms ease, font-size 0ms, line-height 0ms;
+    width: fit-content;
+    cursor: none;
+    padding-top:0;
+    margin:0;
+}
+
+.film-page-wrap:has(.slow-toggle.view-toggle-active) .view-bracket-wrap{
+    top:0;
+    width: 80%;
+    left:10%;
+  }
+.film-page-wrap:has(.fast-toggle.view-toggle-active) .view-bracket-wrap{
+    top:29%;
+    width: 72%;
+    left:15%;
+  }
+  .film-page-wrap:has(.medium-toggle.view-toggle-active) .view-bracket-wrap{
+    top:57%;
+    width: 70%;
+    left:15%;
+  }
+
+  .film-page-wrap:has(.slow-toggle:hover) .view-bracket-wrap{
+    top:0;
+    width: 80%;
+    left:10%;
+}
+.film-page-wrap:has(.medium-toggle:hover) .view-bracket-wrap{
+    top:57%;
+    width: 70%;
+    left:15%;
+}
+.film-page-wrap:has(.fast-toggle:hover) .view-bracket-wrap{
+    top:29%;
+    width: 72%;
+    left:15%;
+}
+.infinite-project-scroll-wrap{
+    position: relative;
+}
+.film-page-intro-desc-wrap{
+    display:flex;
+    align-items: end;
+}
+.random-masonry-image{
+    border-radius: 14px;
+      
+    width:100% !important;
+
+}
+.floating-project-thumb-wrap{
+    opacity: 0;
+    position: fixed;
+    pointer-events: all;
+    right: 0;
+    width: 22vw;
+    height: 22vw;
+    padding-bottom:0vw;
+    border-radius: 16px;
+    margin-right:4vw;
+    margin-top:90px;
+    overflow: hidden;
+    cursor:none;
+    z-index: 8;
+    display: block;
+    transition: 500ms ease all 500ms;
+
+
+}
+.floating-project-thumb-wrap > div{
+    padding: 0 !important;
+    height: 0vw;
+    overflow: hidden;
+    border-radius: 16px;
+    transition: 500ms ease all;
+}
+.floating-project-thumb-wrap img, .floating-project-thumb-wrap div{
+   width: 100%;
+}
+.random-masonry-image-view *{
+    cursor: none;
+}
+.random-masonry-image{
+    cursor: none;
+    width:100% !important;
+    scale:1.03;
+    transition: all 0.2s ease;
+    object-fit: center center;
+}
+.random-masonry-image:hover{
+    scale:1.02;
+}
+.random-masonry-image-view *{
+    cursor: none;
+}
+.film-page-title-wrap div:has(h2){
+    width: 49.2% !important;
+}
+.scroll-notification{
+    color:black;
+    opacity: 1 !important;
+    right:0;
+    bottom:0;
+    margin:0 !important;
+    width: 14.5vw !important;
+    pointer-events: all;
+    padding-bottom: 18px;
+    transition-delay: 0ms !important;
+}
+.parallax-image-wrap{
+    overflow: hidden;
+    border-radius: 14px;
+    display: flex;
+    justify-content: center;
+    transition: all 500ms ease;
+}
+.parallax-image-wrap:hover{
+    transform: scale(0.99);
+}
+.parallax-image-wrap img{
+
+    width: 22vw;
+    object-fit: cover;
+}

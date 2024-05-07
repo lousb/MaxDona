@@ -1,0 +1,385 @@
+.about-page{
+    padding-top:80px;
+    width: 100svw;
+    overflow: hidden;
+}
+.about-page section{
+    width:92vw;
+    margin-inline:4vw;
+    margin-bottom: 4vw;
+    height:calc(100vh - 80px - 4vw);
+    position: relative;
+}
+.section-1-heading{
+    margin: 0;
+}
+.section-1-content{
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+}
+.section-1-content > div{
+    width: 22%;
+}
+.section-1-content > .section-1-image{
+    position: absolute;
+    bottom: 0;
+    right:0;
+    width:74.5%;
+    border-radius: 20px;
+    height: calc(100vh - 80px - 14vw); 
+    background-color: lightgray;
+}
+
+
+.about-page-slide{
+    height:30vw;
+    width: 100vw;
+    position: relative;
+    width: 100vw;
+}
+.about-page-slide > div{
+    position: relative;
+    height:100%;
+    width: min-content;
+
+}
+.slide-projects{
+    height: 100%;
+    display: flex;
+    width: min-content;
+}
+.slide-project{
+    background-image: url(/public/domengo.png);
+    background-position: center center;
+    background-size: cover;
+    min-width: 45.2vw;
+    width: 45.2vw;
+    max-width: 45.2vw;
+    overflow: hidden;
+    height: 100%;
+    border-radius: 20px;
+    margin-left: 4vw;
+    cursor: none;
+}
+.slide-project{
+    position: relative;
+
+}
+.slide-project-details{
+    margin-left:64px;
+    margin-bottom:56px;
+    filter: invert(1);
+    position: absolute;
+    bottom:0;
+    left:0;
+    text-shadow: 0 0 5px #ffffff;
+}
+.slide-project-details p{
+    display: block;
+    height: 18px;
+    overflow: hidden;
+    margin: 0;
+    display: flex;
+    opacity: 0;
+    transition: all 500ms ease;
+
+}
+.slide-project-details p span{
+
+    transform: translateY(100%);
+    transition: 0ms 0.5s;
+    
+}
+.slide-project:hover p{
+    opacity: 1;
+}
+.slide-project:hover p span{
+    transition: ease-in-out 1s all 0.2s;
+    transform: translateY(0%);
+}
+.portfolio-slide-subtext{
+    width: 92svw ;
+    margin-inline: 4svw;
+    margin-top: 2em;
+    display: flex;
+
+    justify-content: space-between;
+}
+.portfolio-slide-subtext > div{
+    width: 49%;
+    height:50px;
+}
+.portfolio-slide-subtext-left > p{
+    width: 22svw;
+    margin-block:0px;
+}
+.portfolio-slide-subtext-right{
+    height:100%;
+    width: 22.2vw !important;
+    display: flex;
+    align-items: end;
+    flex-direction: column;
+    justify-content: space-between;
+}
+.portfolio-slide-subtext-right p{
+    margin:0;
+}
+.about-process{
+    margin-top: calc(10rem);
+    height:260vh !important;
+}
+.about-process-wrap{
+    position: absolute;
+
+    top:0;
+    left: 0;
+}
+.about-process-image-wrap{
+
+    max-height: calc(100vh - 10vw);
+    height: calc(100vh - 180px - 8vw);
+    width: 45.2vw;
+    overflow: hidden;
+    border-radius: 20px;
+}
+.about-process-inner-image-wrap{
+    display: flex;
+    flex-direction: column;
+}
+.about-process-image-wrap img{
+    width: 100%;
+    height: calc(100vh - 100px - 8vw);
+    object-fit: cover;
+    object-position: center center;
+}
+.my-process-title{
+
+    margin-bottom: 3rem;
+
+}
+.about-process-count{
+    position: absolute;
+    z-index: 5;
+    bottom: 0;
+    filter: invert(1);
+    margin: 40px;
+    pointer-events: none;
+    display: inline-block;
+
+}
+.about-process-image-wrap .about-process-index{
+
+    margin: 0;
+    display: inline-flex;
+    flex-direction: column;
+    max-height: 7.2vw;
+   
+    overflow: hidden;
+}
+
+
+.about-process-slides{
+    margin-left: 54.4vw;
+    height:240vh;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+}
+.about-process-slide-1 .about-process-slide-title{
+    margin-top: 180px;
+}
+.about-process-slide-2 .about-process-slide-title{
+    margin-top: 90px;
+}
+.about-process-slide{
+    display: flex;
+    flex-direction: column;
+    height: 60vh;
+}
+.about-process-slide-text{
+    margin-top:2em;
+    width:22vw;
+    margin-left: 15.5vw;
+}
+.testimonial-slide-subtext{
+    width: 92vw;
+    margin-inline:4vw;
+    margin-top: 10rem;
+    margin-bottom:5rem;
+    display: flex;
+}
+.testimonial-subtext-col-1{
+    width: 15.5vw;
+}
+.testimonial-subtext-col-2{
+    width: 62vw;
+}
+.about-page-section-3{
+    margin-top: 5rem;
+    height: auto !important;
+}
+.testimonial-subtext-col-1{
+    display: flex;
+    justify-content: space-between;
+    flex-direction: column;
+}
+.section-1-image, .about-process-image-wrap{
+    pointer-events: all;
+    cursor: none;
+}
+.section-1-text, .section-1-text > p{
+    width: 100%;
+}
+.section-1-heading{
+    width: 100% !important;
+}
+.section-1-heading h2{
+    margin: 0;
+}
+.about-last-cta-wrap-heading{
+    font-size:64px;
+    position: relative;
+    width: fit-content;
+    cursor: pointer;
+}
+.about-last-cta-wrap{
+    display: flex;
+    justify-content: space-between;
+    width: 100%;
+    margin-block:5rem;
+}
+.about-last-cta-wrap .body{
+    display: flex;
+    align-items: end;
+}
+.about-last-cta-wrap-heading::after{
+    content: '';
+    height:6px;
+    width: 100%;
+    background-color: black;
+    position: absolute;
+    bottom:0;
+    left:0;
+}
+.mobile-process-image-wrap{
+    display: none;
+}
+
+
+@media only screen and (max-width:830px){
+    .about-page section, .portfolio-slide-subtext, .testimonial-slide-subtext{
+        width:84vw;
+        margin-inline:8vw;
+    }
+    .portfolio-slide-subtext{
+        flex-direction: column;
+    }
+    .portfolio-slide-subtext > div,   .portfolio-slide-subtext p{
+        width: 100% !important;
+    }
+    .section-1-content > div{
+        width: 100%;
+        display: flex;
+        justify-content: space-between;
+    }
+    .section-1-content > div > p{
+        width:49%;
+    }
+    .section-1-content > .section-1-image{
+        margin-top:1em;
+        position: relative;
+        height:calc(100vh - 152px - 210px);
+        width: 100%;
+    }
+    .slide-project{
+        width: 84vw;
+        max-width: 84vw;
+        
+    }
+    .about-page-slide{
+        height: 60vw;
+        margin-block: 5rem;
+    }
+    .slide-project p{
+        opacity: 1;
+    }
+    .slide-project p span{
+        transition: ease-in-out 1s all 0.2s;
+        transform: translateY(0%);
+    }
+    .portfolio-slide-subtext-right{
+        align-items: start;
+        height: 100px !important;
+    }
+    .about-process{
+        margin-top:5em;
+    }
+    .about-process-wrap{
+        width: 100%;
+    }
+    .testimonial-slide-subtext{
+        flex-direction: column;
+    }
+    .testimonial-subtext-col-1{
+        flex-direction: row;
+        width: 100%;
+    }
+    .testimonial-click{
+        display: none;
+    }
+    .testimonial-subtext-col-3{
+        display: none;
+    }
+   
+    .about-process{
+        height: fit-content !important;
+    }
+    .about-process-wrap{
+        display: none;
+    }
+    .about-process-slides{
+        margin:0;
+        width: 100%;
+        height: fit-content;
+        gap: 4em;
+    }
+    .about-process-slide{
+        height:fit-content;
+
+    }
+    .about-process-slide .about-process-slide-title{
+        margin-top:40px;
+    }
+    .about-process-slide-text{
+        margin-left:14vw;
+        width:calc(100% - 14vw)
+    }
+    .about-last-cta-wrap{
+        margin-block:0px;
+        display: flex;
+        flex-direction: column;
+    }
+    .about-page-section-3{
+        height: fit-content !important;
+    }
+    .about-last-cta-wrap-heading{
+        font-size: 7.5vw;
+        line-height: 11vw;
+    }
+    .testimonial-slide-subtext{
+        margin-top: 5rem;
+    }
+    .mobile-process-image-wrap{
+        width:84vw;
+        height:60vw;
+        display: block;
+    }
+    .mobile-process-image-wrap > img{
+        border-radius: 20px;
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+    }
+}

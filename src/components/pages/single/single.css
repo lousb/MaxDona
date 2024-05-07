@@ -1,0 +1,146 @@
+.main-description > span:nth-child(1){
+    transition-delay: 600ms;
+    transition: all 900ms ease;
+}
+.main-description > span:nth-child(2){
+    transition-delay: 500ms;
+    transition: all 800ms ease;
+}
+.main-description div:nth-child(1){
+    transition-delay: 400ms;
+    transition: all 700ms ease;
+}
+
+
+
+.scrolled .main-description > span:nth-child(1){
+    opacity: 0;
+
+    transition-delay: 0ms;
+}
+.scrolled .main-description > span:nth-child(2){
+    opacity: 0;
+
+    transition-delay: 200ms;
+}
+.scrolled .main-description div:nth-child(1){
+    opacity: 0;
+
+    transition-delay: 300ms;
+}
+
+.scrolled .scroll-notification-single{
+    opacity: 1 !important;
+}
+body:has(.player__wrapper:hover) .scroll-notification{
+    opacity: 1;
+  
+}
+.scroll-notification-single p div{
+    display: flex;
+    overflow: hidden;
+    transition: all 800ms ease;
+    transition-delay: 400ms;
+    height:20px
+}
+.scrolled .scroll-notification-single p div{
+    transition-delay: 0ms;
+    height:0px;
+}
+
+body:has(.player__wrapper:hover)  .scroll-notification-single p span{
+  animation: scrollText 3s infinite;
+  animation-timing-function: cubic-bezier(0.76, 0, 0.24, 1);
+  animation-delay:2500ms;
+}
+.scroll-notification-single{
+    height: 20px;
+    overflow: hidden;
+}
+.scroll-notification-single p{
+    height: 20px;
+    overflow: hidden;
+}
+.scroll-notification-single p span{
+    transition: all 1000ms;
+    text-align: right;
+    width: 70px;
+}
+.scroll-notification-single p span::after{
+    width: 100%;
+    text-align: right;
+}
+.scrolled .scroll-notification-single p span{
+    transition: all 1000ms;
+    width: 240px;
+    height: 0;
+    animation: none;
+
+}
+.scrolled .scroll-notification-single:has(.play-text-toggle) p div span{
+    width: 250px;
+}
+.stop-progress-toggle{
+    transition-delay: 0ms;
+    margin-right: 60px !important;
+    opacity: 0 !important;
+}
+.single-click-anywhere{
+    position: absolute !important;
+    width: 100%;
+    transition-delay: 200ms;
+    transition: 500ms ease;
+}
+.single-click-anywhere>p{
+    padding-left: 3px;
+}
+
+.play-text{
+
+    display: flex;
+    flex-direction: column;
+}
+.play-text p{
+    transition: 500ms ease all;
+    min-height: 20px;
+}
+.play-text-toggle p{
+    transform: translateY(-20px);
+ 
+}
+.play-text::after{
+    content: 'pause';
+    position: absolute;
+    transform: translateY(100%);
+
+}
+.scrolled .single-click-anywhere{
+    transition-delay: 600ms;
+    transform: translate( 8px , -20px);
+
+}
+.scroll-notification-single p span::after{
+    transition-delay: 800ms !important;
+}
+.scrolled .main-description-right-wrap{
+    transition: 500ms ease all !important;
+    transition-delay: 100ms !important;
+    transform: translateY(-42px);
+   
+
+ 
+}
+.scrolled .main-description-right-wrap .primary-button::after{
+    transform: translateY(50px ) !important;
+
+}
+.main-description-right-wrap:hover .primary-button::after{
+    transform: translateY(-24px);
+}
+.masonry-column{
+    height: fit-content;
+}
+  @keyframes scrollText {
+    from   { transform: translateY(0%); }
+    to { transform: translateY(-99%); }
+  }

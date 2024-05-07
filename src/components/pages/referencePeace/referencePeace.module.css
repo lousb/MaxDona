@@ -1,0 +1,36 @@
+.reference-peace-page{
+    height:100vh;
+    width:92vw;
+    margin-inline: 4vw;
+    cursor: none;
+    background-color: transparent;
+}
+
+.reference-peace-title-wrap{
+    height:100%;
+    width:84vw;
+    display: flex;
+    gap: 8.5vw;
+    align-items: end;
+    
+}
+.reference-peace-title-wrap > span{
+    font-family: var(--title-family);
+    text-transform: uppercase;
+    font-size: 9vw;
+    margin-bottom: 4vw;
+}
+.trail-image{
+    transform: translateY(-15%) translateX(-10%);
+    border-radius: 10px;
+    position: fixed;
+    width: 500px;
+    height:405px;
+    object-fit: cover;
+    /* opacity: 0; */
+    cursor: none;
+    transform-origin: bottom bottom;
+    display: block;
+    pointer-events: none;
+}
+

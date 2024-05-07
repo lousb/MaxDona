@@ -1,0 +1,7 @@
+.text-reveal-element{
+    display: flex;
+    overflow: hidden;
+}
+.text-reveal-element > span{
+    
+}
