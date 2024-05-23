@@ -122,12 +122,12 @@ h2{
 }
 .add-projects-list>form  .formInput > input, .update-projects-list>form  .formInput > input{
     border: 0;
-    border-bottom: 1px solid var(--outline-color);
+    border-bottom: 2px solid var(--outline-color);
     width: 50%;
 }
 .add-projects-list>form .formInput > input:focus, .update-projects-list>form  .formInput > input:focus{
     outline: none;
-    border-bottom: 1px solid var(--primary-color);
+    border-bottom: 2px solid var(--primary-color);
 }
 .uploaded-section-wrap{
     width:100%;
@@ -149,16 +149,27 @@ h2{
 .update-projects-list>form  button, .add-projects-list button{
     cursor: pointer;
     margin-top: 40px;
-    width: 100%;
-    background-color: var(--primary-color);
-    border: none;
+    width: 32%;
+    background-color: white;
+    border: 2px solid rgb(185, 185, 185) !important;
+    border-radius: 20px;
+
     padding: 10px;
-    color: white;
+    color: black;
     font-family: var(--body-family);
     text-transform: uppercase;
     font-size: 20px;
     letter-spacing: -1.5px;
     position: relative;
+}
+.add-projects-list button:hover{
+    border: 2px solid rgb(67, 67, 67) !important;
+}
+.add-button-grid{
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: 1%;
 }
 .section-title, .add-projects-list h1{
     font-family: var(--body-family);
@@ -208,4 +219,37 @@ h2{
     display: block;
     margin-bottom: 64px !important;
     margin-top:16px;
+    font-size: 2em;
+}
+.section-title{
+    font-size: 2em;
+}
+.add-projects-list .formInput{
+    padding-top: 10px;
+    padding-bottom: 20px;
+}
+.add-projects-list .formInput input{
+    font-size: 2em;
+ 
+    font-weight: 400 ;
+    
+}
+.add-projects-list input[type="color"] {
+    -webkit-appearance: none;
+    border: none !important;
+    border-radius: 20px;
+}
+.add-projects-list input[type="color"]::-webkit-color-swatch-wrapper {
+    padding: 0;
+    border-radius: 20px;
+}
+.add-projects-list input[type="color"]::-webkit-color-swatch {
+    border: none !important;
+    border-radius: 20px;
+}
+.add-projects-list input{
+    color: rgb(67, 67, 67) !important;
+}
+.add-projects-list input:active, .add-projects-list input:focus{
+    color: black !important;
 }

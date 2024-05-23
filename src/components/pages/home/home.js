@@ -318,7 +318,7 @@ function Home() {
   let location = useLocation();
 
     useEffect(() => {
-        gsap.fromTo(".App", { opacity: 0 }, { opacity: 1, duration:1 });
+     
         gsap.fromTo(".mask-mouse-area > a", { height:'0px' }, { height: 'auto', duration: 1, ease:[0.76, 0, 0.24, 1], delay:0.2});
         
     }, [location]);
@@ -342,7 +342,7 @@ function Home() {
 
     return (
         <main className="home" >
-            {windowWidth > 830 && <MouseCursor/>}
+      
              
             <section className="page" ref={welcomeSectionRef}>
          
@@ -379,77 +379,86 @@ function Home() {
     );
 }
 
-const DynamicVideoPlayer = ({ image, isSection3Visible, windowWidth, data, hoveredItem, index}) => {
-    const maskRef = useRef(null);
-    const imageRef = useRef(null);
-    const [isHovered, setIsHovered] = useState(false);
-    const initialObjectPosition = "center top"; 
+const DynamicVideoPlayer = ({ image, isSection3Visible, windowWidth, data, hoveredItem, index }) => {
+  const maskRef = useRef(null);
+  const imageRef = useRef(null);
+  const videoRef = useRef(null);
+  const [isHovered, setIsHovered] = useState(false);
+  const initialObjectPosition = "center top";
 
-    const initialStyles = {
-      width: "68.5vw",
-      height: "100%", 
-    };
+  const initialStyles = {
+    width: "68.5vw",
+    height: "100%",
+  };
 
-    const handleMouseMove = (event) => {
-      if (isHovered) {
-        const rect = maskRef.current.getBoundingClientRect();
-        const maskCenterX = rect.left + rect.width / 2;
-        const maskCenterY = rect.top + rect.height / 2;
-        const mouseX = event.clientX;
-        const mouseY = event.clientY;
-  
-        const distanceX = mouseX - maskCenterX;
-        const distanceY = mouseY - maskCenterY;
-  
-        // Adjust sensitivity based on initial object position
-        const sensitivity = 0.015;
-  
-        // Calculate image position considering initial object position and sensitivity
-        const imageX = distanceX * sensitivity;
-        const imageY = distanceY * sensitivity;
+  const handleMouseMove = (event, targetRef) => {
+    if (isHovered) {
+      const rect = maskRef.current.getBoundingClientRect();
+      const maskCenterX = rect.left + rect.width / 2;
+      const maskCenterY = rect.top + rect.height / 2;
+      const mouseX = event.clientX;
+      const mouseY = event.clientY;
 
+      const distanceX = mouseX - maskCenterX;
+      const distanceY = mouseY - maskCenterY;
 
-        imageRef.current.style.objectPosition = `calc(50% + ${imageX}px) calc(0% + ${imageY}px)`;
+      // Adjust sensitivity based on initial object position
+      const sensitivity = 0.015;
 
-      }
-    };
+      // Calculate image position considering initial object position and sensitivity
+      const imageX = distanceX * sensitivity;
+      const imageY = distanceY * sensitivity;
 
-    
-  
-    const handleMouseEnter = () => {
-        imageRef.current.style.transition = "object-position 0.5s ease, min-width 0.5s ease-out 0s"; // Enable transition for smooth hover effect
-    
-      setIsHovered(true);
-      setTimeout (()=>{
-        imageRef.current.style.transition = "object-position 0s ease, min-width 0.5s ease-out 0s"; // Disable transition for smooth hover effect
+      targetRef.current.style.objectPosition = `calc(50% + ${imageX}px) calc(0% + ${imageY}px)`;
+    }
+  };
+
+  const handleMouseEnter = () => {
+    imageRef.current.style.transition = "object-position 0.5s ease, min-width 0.5s ease-out 0s"; // Enable transition for smooth hover effect
+    setIsHovered(true);
+    setTimeout(() => {
+      imageRef.current.style.transition = "object-position 0s ease, min-width 0.5s ease-out 0s"; // Disable transition for smooth hover effect
     }, 600);
+  };
 
-    };
-  
-    const handleMouseLeave = () => {
-      setIsHovered(false);
-      imageRef.current.style.transition = "object-position 0.5s ease"; // Apply transition for smooth mouse leave effect
-      imageRef.current.style.objectPosition = initialObjectPosition; // Reset object position on mouse leave
-    };
-  
-    useEffect(() => {
-      const mask = maskRef.current;
-  
-      mask.addEventListener("mousemove", handleMouseMove);
+  const handleMouseLeave = () => {
+    setIsHovered(false);
+    imageRef.current.style.transition = "object-position 0.5s ease"; // Apply transition for smooth mouse leave effect
+    imageRef.current.style.objectPosition = initialObjectPosition; // Reset object position on mouse leave
+  };
+
+  useEffect(() => {
+    const mask = maskRef.current;
+
+    const onMouseMove = (event) => handleMouseMove(event, imageRef);
+    const onVideoMouseMove = (event) => handleMouseMove(event, videoRef);
+
+    mask.addEventListener("mousemove", onMouseMove);
+    mask.addEventListener("mouseenter", handleMouseEnter);
+    mask.addEventListener("mouseleave", handleMouseLeave);
+
+    if (videoRef.current) {
+      mask.addEventListener("mousemove", onVideoMouseMove);
       mask.addEventListener("mouseenter", handleMouseEnter);
       mask.addEventListener("mouseleave", handleMouseLeave);
+    }
 
-      if(isSection3Visible){
-        maskRef.current.style.transition = 'none';
-      }
-  
-      return () => {
-        mask.removeEventListener("mousemove", handleMouseMove);
+    if (isSection3Visible) {
+      maskRef.current.style.transition = 'none';
+    }
+
+    return () => {
+      mask.removeEventListener("mousemove", onMouseMove);
+      mask.removeEventListener("mouseenter", handleMouseEnter);
+      mask.removeEventListener("mouseleave", handleMouseLeave);
+
+      if (videoRef.current) {
+        mask.removeEventListener("mousemove", onVideoMouseMove);
         mask.removeEventListener("mouseenter", handleMouseEnter);
         mask.removeEventListener("mouseleave", handleMouseLeave);
-      };
-    }, [isHovered, initialObjectPosition]);
-  
+      }
+    };
+  }, [isHovered, initialObjectPosition, isSection3Visible]);
 
   const determineImage = () => {
     if (hoveredItem) {
@@ -467,136 +476,112 @@ const DynamicVideoPlayer = ({ image, isSection3Visible, windowWidth, data, hover
     }
   }, [isHovered, hoveredItem, data]);
 
+  useEffect(() => {
+    if (videoRef.current) {
+      videoRef.current.currentTime = 0;
 
-const videoRef = useRef(null);
+      ScrollTrigger.create({
+        trigger: ".first-three-sections",
+        start: "top top",
+        scrub: 0,
 
-useEffect(() => {
-  if (videoRef.current) {
-    videoRef.current.currentTime = 0;
+        onUpdate: (self) => {
+          const targetTime = videoRef.current.duration * self.progress;
+          videoRef.current.currentTime = targetTime;
+        }
+      });
+    }
+  }, []);
 
-    ScrollTrigger.create({
-      trigger: ".first-three-sections",
-      start: "top top",
-      scrub: 0,
-
-      onUpdate: (self) => {
-        const targetTime = videoRef.current.duration * self.progress;
-        videoRef.current.currentTime = targetTime;
-      }
-    });
+  // Linear interpolation function
+  function lerp(a, b, t) {
+    return a * (1 - t) + b * t;
   }
-}, []);
-  
 
-// Linear interpolation function
-function lerp(a, b, t) {
-  return a * (1 - t) + b * t;
-}
-
-
-
-    return (
-      <div className={`mask-mouse-area area-${index}`} >
-        
-  
-        <DelayLink
+  return (
+    <div className={`mask-mouse-area area-${index}`}>
+      <DelayLink
         to={`${hoveredItem ? hoveredItem.link : (data && data.length > 0 ? data[0].link : '')}`} // Specify the destination link here
-        delay={1500} // Set the delay in milliseconds (e.g., 1000ms = 1 second)
+        delay={2000} // Set the delay in milliseconds (e.g., 1000ms = 1 second)
         onDelayStart={handleDelayStart} // Callback when delay starts
         onDelayEnd={handleDelayEnd} // Callback when delay ends and navigation happens
       >
- 
         <div className="mask-image-wrap" ref={maskRef}>
-          {index === 1 && 
-          <video
-          
-            className="scroll-video"
-
-            ref={videoRef} id="v0" preload="preload"
-
-            muted
-        
-          >
-            <source src="/test-scroll.mp4" type="video/mp4" />
-          </video>
+          {index === 1 &&
+            <video
+              className="scroll-video"
+              ref={videoRef}
+              id="v0"
+              preload="preload"
+              muted
+            >
+              <source src="/test-scroll.mp4" type="video/mp4" />
+            </video>
           }
-        <div className="reference-peace-bg-gradient">
-
-        </div>
-        
-        {image ? (
-          <img
-          className="mask-image"
-          src={image}
-          style={initialStyles}
-          ref={imageRef}
-          alt="Franco"
-          />
-        ):(
-          <img
-          className="mask-image"
-          src={determineImage()}
-          style={initialStyles}
-          ref={imageRef}
-          alt="Franco"
-        />
-        )}
-       
-
+          <div className="reference-peace-bg-gradient"></div>
+          {image ? (
+            <img
+              className="mask-image"
+              src={image}
+              style={initialStyles}
+              ref={imageRef}
+              alt="Franco"
+            />
+          ) : (
+            <img
+              className="mask-image"
+              src={determineImage()}
+              style={initialStyles}
+              ref={imageRef}
+              alt="Franco"
+            />
+          )}
           <div className="details">
-            
             <div className="player-project-name">
-            {hoveredItem ? ( // Check if an item is hovered
-              <div>
-                <p className="artist-name">
-                  <span className="artist-name-span">{hoveredItem.textContent}</span>
-                </p>
-                <p>
-                  <span>{hoveredItem.projectName}</span>
-                </p>
-                <p className="home-details-cta">
-                  <span className="details-button">Full Project</span>
-                </p>
-              </div>
-            ) : (
-              data && data.length > 0 ? ( // Check if there's data available
+              {hoveredItem ? ( // Check if an item is hovered
                 <div>
                   <p className="artist-name">
-                    <span className="artist-name-span">{data[0].textContent}</span>
+                    <span className="artist-name-span">{hoveredItem.textContent}</span>
                   </p>
                   <p>
-                    <span>{data[0].projectName}</span>
+                    <span>{hoveredItem.projectName}</span>
                   </p>
-                  <p>
+                  <p className="home-details-cta">
                     <span className="details-button">Full Project</span>
                   </p>
                 </div>
               ) : (
-                <div>
-                  {/* Render a default message or placeholder content when no data is available */}
-                  <p>No data available</p>
-                </div>
-              )
-            )}
-
-
-              
-            
+                data && data.length > 0 ? ( // Check if there's data available
+                  <div>
+                    <p className="artist-name">
+                      <span className="artist-name-span">{data[0].textContent}</span>
+                    </p>
+                    <p>
+                      <span>{data[0].projectName}</span>
+                    </p>
+                    <p>
+                      <span className="details-button">Full Project</span>
+                    </p>
+                  </div>
+                ) : (
+                  <div>
+                    {/* Render a default message or placeholder content when no data is available */}
+                    <p>No data available</p>
+                  </div>
+                )
+              )}
             </div>
           </div>
           <div className="body scroll-notification">
-     
-            <p onClick={()=>scrollToPercentageOfViewportHeight(85)}>
+            <p onClick={() => scrollToPercentageOfViewportHeight(85)}>
               (<span>SCROLL</span>)
             </p>
           </div>
         </div>
-        </DelayLink>
-  
-      </div>
-    );
-  };
-  
+      </DelayLink>
+    </div>
+  );
+};  
 
 
 const Section1 = () =>{
@@ -719,6 +704,7 @@ const Section3 = ({data, onHoverChange}) => {
     const handleMouseEnter = (item) => {
       onHoverChange(item);
       setPrevHover(item);
+      console.log(item)
     };
 
 
@@ -731,14 +717,16 @@ const Section3 = ({data, onHoverChange}) => {
     
       
         <span className="heading home-project-list">
+    
           {data.map((item) => (
               <div key={item.id}    className={`title ${prevHover && prevHover.id === item.id ? "prev-hover" : ""}`} onMouseEnter={() => {
                 onHoverChange(item);
                 handleMouseEnter(item);
             }}>
+                    <div className="project-color" style={{backgroundColor: `${item.projectColour}`}}></div>
             <DelayLink 
                 to={item.link}
-                delay={1500} // Set the delay in milliseconds (e.g., 1000ms = 1 second)
+                delay={2000} // Set the delay in milliseconds (e.g., 1000ms = 1 second)
                 onDelayStart={handleDelayStart} // Callback when delay starts
                 onDelayEnd={handleDelayEnd} // Callback when delay ends and navigation happens
                >
@@ -985,13 +973,9 @@ const scrollToPercentageOfViewportHeight = (percentage) => {
     gsap.to(".mask-mouse-area", { alignItems:'start', duration: 0});
     gsap.to(".body", { opacity: '0', duration: 0.2, ease:[0.76, 0, 0.24, 1]});
     gsap.to(".details", { opacity: '0', duration: 0.2, ease:[0.76, 0, 0.24, 1]});
-    gsap.to(".mask-mouse-area > a", { height: '0', duration: 0.8,delay:0.7, ease:[0.76, 0, 0.24, 1]});
+    gsap.to(".mask-mouse-area > a", { height: '20', duration: 1.2, delay:0.6, ease:[0.76, 0, 0.24, 1]});
 
-    gsap.to('.arrow-cursor-image', {
-      y: "-70%",
-      duration: 2,
-      ease:[0.76, 0, 0.24, 1]
-    });
+
   };
 
   const handleDelayEnd = (e, to) => {

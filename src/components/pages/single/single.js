@@ -121,7 +121,6 @@ const Single = () => {
 
   useEffect(() => {
     if(projectData){
-      gsap.fromTo(".App", { opacity: 0 }, { opacity: 1, duration:1 });
       gsap.fromTo(".main-section-image", { height:'0px' }, { height: '100%', duration: 1, ease:[0.76, 0, 0.24, 1], delay:0.5});
 
     }

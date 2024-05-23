@@ -1,6 +1,6 @@
 import React, { useEffect } from "react";
 import PropTypes from "prop-types";
-import { Link, useHistory, useLocation, useNavigate } from "react-router-dom";
+import { Link, useNavigate, useLocation } from "react-router-dom";
 
 // Functional link component which delays page navigation
 export const DelayLink = props => {
@@ -28,14 +28,20 @@ export const DelayLink = props => {
 
     e.preventDefault();
 
+    // Add the class when the delay starts
+    document.body.classList.add("page-transitioning");
+
     timeout = setTimeout(() => {
-        if (replace) {
-          navigate(to, { replace: true });
-        } else {
-          navigate(to);
-        }
-        onDelayEnd(e, to);
-      }, delay);
+      if (replace) {
+        navigate(to, { replace: true });
+      } else {
+        navigate(to);
+      }
+      onDelayEnd(e, to);
+
+      // Remove the class when the delay ends
+      document.body.classList.remove("page-transitioning");
+    }, delay);
   };
 
   return <Link {...rest} to={to} onClick={handleClick} />;
@@ -51,7 +57,7 @@ DelayLink.propTypes = {
   // Replace history or not
   replace: PropTypes.bool,
   // Link to go to
-  to: PropTypes.string
+  to: PropTypes.string.isRequired
 };
 
 DelayLink.defaultProps = {

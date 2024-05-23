@@ -325,7 +325,7 @@ const handleFileChange = (sectionIndex, imageIndex, file, isFeaturedImage) => {
       <div className="all-projects-page-wrap">
         <div className="add-projects-content">
           <div className={`add-projects-list`}>
-            <h1>{title}</h1>
+            <h1>New Project</h1>
             <form onSubmit={handleAdd}>
               <div>
                 <div className="section-title">Main Section</div>
@@ -470,12 +470,13 @@ const handleFileChange = (sectionIndex, imageIndex, file, isFeaturedImage) => {
 
 
               </div>
-
+              <div className="add-button-grid">
               <button
                 type="button"
                 onClick={() => handleAddField("detail")}
                 disabled={sections.includes("detail") || detailSections.length >= 3}
               >
+                <img src='/icons/fiftyfifty.svg' alt="detail section"/>
                 Add Detail Section
               </button>
 
@@ -484,8 +485,37 @@ const handleFileChange = (sectionIndex, imageIndex, file, isFeaturedImage) => {
                 onClick={() => handleAddField("image")}
                 disabled={sections.includes("image") || imageSectionCount >= 3}
               >
+                <img src='/icons/Masonry.svg' alt="image section"/>
                 Add Image Section
               </button>
+
+              <button
+                type="button"
+                onClick={() => handleAddField("image")}
+                disabled={sections.includes("image") || imageSectionCount >= 3}
+              >
+                <img src='/icons/Text.svg' alt="image section"/>
+                Add Text Section
+              </button>
+
+              <button
+                type="button"
+                onClick={() => handleAddField("image")}
+                disabled={sections.includes("image") || imageSectionCount >= 3}
+              >
+                <img src='/icons/LargeImage.svg' alt="image section"/>
+                Add Highlight Section
+              </button>
+
+              <button
+                type="button"
+                onClick={() => handleAddField("image")}
+                disabled={sections.includes("image") || imageSectionCount >= 3}
+              >
+                <img src='/icons/title.svg' alt="image section"/>
+                Add Title Section
+              </button>
+              </div>
 
               <button disabled={perc != null && perc < 100} type="submit">
                 Send

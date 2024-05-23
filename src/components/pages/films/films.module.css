@@ -33,6 +33,7 @@
     justify-content: space-between;
     pointer-events: all;
     transition-delay: 500ms;
+    transform: translateY(90px);
 }
 .film-page-title-wrap h2{
     margin: 0;

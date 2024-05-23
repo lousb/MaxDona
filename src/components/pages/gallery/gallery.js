@@ -14,7 +14,7 @@ function Gallery(){
 
     return(
         <div className="gallery-page">
-            <MouseCursor/>
+            
             <div className="video-container">
             <div className="player__wrapper">
                 <CustomYouTubePlayer />

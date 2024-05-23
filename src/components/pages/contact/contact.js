@@ -11,7 +11,7 @@ function Contact(){
     let location = useLocation();
 
     useEffect(() => {
-        gsap.fromTo(".App", { opacity: 0 }, { opacity: 1, duration:1 });
+
         gsap.fromTo(".contact-image-wrap .mask-image-wrap", { height:'0px' }, { height: '32vw', duration: 1, ease:[0.76, 0, 0.24, 1], delay:0.2});
         
     }, [location]);
@@ -111,7 +111,6 @@ function Contact(){
 
     return(
         <div className="contact-page ">
-            <MouseCursor/>
             <div className="contact-top ">
                 <div className="contact-heading-wrap high-z-index-layer">
                     <p className="contact-max-title heading">

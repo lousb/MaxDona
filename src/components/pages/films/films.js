@@ -11,6 +11,7 @@ import Reveal from "../../../utils/textElementReveal/textElementReveal";
 import { AnimatePresence , motion} from "framer-motion";
 import Masonry, {ResponsiveMasonry} from "react-responsive-masonry";
 
+
 gsap.registerPlugin(ScrollTrigger);
 
 function Films() {
@@ -72,7 +73,6 @@ function Films() {
     let location = useLocation();
 
     useEffect(() => {
-        gsap.fromTo(".App", { opacity: 0 }, { opacity: 1, duration:1 });
         gsap.fromTo(".project-scroll-height", { height:'0px' }, { height: '100%', duration: 1, ease:[0.76, 0, 0.24, 1], delay:1});
         
     }, [location]);
@@ -137,16 +137,15 @@ function Films() {
           },
         });
 
-        gsap.fromTo('.film-page-title-wrap',{
-            y: '90px'
-          },{
+        gsap.to('.film-page-title-wrap',{
       
-              y: '0px',
+              y: '-500px',
+           
              
             scrollTrigger: {
-              trigger:'.film-page-wrap', 
+              trigger:document.body, 
               start: 'top top',
-              end: '500',
+              end: '500px top',
               scrub: true,
               id: "scrub",
             },
@@ -225,8 +224,8 @@ function Films() {
     }, [data, activeView]);
 
     return (
-        <div className="fufu">
-       {window.innerWidth > 830 && <MouseCursor/>}
+   
+    
         <div className={`${styles['film-page-wrap']} film-page-wrap ${activeView === 'fast' && 'fast-active'}`}>
                 
             <AnimatePresence>
@@ -314,7 +313,6 @@ function Films() {
                     </motion.div>
                 )}
             </AnimatePresence>
-        </div>
         </div>
         </div>
     );

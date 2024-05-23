@@ -97,7 +97,6 @@ function ReferencePeace() {
                     Peace
                 </span>
             </div>
-            <MouseCursor/>
             <div className='images-wrap'>
                 {[...Array(31).keys()].map((index) => {
                     // Create a new ref for each image element

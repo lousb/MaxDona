@@ -105,7 +105,6 @@ function About(){
     let location = useLocation();
 
     useEffect(() => {
-        gsap.fromTo(".App", { opacity: 0 }, { opacity: 1, duration:1 });
         gsap.fromTo(".section-1-image", { height:'0px' }, { height: 'calc(100vh - 80px - 14vw', duration: 1, ease:[0.76, 0, 0.24, 1], delay:0.2});
         
     }, [location]);
@@ -141,7 +140,6 @@ function About(){
     
     return(
         <main className={`${styles['about-page']}`}>
-            <MouseCursor/>
 
             <section className={`${styles['about-page-section-1']}`}>
                 <div className={`${styles['section-1-content']} `}  >

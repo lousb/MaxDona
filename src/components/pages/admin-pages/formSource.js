@@ -22,28 +22,33 @@ export const projectMainSection = [
     id: 'releaseDate',
     label: 'Release Date',
     type: 'date',
+  
   },
   {
     id: 'videoLink',
     label: 'Video Link',
     type: 'text',
+    placeholder: 'https://youtube.com',
   },
   {
   id: 'videoName',
   label: 'Video Name',
   type: 'text',
+  placeholder: 'Example Name',
   },
   {
     id: 'mainDescription1',
     label: 'Main Description 1',
     type: 'text',
     maxLength: 65,
+    placeholder: '...',
   },
   {
     id: 'mainDescription2',
     label: 'Main Description 2',
     type: 'text',
     maxLength: 65,
+    placeholder: '...',
   },
 ];
 
