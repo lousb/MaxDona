@@ -1,0 +1,117 @@
+
+.contact-hover-desc{
+    height:fit-content;
+    min-height: 1em;
+    
+    
+    transform-origin: top left;
+    transition: transform 500ms ease, clip-path 500ms ease, max-height 500ms ease, max-width 500ms ease, padding 500ms ease, width 500ms ease !important;
+    z-index: 20;
+    scale:1;
+
+    padding:12px 14px 12px 42px;
+
+    pointer-events: none !important;
+
+    clip-path: polygon(0 0, 0 0, 0 100%, 0 100%);
+    border-radius: 4px;
+    overflow: hidden;
+    pointer-events: none;
+}
+
+.contact-hover-svg-wrap{
+    aspect-ratio: 1;
+    overflow: hidden;
+    position: absolute;
+    left:16px;
+    top:17px;
+}
+.contact-hover-svg-wrap > svg{
+    
+    transform: scaleX(-1);
+}
+.contact-hover-svg-wrap > svg > path{
+    transform: translateY(100%);
+    transition: 500ms ease;
+    fill: black;
+}
+body:has(.about-last-cta-wrap-heading:hover) .contact-hover-svg-wrap > svg > path{
+    transform: translateY(0%);
+}
+body:has(.about-last-cta-wrap-heading:hover) .contact-hover-desc{
+    clip-path: polygon(0 0, 100% 0, 100% 100%, 0% 100%);
+}
+body:not(:has(.about-last-cta-wrap-heading:hover)) .contact-hover-desc{
+    transition: 0s 0.7s, opacity 0.6s 0.1s, clip-path 0.5s 0.1s !important;
+    opacity: 0;
+    clip-path: polygon(0 0, 0 0, 0 100%, 0 100%);
+
+
+}
+.contact-hover-desc > .link-desc span>span{
+    font-size: 0.6em !important;
+    vertical-align: text-top;
+    transform: translateY(0.1em);
+    display: inline-block;
+}
+.contact-hover-desc > .link-desc{
+    margin:0 !important;
+    clip-path: polygon(0 0, 100% 0, 100% 100%, 0% 100%);
+    position: relative;
+    display: flex;
+    min-height: auto;
+    margin-top:-2px !important;
+    transition: clip-path 500ms ease-out 0s, color 500ms ease 0ms, width 500ms ease !important;
+    pointer-events: none !important;
+}
+.contact-hover-desc::before{
+
+
+    content: '';
+    width: 100%;
+    height: 100%;
+    background-color: white;
+    position: absolute;
+    top:0;
+    left:0;
+    display: block;
+    transition: 700ms ease-out all, clip-path 200ms ease-out !important;
+}
+
+.contact-hover-desc > .link-desc > span{
+    min-width: max-content;
+
+    text-align: right;
+  
+    font-size: 1.30em;
+    min-height: 1em;
+    line-height: 1em;
+
+    pointer-events: none !important;
+    position: relative;
+  
+    clip-path: polygon(0 0, 0 0, 0 100%, 0 100%);
+    pointer-events: none;
+    transition-delay: 0.2s;
+   transform: translateY(0%);
+   color: black;
+   margin-top:0;
+
+}
+
+body:not(:has(.about-last-cta-wrap-heading:hover)) .contact-hover-desc  .link-desc > span{
+    transition: 500ms ease all !important;
+    transform: translateY(100%) !important;
+    color: white !important;
+}
+body:has(.about-last-cta-wrap-heading:hover) .contact-hover-desc{
+    transition: transform 500ms ease 0s, width 500ms ease 0s, max-height 500ms ease 0s, max-width 500ms ease 0s, padding 500ms ease 0.5s, clip-path 500ms ease 0s !important;
+    clip-path: polygon(100% 0, 0 0, 0 100%, 100% 100%) !important;
+}
+body:has(.about-last-cta-wrap-heading:hover) .contact-hover-desc > p  > span{
+    transition: clip-path 500ms ease-out 0s, filter 500ms ease 0ms !important;
+    clip-path: polygon(0 0, 100% 0, 100% 100%, 0% 100%) !important;
+}
+.contact-hover-desc p{
+    margin:0 !important;
+}

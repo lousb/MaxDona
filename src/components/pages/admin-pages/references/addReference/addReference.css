@@ -1,0 +1,42 @@
+
+.all-projects-page-wrap svg *{
+    transition: 500ms ease all;
+}
+
+.all-projects-page-wrap:has(.projectname input:active) svg .title path, .all-projects-page-wrap:has(.projectname input:focus) svg .title path, .all-projects-page-wrap:has(.projectname input:hover) svg .title path{
+    fill:var(--project-color) !important;
+}
+.all-projects-page-wrap:has(.projectImage input:active) svg .image, .all-projects-page-wrap:has(.projectImage input:focus) svg .image, .all-projects-page-wrap:has(.projectImage input:hover) svg .image{
+    fill:var(--project-color) !important;
+}
+.all-projects-page-wrap:has(.projectColor input:active) svg .title, .all-projects-page-wrap:has(.projectColor input:active) svg .desc1, .all-projects-page-wrap:has(.projectColor input:active) svg .desc2,.all-projects-page-wrap:has(.projectColor input:active) svg .image, .all-projects-page-wrap:has(.projectColor input:active) svg .link, .all-projects-page-wrap:has(.projectColor input:active) svg .videoName, .all-projects-page-wrap:has(.projectColor input:focus) svg .title path, .all-projects-page-wrap:has(.projectColor input:focus) svg .desc1 path, .all-projects-page-wrap:has(.projectColor input:focus) svg .desc2 path, .all-projects-page-wrap:has(.projectColor input:focus) svg .link, .all-projects-page-wrap:has(.projectColor input:focus) svg .videoName, .all-projects-page-wrap:has(.projectColor input:focus) svg .image{
+    fill:var(--project-color) !important;
+}
+
+.all-projects-page-wrap:has(.maindescription1 input:active) svg .desc1 path, .all-projects-page-wrap:has(.maindescription1 input:focus) svg .desc1 path, .all-projects-page-wrap:has(.maindescription1 input:hover) svg .desc1 path{
+    fill:var(--project-color) !important;
+}
+.all-projects-page-wrap:has(.maindescription2 input:active) svg .desc2 path, .all-projects-page-wrap:has(.maindescription2 input:focus) svg .desc2 path, .all-projects-page-wrap:has(.maindescription2 input:hover) svg .desc2 path{
+    fill:var(--project-color) !important;
+}
+.all-projects-page-wrap:has(.videolink input:active) svg .link, .all-projects-page-wrap:has(.videolink input:focus) svg .link, .all-projects-page-wrap:has(.videolink input:hover) svg .link{
+    fill:var(--project-color) !important;
+}
+.all-projects-page-wrap:has(.videoname input:active) svg .videoName, .all-projects-page-wrap:has(.videoname input:focus) svg .videoName, .all-projects-page-wrap:has(.videoname input:hover) svg .videoName,       .all-projects-page-wrap:has(.releasedate input:active) svg .videoName, .all-projects-page-wrap:has(.releasedate input:focus) svg .videoName, .all-projects-page-wrap:has(.releasedate input:hover) svg .videoName{
+    fill:var(--project-color) !important;
+}
+
+
+
+.all-projects-page-wrap:has(.uploaded-image-section-wrap:hover) svg.masonrysvg, .all-projects-page-wrap:has(.uploaded-image-section-wrap:hover) svg.masonrysvg{
+    opacity: 1 !important;
+}
+
+.all-projects-page-wrap:has(.uploaded-image-section-wrap:hover) svg.masonrysvg .image rect, .all-projects-page-wrap:has(.uploaded-image-section-wrap:hover) svg.masonrysvg .image rect{
+    opacity: 1 !important;
+    fill:var(--project-color) !important;
+}
+.all-projects-page-wrap:has(.detail-section:hover) svg.fiftyfiftysvg{
+    opacity: 1 !important;
+
+}

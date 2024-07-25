@@ -7,7 +7,7 @@ section{
 
 
 .page{
-    height:calc(300vh + 140px) !important;
+    min-height:calc(300vh + 140px) !important;
 
 }
 .page-one, .page-two, .page-three, .page-four, .page-five{
@@ -28,7 +28,8 @@ section{
     width: 100%;
     height: 100%;
     object-fit: cover;
-    object-position: bottom center;
+    object-position: center center;
+    transform: scale(1.05);
 }
 
 .dynamic-video-player{
@@ -57,10 +58,22 @@ section{
     cursor: none;
     position: relative;
     pointer-events: all;
-    object-position: top center;
+    object-position: center center;
     aspect-ratio: 1;
     
-    transition: object-position 0.5s ease 0s, min-width 0.5s ease-out 0s;
+}
+.mask-image-wrap > div:first-child{
+    transition: 1400ms cubic-bezier(0.22, 0, 0.24, 1) transform 200ms;
+    height: 100%;
+    transform: scale(1);
+
+}
+.scroll-video, .mask-image{
+    transition: object-position 0.5s ease 0s, min-width 0.5s ease-out 0s, scale 0.3s ease-out;
+}
+.dynamic-video-player:has(.mask-image:hover) .scroll-video,
+.mask-image:hover, .scroll-video:hover{
+    scale: 1.05;
 }
 
 .mask-image-wrap{
@@ -70,14 +83,21 @@ section{
     position: relative;
     height:calc(95vh - 180px);
     max-height: 100%;
-    transition: transform 0.5s ease 0s;
+    clip-path: inset(0 0 0 0 round 20px);
+    transition: transform 0.5s ease 0s, clip-path 1400ms cubic-bezier(0.60, 0, 0.24, 1) 200ms;
 }
 .home-project-list > .title{
     position: relative;
+    
+}
+.home-project-list .text-reveal-element{
+    padding-bottom: 0.2em !important;
+
 }
 .prev-hover .project-color{
     clip-path: polygon(0 0, 100% 0, 100% 100%, 0 100%);
     height: 20px;
+    background-color: var(--primary-color);
     transition: 200ms ease-in-out all 100ms;
 }
 .project-color{
@@ -85,7 +105,7 @@ section{
     aspect-ratio: 1;
     height:10px;
     position: absolute;
-    top: 10px;
+    top: 0.018em;
     left: 0;
     transform:translateX(-0.2em);
     clip-path: polygon(0 0, 0 0, 0 100%, 0 100%);
@@ -94,7 +114,7 @@ section{
 
 }
 .mask-image-wrap:hover{
-    transform: scale(0.99);
+    transform: scale(0.992);
 }
 .mask-mouse-area > a{
     transform-origin: bottom right;
@@ -110,7 +130,7 @@ section{
     background: rgb(2,0,36);
     background: radial-gradient(circle, rgba(2,0,36,0) 33%, rgba(0,0,0,1) 100%, rgba(172,50,50,0) 100%);
     filter: blur(2px);
-    opacity: 0.7;
+    opacity: 0.3;
     width: 100%;
     height: 100%;
     z-index: 1;
@@ -118,13 +138,11 @@ section{
   
 }
 .mask-image-wrap:hover::before{
-    opacity: 0.9;
+    opacity: 0.5;
     transform: scale(1.05);
 
 }
-.mask-image:hover{
-    transform: scale(1.04);
-}
+
 .page-three .pin-spacer{
     padding: 0 !important;
 }
@@ -168,7 +186,7 @@ section{
 .see-my-work{
     pointer-events: all;
     position: absolute;
-    bottom:4vh;
+    bottom:0vh;
 
     transition: ease-in-out 400ms all;
     transition-delay: 500ms;
@@ -410,6 +428,10 @@ body:has(.home .page-two.visible) .dynamic-video-player-1 .mask-image-wrap .deta
     transform: translateY(0%);
     
 }
+body:has(.section-three-wrap:hover) .dynamic-video-player-1 .mask-image-wrap  .player-project-name p > span{
+
+  transition:  0.4s all ease-out 0s, opacity 0.5s ease !important;
+}
 
 
 .home-project-list > div{
@@ -418,16 +440,18 @@ body:has(.home .page-two.visible) .dynamic-video-player-1 .mask-image-wrap .deta
 .page-three-wrap{
     width: calc(92svw / 2);
     margin-inline: 4vw;
+    overflow: hidden;
 }
 .page-three{
    
-  
+    overflow: hidden;
     height: auto;
     min-height: auto;
     position: relative;
     display: flex;
     flex-direction: column;
     justify-content: center;
+    z-index: 15;
    
    
 }
@@ -438,15 +462,17 @@ body:has(.home .page-two.visible) .dynamic-video-player-1 .mask-image-wrap .deta
     pointer-events: all;
 }
 .page-three-wrap .primary-button{
-    margin-bottom: 80svh;
-    margin-top:18px;
+    margin-bottom: 20svh;
+    margin-top:1em !important;
    
 
 }
 
 .home-project-list{
     position: relative;
-    z-index: 0;
+    display: flex;
+    flex-direction: column;
+
 
 }
 .home-project-list > .text-reveal-container{
@@ -530,6 +556,123 @@ a{
     justify-content: space-between;
     margin-block: 20px;
 }
+.home-hover-desc{
+    height:fit-content;
+    min-height: 1em;
+    
+    
+    transform-origin: top left;
+    transition: transform 500ms ease, clip-path 500ms ease, max-height 500ms ease, max-width 500ms ease, padding 500ms ease, width 500ms ease !important;
+    z-index: 20;
+    scale:1;
+
+    padding:12px 14px 12px 42px;
+
+    pointer-events: none !important;
+
+    clip-path: polygon(0 0, 0 0, 0 100%, 0 100%);
+    border-radius: 4px;
+    overflow: hidden;
+}
+.home-hover-svg-wrap{
+    aspect-ratio: 1;
+    overflow: hidden;
+    position: absolute;
+    left:16px;
+    top:15px;
+}
+.home-hover-svg-wrap > svg{
+    
+    transform: scaleX(-1);
+}
+.home-hover-svg-wrap > svg > path{
+    transform: translateY(100%);
+    transition: 500ms ease;
+}
+body:has(.featured-project-link:hover) .home-hover-svg-wrap > svg > path{
+    transform: translateY(0%);
+}
+body:has(.featured-project-link:hover) .home-hover-desc{
+    clip-path: polygon(0 0, 100% 0, 100% 100%, 0% 100%);
+}
+body:not(:has(.featured-project-link:hover)) .home-hover-desc{
+    transition: 0s 0.7s, opacity 0.6s 0.1s, clip-path 0.5s 0.1s !important;
+    opacity: 0;
+    clip-path: polygon(0 0, 0 0, 0 100%, 0 100%);
+
+
+}
+
+.home-hover-desc > .link-desc{
+    margin:0 !important;
+    clip-path: polygon(0 0, 100% 0, 100% 100%, 0% 100%);
+    position: relative;
+    display: flex;
+    min-height: auto;
+    transition: clip-path 500ms ease-out 0s, color 500ms ease 0ms, width 500ms ease !important;
+    pointer-events: none !important;
+}
+.home-hover-desc::before{
+
+
+    content: '';
+    width: 100%;
+    height: 100%;
+    background-color: white;
+    position: absolute;
+    top:0;
+    left:0;
+    display: block;
+    transition: 700ms ease-out all, clip-path 200ms ease-out !important;
+}
+
+.home-hover-desc > .link-desc > span{
+    min-width: max-content;
+
+    text-align: right;
+  
+    font-size: 1.30em;
+    min-height: 1em;
+    line-height: 1em;
+
+    pointer-events: none !important;
+    position: relative;
+  
+    clip-path: polygon(0 0, 0 0, 0 100%, 0 100%);
+    pointer-events: none;
+    transition-delay: 0.2s;
+   transform: translateY(100%);
+   color: white;
+   margin-top:0;
+
+}
+
+.featured-project-link{
+inline-size: 43vw;
+overflow-wrap: break-word;
+hyphens: auto;
+max-width: 100%;
+   
+}
+.page-transitioning .home-hover-desc  .link-desc{
+    opacity: 1 !important;
+}
+body:not(:has(.featured-project-link:hover)):not(.page-transitioning) .home-hover-desc  .link-desc > span{
+    transition: 500ms ease all !important;
+    transform: translateY(100%) !important;
+    color: white !important;
+}
+body:has(.featured-project-link:hover) .home-hover-desc{
+    transition: transform 500ms ease 0s, width 500ms ease 0s, max-height 500ms ease 0s, max-width 500ms ease 0s, padding 500ms ease 0.5s, clip-path 500ms ease 0s !important;
+    clip-path: polygon(100% 0, 0 0, 0 100%, 100% 100%) !important;
+}
+body:has(.featured-project-link:hover) .home-hover-desc > p  > span{
+    transition: clip-path 500ms ease-out 0s, filter 500ms ease 0ms !important;
+    clip-path: polygon(0 0, 100% 0, 100% 100%, 0% 100%) !important;
+}
+.home-hover-desc p{
+    margin:0 !important;
+}
 .page-four-service .text-reveal-container{
     transition: 500ms ease-out all;
     user-select: none;
@@ -538,8 +681,8 @@ a{
     transform: translateX(20px);
 }
 .my-work-cta .primary-button{
-    width: 137px;
-    max-height: 33px;
+    width: 157px;
+
 }
 .page-four-service > .service-desc{
 
@@ -606,7 +749,8 @@ body:has(.page-three.visible) .player-project-name .mask-image-wrap{
     transition: none !important;
 }
 .section-three-wrap{
-    height: 100vh;
+    min-height: 100vh;
+    height: fit-content;
 }
 
 
@@ -639,19 +783,23 @@ body:has(.page-three.visible) .player-project-name .mask-image-wrap{
     margin-bottom: 4vw;
 }
 .page-five > .page-five-right{
-    transition: 800ms ease all 500ms;
+    transition: 800ms ease all 500ms, clip-path 0ms;
     width: 40.8%;
     display: flex;
     justify-content: center;
     flex-direction: column;
     gap:2rem;
     opacity: 1;
+    clip-path: polygon(100% 0, 0 0, 0 100%, 100% 100%);
 }
 .home:has(.page-six.visible) .page-five-right{
     transition: 400ms ease all 0ms;
     opacity: 0;
     transform: translateY(-20px);
     pointer-events: none;
+}
+.home:has(.page-six.visible) .dynamic-video-player-5 .details{
+    opacity: 0;
 }
 .home:has(.page-six.visible) .mask-image-wrap::before{
     transform: scale(1.4);
@@ -673,10 +821,6 @@ body:has(.page-three.visible) .player-project-name .mask-image-wrap{
 .page-five-right{
     pointer-events: all;
 }
-.page-five-right .primary-button{
-    width: 185px;
-    height: 1.2em;
-}
 .about-reference-wrap{
     position: relative;
     height:350vh;
@@ -695,6 +839,26 @@ body:has(.page-three.visible) .player-project-name .mask-image-wrap{
     width: 100%;
     background-color: transparent;
 
+}
+.dynamic-video-player-5 .details{
+    z-index: 9999;
+
+
+}
+.dynamic-video-player-5 .details .primary-button{
+    line-height: 30px;
+}
+.primary-button.insta-button::after, .primary-button.insta-button::before{
+    background-image: url(/public/icons/instagram.svg);
+
+    background-repeat: no-repeat;
+}
+.primary-button.button-gradient.insta-button::after{
+    margin-top:2px;
+  
+}
+.primary-button.button-gradient.insta-button:hover::before{
+transform:translateY(-30px)
 }
 .dynamic-video-player-5 .mask-mouse-area{
     justify-content: start ;
@@ -784,14 +948,7 @@ body:has(.page-three.visible) .player-project-name .mask-image-wrap{
 .page-three .body{
     pointer-events: all;
 }
-.what-i-do-cta{
-    font-size: 18px;
-    line-height: 22px;
-}
-.what-i-do-cta::after{
-    width: 16px;
-    margin-top:6px;
-}
+
 .page-four-top-wrap p{
     margin-top: 0px ;
 }

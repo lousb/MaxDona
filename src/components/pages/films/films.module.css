@@ -313,6 +313,8 @@ a:has(.film-project-item) > .film-project-item:nth-child(2){
     pointer-events: all;
     padding-bottom: 18px;
     transition-delay: 0ms !important;
+    display: flex;
+    justify-content: flex-end;
 }
 .parallax-image-wrap{
     overflow: hidden;

@@ -5,6 +5,7 @@ import { ScrollTrigger } from "gsap/ScrollTrigger";
 import MouseCursor from "../../../utils/mouseCursor";
 import Reveal from "../../../utils/textElementReveal/textElementReveal";
 import { useLocation } from "react-router-dom";
+import ContactBlock from "../../molecules/ContactBlock/contactBlock";
 
 
 
@@ -88,7 +89,7 @@ function About(){
         gsap.to(slider2.current, {
             scrollTrigger: {
                 trigger: document.body,
-                scrub: 1,
+                scrub: true,
                 start: 0,
                 end: 'bottom bottom',
                 onUpdate: (e) => {
@@ -132,9 +133,13 @@ function About(){
         if(xPercent > 0){
             xPercent = -100;
         }
-        gsap.set(imagesWrap1.current, {xPercent: xPercent})
-        gsap.set(imagesWrap2.current, {xPercent: xPercent})
-        xPercent += 0.06 * direction;
+        if(imagesWrap1.current && imagesWrap2.current){
+            gsap.set(imagesWrap1.current, {xPercent: xPercent})
+            gsap.set(imagesWrap2.current, {xPercent: xPercent})
+        }
+   
+
+        xPercent += 0.03 * direction;
         requestAnimationFrame(animation);
     }
     
@@ -144,17 +149,45 @@ function About(){
             <section className={`${styles['about-page-section-1']}`}>
                 <div className={`${styles['section-1-content']} `}  >
                     <div className={`${styles['section-1-heading']} high-z-index-layer`}>
-                        <Reveal elementClass={'title'} element={'h2'} textContent={'TELLING STORIES WORTH'}/>
-                        <Reveal elementClass={'title'} element={'h2'} textContent={'TOLD'}/>
+                        <Reveal custom={20} elementClass={'title'} element={'h2'} textContent={'TELLING STORIES WORTH'}/>
+                        <Reveal custom={20} elementClass={'title'} element={'h2'} textContent={'TOLD'}/>
                     </div>
                     <div className={`${styles['section-1-image']} section-1-image`}>
                     
                     </div>
                     <div className={`high-z-index-layer`}>
                         <div className={`${styles['section-1-text']}`}>
-                            <Reveal elementClass={'body'} textContent={'MY WORK AIMS TO STANDOUT FROM THE NOISE; THIS IS DONE BY HIGHLIGHTING THE AUTHENTICITY OF MY CLIENTS.'} element={'p'}/>
+                            <Reveal custom={20} elementClass={'body'} textContent={'MY WORK AIMS TO STANDOUT FROM THE NOISE; THIS IS DONE BY HIGHLIGHTING THE AUTHENTICITY OF MY CLIENTS.'} element={'p'}/>
                         </div>
                         <div className={`${styles['section-1-text']}`}>
+                            <Reveal custom={20} elementClass={'body'} textContent={'I STRIVE TO CURATE IDENTITY AND PERSONALITY THROUGH VISUAL EXPERIENCES.'} element={'p'}/>
+                        </div>
+                    </div>
+                </div>
+
+            </section>
+            <section className={`${styles['about-page-section-2']}`}>
+                <div className={`${styles['section-2-content']} `}  >
+                    <div className={`${styles['section-2-heading']} high-z-index-layer`}>
+                        <div>
+                            <Reveal elementClass={'title'} element={'h2'} textContent={'TALK ABOUT'}/>
+                            <Reveal elementClass={'title'} element={'h2'} textContent={'YOURSELF'}/>
+                            <Reveal elementClass={'title'} element={'h2'} textContent={'HERE, GOT IT'}/>
+                        </div>
+                        <div>
+                            <Reveal elementClass={'title'} element={'h2'} textContent={'CONTINUE'}/>
+                            <Reveal elementClass={'title'} element={'h2'} textContent={'TO TALK'}/>
+                            <Reveal elementClass={'title'} element={'h2'} textContent={'HERE, GOT IT'}/>
+                        </div>
+                    </div>
+                    <div className={`${styles['section-2-image']} section-2-image`}>
+
+                    </div>
+                    <div className={`high-z-index-layer`}>
+                        <div className={`${styles['section-2-text']}`}>
+                            <Reveal elementClass={'body'} textContent={'MY WORK AIMS TO STANDOUT FROM THE NOISE; THIS IS DONE BY HIGHLIGHTING THE AUTHENTICITY OF MY CLIENTS.'} element={'p'}/>
+                        </div>
+                        <div className={`${styles['section-2-text']}`}>
                             <Reveal elementClass={'body'} textContent={'I STRIVE TO CURATE IDENTITY AND PERSONALITY THROUGH VISUAL EXPERIENCES.'} element={'p'}/>
                         </div>
                     </div>
@@ -282,17 +315,7 @@ function About(){
                 </div>
             </div>
             
-            <section className={`${styles["about-page-section-3"]} high-z-index-layer`}>
-                <p className="heading">Keen to start a <br/>project?</p>
-                <div className={`${styles["about-last-cta-wrap"]}`}>
-                    <p className={`body ${styles["body"]}`}>Click my email<br/>
-                        To get in touch!
-                    </p>
-                    <p className={`heading ${styles["about-last-cta-wrap-heading"]}`}>
-                        Maxdona@gmail.com
-                    </p>
-                </div>
-            </section>
+           <ContactBlock/>
         </main>
     )
 }

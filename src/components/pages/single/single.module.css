@@ -5,6 +5,9 @@
     
 
 }
+.project-page *{
+    color:var(--primary-color);
+}
 .project-page section{
     width:92%;
 
@@ -78,11 +81,13 @@
 
 }
 .main-description-wrap-left{
-    width: 184px !important;
-    gap:1em;
+    width: 29.7vw !important;
+    gap: 1.3vw;
+
     display: flex;
-    flex-direction: column;
+    flex-direction: row;
 }
+
 .main-description-wrap-right{
     width:15vw !important;
     display: flex;
@@ -99,7 +104,8 @@
 }
 .main-description-wrap-left>span{
 
-    width: 184px !important;
+    width: 14.2vw !important;
+
 }
 .main-description-right-wrap{
     display: flex;
@@ -170,6 +176,9 @@
     justify-content: center;
     transition: all 500ms ease;
 }
+.main-single-heading{
+    padding-bottom: 10vh;
+}
 .parallax-image-wrap:hover{
     transform: scale(0.99);
 }
@@ -178,6 +187,8 @@
     pointer-events: all !important;
     z-index: 20;
     position: relative;
+    display: flex;
+    flex-direction: column;
 }
 .details-title{
     width: 100%;
@@ -201,13 +212,13 @@
     background-size: cover;
     background-position: center;
     height: calc(100svh - 90px);
-
+    cursor: none;
     border-radius: 20px;
-    width:49%;
+    width:49.2%;
     background-image: url(/public/imagery/Films/Domengo\ Hero\ Image.png);
 }
 .details-description{
-    width: 100%;
+    width: 14.2vw !important;
     margin:0;
 }
 .details-title{
@@ -215,17 +226,46 @@
 }
 .details-description span{
     display: flex;
-    width: 164px;
+    width: 100%;
+}
+.text-section{
+    min-height: 0px;
+    margin-block:4vw;
+}
+.text-section .details-description{
+    width: 100% !important;
+}
+.large-section{
+    margin-top: 1.2svw;
+}
+.large-section, .large-section img{
+    width: 100%;
+    border-radius: 20px;
+}
+.large-section img{
+    cursor:none;
+}
+.title-section{
+    margin-top:4vw;
+    display: flex;
+    justify-content: center;
+}
+.title-section-wrap{
+    width: 80%;
+    text-align: center;
+}
+.title-section-wrap>h3{
+    width: 100% !important;
 }
 .details-description-wrap{
     display: flex;
-    gap: 1%;
+    gap: 2.8%;
     width: 100%;
     margin-bottom:4vw;
 }
 
 .details-section-wrap{
-    width: 50%;
+    width: 49.2%;
 }
 .gallery-page{
     width: 92svw;

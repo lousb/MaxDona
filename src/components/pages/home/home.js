@@ -3,17 +3,19 @@ import './home.css';
 import { gsap } from "gsap";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
 
-
-import MouseCursor from "../../../utils/mouseCursor";
 import Reveal from "../../../utils/textElementReveal/textElementReveal";
 import SvgComponent from "../../atoms/referencePeaceSVG/referencePeaceSVG";
 import { projectNavData } from "./projectNavDetails";
-import { motion } from "framer-motion";
-import { opacity } from "./anim";
-import { Link, Navigate, useLocation } from "react-router-dom";
-import TickingClock from "../../atoms/animatedTimer/animatedtimer";
-import FlipNumbers from "react-flip-numbers";
+
+import { collection, query, where, orderBy, getDocs } from "firebase/firestore";
+import { db } from '../../../firebase/firebase';
+
+import { useLocation } from "react-router-dom";
 import DelayLink from "../../../utils/delayLink";
+import useMousePosition from "../../../utils/useMousePosition";
+import useFetchFeaturedProjects from "./fetchFeaturedList";
+import useRealtimeFeaturedProjects from "./fetchFeaturedList";
+
 
 gsap.registerPlugin(ScrollTrigger);
 
@@ -23,6 +25,8 @@ function Home() {
     const welcomeSectionRef = useRef(null);
     const aboutReferenceSectionRef = useRef(null);
     const section3Ref = useRef(null);
+     const [pageHeight, setPageHeight] = useState(0);
+ const firstThreeSectionsRef = useRef(null);
 
     const [isSection3Visible, setIsSection3Visible] = useState(false);
     const [windowWidth, setWindowWidth] = useState(window.innerWidth);
@@ -35,8 +39,30 @@ function Home() {
     const [hoveredItem, setHoveredItem] = useState(null);
 
     const handleHoverChange = (item) => {
-      setHoveredItem(item);
+      gsap.to('.player-project-name span',{
+        y:'150%',
+        duration:0.5,
+        ease:'ease-in-out',
+
+        onComplete: ()=>{
+          setHoveredItem(item);
+          gsap.to('.player-project-name span',{
+          y:'0%',
+          
+       
+          })
+        }
+      })
+
     };
+
+
+    useEffect(() => {
+      return () => {
+        window.scrollTo(0, 0);
+      };
+    }, []); 
+
     
     useLayoutEffect(() => {
       const handleResize = () => {
@@ -56,6 +82,8 @@ function Home() {
     }, []);
 
     useLayoutEffect(() => {
+
+      const triggers = [];
         
 
 
@@ -67,21 +95,24 @@ function Home() {
       })
       
       const sectionOneScrollTrigger = () => {
-        ScrollTrigger.create({
+           triggers.push(ScrollTrigger.create({
           trigger: ".page-one",
           start: "top top",
           pin: ".dynamic-video-player-1",
+          pinSpacer:false,
           end: () => welcomeSectionRef.current.offsetTop + welcomeSectionRef.current.clientHeight - windowHeight - 120,
-        });
+        })
+      );
       };
   
       const pageFiveScrollTrigger = () => {
-        ScrollTrigger.create({
+        triggers.push(ScrollTrigger.create({
           trigger: aboutReferenceSectionRef.current,
           pin: '.page-five',
           start: '-92px top',
+          pinSpacer:false,
           end: 'bottom bottom',
-        });
+        }));
       };
 
 
@@ -90,14 +121,26 @@ function Home() {
         // gsap.to(".dynamic-video-player-1 .mask-image", { maxWidth: "68.5vw",         width: 'calc(68.5vw)', });
 
         const aboutReferenceSectionScrollTrigger = () => {
-          ScrollTrigger.create({
+          triggers.push(ScrollTrigger.create({
             trigger: aboutReferenceSectionRef.current,
-            start: '-92px top',
+            start: `-${windowWidth * 0.06}px top`,
             pin: '.dynamic-video-player-5',
+            pinSpacer:false,
             end: 'bottom bottom',
-          });
+          }));
         };
-        
+         gsap.to(".page-five-right", {
+          clipPath: "polygon(100% 0, 100% 0, 100% 100%, 100% 100%)",
+   
+          scrollTrigger: {
+            start: '200px top',
+           
+            end: "80vh",
+            scrub: true,
+            id: "scrub",
+            trigger: aboutReferenceSectionRef.current,
+          },
+        });
   
         gsap.fromTo(".dynamic-video-player-1 .mask-image", { width:'calc(68.5vw)'}, {
           width: "45.3vw",
@@ -178,23 +221,24 @@ function Home() {
         });
 
         gsap.to(".page-three", {
-          y: -40,
+          y: -60,
           scrollTrigger: {
-            trigger: section3Ref.current, 
-            start: () => '80px top',
-            end: () => welcomeSectionRef.innerHeight + windowWidth/0.8,
-            scrub: true,
+            trigger: '.page-four', 
+            start: () => `-${window.innerHeight * 1.5} top`,
+            end: () =>  windowWidth/0.4,
+            scrub: 1,
             id: "scrub",
           },
         });
         gsap.to(".dynamic-video-player-1 .mask-mouse-area", {
           y: 20,
           scrollTrigger: {
-            trigger: section3Ref.current, 
-            start: () => '80px top',
-            end: () => welcomeSectionRef.innerHeight + windowWidth/0.8,
-            scrub: true,
+            trigger: '.page-four', 
+            start: () => `-${window.innerHeight * 1.5} top`,
+            end: () =>  windowWidth/0.4,
+            scrub: 1,
             id: "scrub",
+      
           },
         });
     
@@ -210,21 +254,23 @@ function Home() {
   
       const handleWindowLess830 = () => {
 
-        ScrollTrigger.create({
+        triggers.push(ScrollTrigger.create({
           trigger: document.window,
           start: "top center",
           pin: ".dynamic-video-player-1 .text-content-mobile-scrollbar",
+          pinSpacer:false,
           end: () => welcomeSectionRef.current.offsetTop + welcomeSectionRef.current.clientHeight - windowHeight - 120,
  
-        });
+        }));
 
         const aboutReferenceSectionScrollTrigger = () => {
-          ScrollTrigger.create({
+          triggers.push(ScrollTrigger.create({
             trigger: '.dynamic-video-player-5',
             start:`top -${window.innerHeight - document.querySelector('.dynamic-video-player-5 .mask-image-wrap').innerHeight}px`,
             pin: '.dynamic-video-player-5',
+            pinSpacer:false,
             end: `+=${window.innerHeight*2}px`,
-          });
+          }));
         };
 
         gsap.to('.dynamic-video-player-5 .mask-mouse-area',{
@@ -235,7 +281,7 @@ function Home() {
             end:()=> '+=100vh',
             scrub: true,
             id: "scrub",
-            markers:true
+  
           },
         });
   
@@ -292,10 +338,12 @@ function Home() {
       }
       
   
+      // Cleanup function to kill only local ScrollTrigger instances
       return () => {
-        ScrollTrigger.getAll().forEach(trigger => trigger.kill());
+        triggers.forEach(trigger => trigger.kill());
       };
-    }, [windowWidth, windowHeight, welcomeSectionRef, aboutReferenceSectionRef, section3Ref]);
+
+    }, [windowWidth, windowHeight, welcomeSectionRef, aboutReferenceSectionRef, section3Ref, pageHeight]);
 
 
   useEffect(() => {
@@ -335,16 +383,68 @@ function Home() {
     requestAnimationFrame(animation);
   }
 
-  // const handleClick = (link) => {
-  //   // Programmatically navigate to a new location using navigate function
-  //   navigate("/new-path");
-  // };
+
+
+ const updatePageHeight = () => {
+  if (welcomeSectionRef.current && firstThreeSectionsRef.current) {
+    const height = firstThreeSectionsRef.current.offsetHeight;
+    setPageHeight(height);
+  }
+};
+
+useEffect(() => {
+  updatePageHeight(); // Initial call to set the height
+
+  const handleResize = () => {
+    updatePageHeight();
+  };
+
+  window.addEventListener('resize', handleResize);
+
+  return () => {
+    window.removeEventListener('resize', handleResize);
+  };
+}, []);
+
+useEffect(() => {
+  const handleHeightChange = () => {
+    updatePageHeight();
+  };
+
+  if (firstThreeSectionsRef.current) {
+    firstThreeSectionsRef.current.addEventListener('transitionend', handleHeightChange);
+  }
+
+  return () => {
+    if (firstThreeSectionsRef.current) {
+      firstThreeSectionsRef.current.removeEventListener('transitionend', handleHeightChange);
+    }
+  };
+}, [firstThreeSectionsRef.current]);
+
+
+useEffect(() => {
+  // Function to update page height when firstThreeSectionsRef height changes
+  const handleHeightChange = () => {
+    updatePageHeight();
+  };
+
+  if (firstThreeSectionsRef.current) {
+    firstThreeSectionsRef.current.addEventListener('transitionend', handleHeightChange);
+  }
+
+  return () => {
+    if (firstThreeSectionsRef.current) {
+      firstThreeSectionsRef.current.removeEventListener('transitionend', handleHeightChange);
+    }
+  };
+}, [firstThreeSectionsRef.current]);
 
     return (
         <main className="home" >
       
              
-            <section className="page" ref={welcomeSectionRef}>
+            <section className="page" ref={welcomeSectionRef} style={{ height: pageHeight }}>
          
                  {isSection3Visible && <div className="header-background-gradient" />}
 
@@ -356,7 +456,7 @@ function Home() {
                 </div>
                 {windowWidth < 830 ? <Section1 windowWidth={windowWidth}/>:<></>}
 
-                <section className="text-content-layer first-three-sections">
+                <section className="text-content-layer first-three-sections" ref={firstThreeSectionsRef}>  
                     {windowWidth > 830 ? <Section1 windowWidth={windowWidth}/>:<></>}
                     <Section2 title={'Intro'} windowWidth={windowWidth}/>
                     <div className="section-three-wrap" ref={section3Ref}>
@@ -368,7 +468,7 @@ function Home() {
             <Section4 title={'About'}/>
             <div className="about-reference-wrap" ref={aboutReferenceSectionRef}>
               <div className="dynamic-video-player dynamic-video-player-5">
-                <DynamicVideoPlayer image={'/Max-About.png'} section={5} />
+                <DynamicVideoPlayer image={'/Max-About.png'} section={5} index={5}/>
              
               </div>
               <Section5 title={'About'}/>
@@ -384,7 +484,7 @@ const DynamicVideoPlayer = ({ image, isSection3Visible, windowWidth, data, hover
   const imageRef = useRef(null);
   const videoRef = useRef(null);
   const [isHovered, setIsHovered] = useState(false);
-  const initialObjectPosition = "center top";
+  const initialObjectPosition = "center center";
 
   const initialStyles = {
     width: "68.5vw",
@@ -409,21 +509,29 @@ const DynamicVideoPlayer = ({ image, isSection3Visible, windowWidth, data, hover
       const imageX = distanceX * sensitivity;
       const imageY = distanceY * sensitivity;
 
-      targetRef.current.style.objectPosition = `calc(50% + ${imageX}px) calc(0% + ${imageY}px)`;
+
+      targetRef.current.style.objectPosition = `calc(50% + ${imageX}px) calc(50% + ${imageY}px)`;
     }
   };
 
   const handleMouseEnter = () => {
-    imageRef.current.style.transition = "object-position 0.5s ease, min-width 0.5s ease-out 0s"; // Enable transition for smooth hover effect
+    if(videoRef.current){
+    videoRef.current.style.transition = "object-position 0.5s ease, min-width 0.5s ease-out 0s, scale 0.3s ease-out"; // Enable transition for smooth hover effect
+
+    }
+    imageRef.current.style.transition = "object-position 0.5s ease, min-width 0.5s ease-out 0s, scale 0.3s ease-out"; // Enable transition for smooth hover effect
     setIsHovered(true);
     setTimeout(() => {
-      imageRef.current.style.transition = "object-position 0s ease, min-width 0.5s ease-out 0s"; // Disable transition for smooth hover effect
+      if(videoRef.current){
+      videoRef.current.style.transition = "object-position 0s ease, min-width 0.5s ease-out 0s, scale 0.3s ease-out"; // Disable transition for smooth hover effect
+      }
+      imageRef.current.style.transition = "object-position 0s ease, min-width 0.5s ease-out 0s, scale 0.3s ease-out"; // Disable transition for smooth hover effect
     }, 600);
   };
 
   const handleMouseLeave = () => {
     setIsHovered(false);
-    imageRef.current.style.transition = "object-position 0.5s ease"; // Apply transition for smooth mouse leave effect
+    imageRef.current.style.transition = "object-position 0.5s ease, min-width 0.5s ease-out 0s, scale 0.3s ease-out"; // Apply transition for smooth mouse leave effect
     imageRef.current.style.objectPosition = initialObjectPosition; // Reset object position on mouse leave
   };
 
@@ -476,22 +584,68 @@ const DynamicVideoPlayer = ({ image, isSection3Visible, windowWidth, data, hover
     }
   }, [isHovered, hoveredItem, data]);
 
-  useEffect(() => {
-    if (videoRef.current) {
-      videoRef.current.currentTime = 0;
+  let scrollTriggerInstance = null;
 
-      ScrollTrigger.create({
+// Custom throttle function
+const throttle = (func, limit) => {
+  let lastFunc;
+  let lastRan;
+  return function(...args) {
+    if (!lastRan) {
+      func.apply(this, args);
+      lastRan = Date.now();
+    } else {
+      clearTimeout(lastFunc);
+      lastFunc = setTimeout(() => {
+        if ((Date.now() - lastRan) >= limit) {
+          func.apply(this, args);
+          lastRan = Date.now();
+        }
+      }, limit - (Date.now() - lastRan));
+    }
+  };
+};
+
+
+useEffect(() => {
+  const videoElement = videoRef.current;
+
+  if (videoElement) {
+    const handleLoadedMetadata = () => {
+      videoElement.currentTime = 0;
+
+      // Throttled function to update video time
+      const updateVideoTime = throttle((self) => {
+        const duration = videoElement.duration;
+        const targetTime = duration * self.progress;
+        if (targetTime >= 0 && targetTime <= duration) {
+          videoElement.currentTime = targetTime;
+        }
+      }, 100); // Throttle time in milliseconds
+
+      scrollTriggerInstance = ScrollTrigger.create({
         trigger: ".first-three-sections",
         start: "top top",
-        scrub: 0,
-
-        onUpdate: (self) => {
-          const targetTime = videoRef.current.duration * self.progress;
-          videoRef.current.currentTime = targetTime;
-        }
+        scrub: false,
+        onUpdate: (self) => updateVideoTime(self),
       });
-    }
-  }, []);
+    };
+
+    // Add event listener for loadedmetadata
+    videoElement.addEventListener('loadedmetadata', handleLoadedMetadata);
+    videoElement.addEventListener('resize', handleLoadedMetadata);
+
+    // Clean up event listener on component unmount
+    return () => {
+      videoElement.removeEventListener('resize', handleLoadedMetadata);
+      videoElement.removeEventListener('loadedmetadata', handleLoadedMetadata);
+      if (scrollTriggerInstance) {
+        scrollTriggerInstance.kill();
+      }
+    };
+  }
+}, [videoRef]);
+
 
   // Linear interpolation function
   function lerp(a, b, t) {
@@ -501,13 +655,14 @@ const DynamicVideoPlayer = ({ image, isSection3Visible, windowWidth, data, hover
   return (
     <div className={`mask-mouse-area area-${index}`}>
       <DelayLink
-        to={`${hoveredItem ? hoveredItem.link : (data && data.length > 0 ? data[0].link : '')}`} // Specify the destination link here
+        to={`${hoveredItem ? `/projects/${hoveredItem.displayName}` : (data && data.length > 0 ? data[0].link : '')}`} // Specify the destination link here
         delay={2000} // Set the delay in milliseconds (e.g., 1000ms = 1 second)
         onDelayStart={handleDelayStart} // Callback when delay starts
         onDelayEnd={handleDelayEnd} // Callback when delay ends and navigation happens
       >
         <div className="mask-image-wrap" ref={maskRef}>
-          {index === 1 &&
+          <div>
+            {index === 1 &&
             <video
               className="scroll-video"
               ref={videoRef}
@@ -536,15 +691,17 @@ const DynamicVideoPlayer = ({ image, isSection3Visible, windowWidth, data, hover
               alt="Franco"
             />
           )}
+         
+          </div>
           <div className="details">
             <div className="player-project-name">
               {hoveredItem ? ( // Check if an item is hovered
                 <div>
                   <p className="artist-name">
-                    <span className="artist-name-span">{hoveredItem.textContent}</span>
+                    <span className="artist-name-span">{hoveredItem.displayName}</span>
                   </p>
                   <p>
-                    <span>{hoveredItem.projectName}</span>
+                    <span>{hoveredItem.videoName}</span>
                   </p>
                   <p className="home-details-cta">
                     <span className="details-button">Full Project</span>
@@ -566,7 +723,14 @@ const DynamicVideoPlayer = ({ image, isSection3Visible, windowWidth, data, hover
                 ) : (
                   <div>
                     {/* Render a default message or placeholder content when no data is available */}
-                    <p>No data available</p>
+                    {index == 5 ?
+                     <a className="primary-button insta-button">Instagram</a>
+                    :
+                      <p>No data available</p>
+
+
+                    }
+
                   </div>
                 )
               )}
@@ -616,7 +780,7 @@ const Section1 = () =>{
                onDelayStart={handleDelayStart} // Callback when delay starts
                onDelayEnd={handleDelayEnd} // Callback when delay ends and navigation happens
               >
-                <button className=" primary-button">Full Archive</button>
+                <button className=" primary-button button-gradient">Full Archive</button>
               </DelayLink>
             </div>
 
@@ -633,6 +797,7 @@ const Section2 = ({windowWidth}) => {
 
   useEffect(() => {
     const handleScroll = () => {
+      if (sectionRef.current) {
       const { offsetTop, clientHeight } = sectionRef.current;
       const sectionHeight = clientHeight;
       const scrollPosition = window.scrollY + window.innerHeight;
@@ -641,6 +806,7 @@ const Section2 = ({windowWidth}) => {
       const isTriggered = scrollPosition >= triggerPoint;
   
       setIsVisible(isTriggered);
+      }
     };
   
     window.addEventListener("scroll", handleScroll);
@@ -670,86 +836,246 @@ const Section2 = ({windowWidth}) => {
                     <Reveal custom={2} textContent={'I’M DRIVEN BY SHARING AND  VISUALISING COLLABORATIVE IDEAS THROUGH THE LENSE OF LOCAL & INTERNATIONAL PROJECTS.'} element={"div"}/>
                   </span>
                   <span className="my-work-cta">
-                     <Reveal custom={2} variant={'opacity'} textContent={'My work'} element={'button'} elementClass={"primary-button"} onClick={()=>scrollToPercentageOfViewportHeight(190)} />
+                     <Reveal custom={2} variant={'opacity'} textContent={'My work'} element={'button'} elementClass={"primary-button button-gradient"} onClick={()=>scrollToPercentageOfViewportHeight(190)} />
                   </span>
             </div>
         </div>
   )
 };
 
-const Section3 = ({data, onHoverChange}) => {
-  
-    const sectionRef = useRef(null);
-    const [isVisible, setIsVisible] = useState(false);
-    const [prevHover, setPrevHover] = useState(data[0]);
-  
-    useEffect(() => {
-      const handleScroll = () => {
-        const { offsetTop, clientHeight } = sectionRef.current;
-        const sectionHeight = clientHeight;
-        const scrollPosition = window.scrollY + window.innerHeight;
-        const triggerPoint = offsetTop + sectionHeight * 0.80;
-    
-        const isTriggered = scrollPosition >= triggerPoint;
-    
-        setIsVisible(isTriggered);
-      };
-    
-      window.addEventListener("scroll", handleScroll);
-      handleScroll(); // Call it initially to set the initial state
-    
-      return () => window.removeEventListener("scroll", handleScroll);
-    }, []);
+const Section3 = ({ onHoverChange }) => {
+  const sectionRef = useRef(null);
+  const [isVisible, setIsVisible] = useState(false);
 
-    const handleMouseEnter = (item) => {
-      onHoverChange(item);
+  const { x, y, isOutside } = useMousePosition(".App");
+  const [hoverDescHeight, setHoverDescHeight] = useState(0);
+  const [prevX, setPrevX] = useState(0);
+  const [prevY, setPrevY] = useState(0);
+  const [velocity, setVelocity] = useState({ vx: 0, vy: 0 });
+  const [currentProject, setCurrentProject] = useState(''); // Initialize with first item's focusGenre
+  const [wobble, setWobble] = useState({ translateY: 0, rotate: 0 }); // State for wobble effect
+  const hoverDescRef = useRef(null);
+  const wobbleTimeoutRef = useRef(null); // Ref to store the timeout
+  const [projectColour, setProjectColour] = useState(0);
+
+  const featuredProjects = useRealtimeFeaturedProjects();
+  const [prevHover, setPrevHover] = useState([featuredProjects[0]]);
+
+
+
+useEffect(() => {
+const handleScroll = () => {
+  if (sectionRef.current) {
+    const { offsetTop, clientHeight } = sectionRef.current;
+    const sectionHeight = clientHeight;
+    const scrollPosition = window.scrollY + window.innerHeight;
+    const triggerPoint = offsetTop + sectionHeight * 0.80;
+
+    const isTriggered = scrollPosition >= triggerPoint;
+
+    setIsVisible(isTriggered);
+  }
+};
+
+
+    window.addEventListener("scroll", handleScroll);
+    handleScroll(); // Call it initially to set the initial state
+
+    return () => window.removeEventListener("scroll", handleScroll);
+  }, []);
+
+
+  const handleMouseLeave = () => {
+
+    gsap.to('.home-hover-desc .link-desc > span', {
+    y:'100%',
+    duration:0.2,
+  
+  });
+  }
+
+  const handleMouseEnter = (item) => {
+    // Update prevHover and trigger onHoverChange if different item
+    if (prevHover && prevHover.id === item.id) {
       setPrevHover(item);
-      console.log(item)
-    };
+    } else {
+      setPrevHover(item);
+      onHoverChange(item);
+    }
+
+    // Set projectColor based on the new data structure
+    setProjectColour(item.projectColor);
+
+    gsap.to('.home-hover-desc .link-desc > span', {
+      y: '100%',
+      duration: 0.3,
+      onComplete: () => {
+        setCurrentProject(item.focusGenre);
+        gsap.to('.home-hover-desc .link-desc > span', {
+          y: '100%',
+          color: item.projectColor,
+          opacity: 0,
+          duration: 0,
+          onComplete: () => {
+            gsap.to('.home-hover-desc .link-desc > span', {
+              y: '0%',
+              opacity: 1,
+              duration: 0.3,
+              delay: 0.3,
+            });
+          },
+        });
+      },
+    });
+  };
+  
 
 
-    return (
-      <section className={`page-three-wrap`} ref={sectionRef}>
-            <div className="high-z-index-layer">
-         <Reveal variant={'opacity'} textContent='FEATURED WORK ( 2023 / 2022 )' element='p' elementClass="body"/>
-        </div>
-      <div className={`page-three ${isVisible ? "visible" : ""}`}>
-    
+  useEffect(() => {
+
+      const calculateVelocity = () => {
+        const vx = x - prevX;
+        const vy = y - prevY;
+        setVelocity({ vx, vy });
+        setPrevX(x);
+        setPrevY(y);
+      };
+
+      calculateVelocity();
+
+
+
+
+  }, [x, y]);
+
+  const clamp = (value, min, max) => Math.max(min, Math.min(max, value));
+
+  const maxTranslation = 3; 
+  const maxRotation = 1.5; 
+
+  
+  useEffect(() => {
+  const wobbleEffect = {
+    translateY: clamp(velocity.vy * 1.5, -maxTranslation, maxTranslation),
+    rotate: clamp(velocity.vx * 1.5, -maxRotation, maxRotation),
+  };
+  setWobble(wobbleEffect);
+
+  if (wobbleTimeoutRef.current) {
+    clearTimeout(wobbleTimeoutRef.current);
+  }
+
+  wobbleTimeoutRef.current = setTimeout(() => {
+    setWobble({ translateY: 0, rotate: 0 }); // Reset to baseline
+  }, 100); // Reset after 100ms of inactivity
+
+  return () => clearTimeout(wobbleTimeoutRef.current);
+
+
+  }, [velocity]);
+
+
+
+
+
+  useEffect(()=>{
+    gsap.to('.home-hover-desc', {
+    width:document.querySelector('.home-hover-desc .link-desc > span').clientWidth,
+    duration:0,
+    });
+    gsap.to('.home-hover-desc', {
+    height:document.querySelector('.home-hover-desc .link-desc > span').clientHeight,
+    duration:1,
+    });
+  }, [currentProject]);
+
+  
+  return (
+    <section className={`page-three-wrap`} ref={sectionRef}>
       
-        <span className="heading home-project-list">
-    
-          {data.map((item) => (
-              <div key={item.id}    className={`title ${prevHover && prevHover.id === item.id ? "prev-hover" : ""}`} onMouseEnter={() => {
-                onHoverChange(item);
-                handleMouseEnter(item);
-            }}>
-                    <div className="project-color" style={{backgroundColor: `${item.projectColour}`}}></div>
-            <DelayLink 
+      <div
+        className={`home-hover-desc`}
+        ref={hoverDescRef}
+        style={{
+          position: "fixed",
+          left: `${x - 14}px`,
+          top: `${y - hoverDescHeight / 2}px`,
+          transform: `translateY(${wobble.translateY}px) rotate(${wobble.rotate}deg)`,
+        }}
+      >
+        <div className="home-hover-svg-wrap">
+          <svg width="17" height="25" viewBox="0 0 17 25" fill="none" xmlns="http://www.w3.org/2000/svg" className="home-hover-arrow">
+          <path style={{ fill: `${projectColour}` }} fill-rule="evenodd" clip-rule="evenodd" d="M2.0078 4.99998H0.29C0.193334 4.99998 0 4.95453 0 4.77271V0.22727C0 0 0.348 0 0.580001 0H1.74023H6.38H6.38086H8.12023H11.2382H12.1809H16.2405V4.63965V6.37983V10.4395V10.4473H16.2435V16.2471C16.2435 16.4791 16.2435 16.8271 16.0053 16.8271H11.2411C11.0506 16.8271 11.0029 16.6338 11.0029 16.5371V10.7739C11.0009 10.7578 11 10.7427 11 10.7295V8.99603L6.39529 13.6006L6.39552 13.6008L3.92365 16.0726C3.82477 16.1715 3.67646 16.3198 3.50954 16.1529L0.171188 12.8146C0.037654 12.6811 0.0866662 12.5653 0.127864 12.5241L1.48753 11.1645L1.4873 11.1642L7.65128 5.00047H2.03023C2.02257 5.00047 2.01509 5.0003 2.0078 4.99998Z" fill="#181818"/>
+          </svg>
+        </div>
+        
+        <p className={`body link-desc`}>
+          <span dangerouslySetInnerHTML={{ __html: currentProject }}></span>
+        </p>
+      </div>
+      <div className="high-z-index-layer">
+        <Reveal variant={'opacity'} textContent='FEATURED WORK ( 2023 / 2022 )' element='p' elementClass="body" />
+      </div>
+      <div className={`page-three ${isVisible ? "visible" : ""}`}>
+        <span className="heading home-project-list"  onMouseLeave={()=>handleMouseLeave()}>
+        {featuredProjects.length > 0 ? (
+            featuredProjects.map((project) => (
+              <div key={project.id} className={`title ${prevHover && prevHover.id === project.id ? "prev-hover" : ""}`}  onMouseEnter={() => handleMouseEnter(project)}>
+                <div className="project-color" style={{ backgroundColor: `${projectColour}` }}></div>
+                <DelayLink 
+                  to={`projects/${project.displayName}`}
+                  delay={2000} // Set the delay in milliseconds (e.g., 1000ms = 1 second)
+                  onDelayStart={()=>handleDelayStart(project.projectColor)} // Callback when delay starts
+                  onDelayEnd={handleDelayEnd} // Callback when delay ends and navigation happens
+
+                >
+                  <Reveal
+                    key={project.id}
+                    custom={project.id}
+                    textContent={project.displayName}
+                    element="div"
+                    elementClass={`title featured-project-link`}
+                  />
+                </DelayLink>
+              </div>
+            ))
+          ) : (
+            <p>No featured projects available.</p>
+          )}
+          {/* {data.map((item) => (
+            <div
+              key={item.id}
+              className={`title ${prevHover && prevHover.id === item.id ? "prev-hover" : ""}`}
+              onMouseEnter={() => handleMouseEnter(item)}
+              
+              
+            >
+              <div className="project-color" style={{ backgroundColor: `${projectColour}` }}></div>
+              <DelayLink 
                 to={item.link}
                 delay={2000} // Set the delay in milliseconds (e.g., 1000ms = 1 second)
                 onDelayStart={handleDelayStart} // Callback when delay starts
                 onDelayEnd={handleDelayEnd} // Callback when delay ends and navigation happens
-               >
-            <Reveal
-              key={item.id}
-              custom={item.id}
-              textContent={item.textContent}
-              element="div"
-              elementClass={`title`}
-             
-            />
-            </DelayLink>
+               
+              >
+                <Reveal
+                  key={item.id}
+                  custom={item.id}
+                  textContent={item.textContent}
+                  element="div"
+                  elementClass={`title featured-project-link`}
+                />
+              </DelayLink>
             </div>
-            
-          ))}
+          ))} */}
         </span>
-        
-   
       </div>
-      <button className="primary-button high-z-index-layer">Full Archive</button>
-      </section>
-    );
+      <button className="primary-button high-z-index-layer button-gradient">Full Archive</button>
+    </section>
+  );
 };
+
+
 
 
 const Section4 = () =>(
@@ -762,11 +1088,11 @@ const Section4 = () =>(
           </p>
         </div>
         <div className="page-four-top-wrap-desc">
-          <p className="body">Covering varius visual diciplines</p>
+          <p className="body">Covering various visual diciplines</p>
           <p className="body">Working with the inspired to produce the inspiring</p>
         </div>
         <div className="">
-          <p className="primary-button what-i-do-cta">
+          <p className="primary-button what-i-do-cta button-gradient insta-button" >
             Instagram
           </p>
         </div>
@@ -820,7 +1146,7 @@ const Section4 = () =>(
          onDelayStart={handleDelayStart} // Callback when delay starts
          onDelayEnd={handleDelayEnd} // Callback when delay ends and navigation happens
          >
-        <div className="primary-button">
+        <div className="primary-button button-gradient">
           Let's work
         </div>
         </DelayLink>
@@ -877,7 +1203,15 @@ const Section5 = () =>{
           <Reveal textContent={'TRANSLATING CREATIVES IMAGINATION TO A STRUCTURED & INTENTIONAL APPROACH,'} custom={2} element={"p"} elementClass={"body"}/>
           <Reveal textContent={' BY EXPLORING & UNDERSTANDING THE PASSION OF PEERS. EXPRESSING THEIR OUTER-VIDUALISM*'} custom={2.5} element={"p"} elementClass={"body"}/>
         </div>
-        <Reveal variant={'opacity'} textContent={"Get to know me"} element={'p'} elementClass={"primary-button"}/>
+        <DelayLink
+        to={`/about`} 
+        delay={1500} 
+        onDelayStart={handleDelayStart} 
+        onDelayEnd={handleDelayEnd} 
+        >
+          <Reveal variant={'opacity'} textContent={"Get to know me"} element={'p'} elementClass={"primary-button button-gradient"}/>
+
+        </DelayLink>
         </div>
     </div>
   )
@@ -969,12 +1303,15 @@ const scrollToPercentageOfViewportHeight = (percentage) => {
     });
   };
 
-  const handleDelayStart = (e, to) => {
+  const handleDelayStart = (color) => {
     gsap.to(".mask-mouse-area", { alignItems:'start', duration: 0});
     gsap.to(".body", { opacity: '0', duration: 0.2, ease:[0.76, 0, 0.24, 1]});
     gsap.to(".details", { opacity: '0', duration: 0.2, ease:[0.76, 0, 0.24, 1]});
-    gsap.to(".mask-mouse-area > a", { height: '20', duration: 1.2, delay:0.6, ease:[0.76, 0, 0.24, 1]});
+    gsap.to(".mask-mouse-area > a", { height: '20', duration: 1.2, delay:0.2, ease:[0.76, 0, 0.24, 1]});
 
+    if (color) {
+      document.documentElement.style.setProperty('--secondary-dark', color);
+    }
 
   };
 

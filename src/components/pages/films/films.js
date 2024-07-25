@@ -80,10 +80,13 @@ function Films() {
     const slowViewAnimations = (handleScroll, handleScrollDebounced) => {
         window.addEventListener('scroll', handleScroll);
         window.addEventListener('scroll', handleScrollDebounced);
+        
+ 
 
-        const filmProjectItems = document.querySelectorAll('.film-project-item');
+        if (data.length > 0 && document.querySelector('.film-project-item')) {
 
-        if (data.length > 0) {
+            const filmProjectItems = document.querySelectorAll('.film-project-item');
+
             const itemHeight = window.innerHeight * 0.8 - 90;
             const totalHeight = (data.length - 1) * itemHeight; // Total distance to cover
             const maxTranslateY = (data.length - 1) * 100 - 20.8; // Maximum translateY needed
@@ -123,19 +126,22 @@ function Films() {
           },
         });
 
-        gsap.fromTo('.film-project-item',{
-          height: 'calc(70svh - 90px)'
-        },{
-    
-            height: 'calc(80svh - 90px)',
-          scrollTrigger: {
-            trigger:'.page-content', 
-            start: 'top top',
-            end: '200',
-            scrub: true,
-            id: "scrub",
-          },
-        });
+        if(document.querySelector('.film-project-item')){
+gsap.fromTo('.film-project-item',{
+  height: 'calc(70svh - 90px)'
+},{
+
+    height: 'calc(80svh - 90px)',
+  scrollTrigger: {
+    trigger:'.page-content', 
+    start: 'top top',
+    end: '200',
+    scrub: true,
+    id: "scrub",
+  },
+});
+        }
+      
 
         gsap.to('.film-page-title-wrap',{
       
@@ -381,44 +387,41 @@ const MediumView = ({ data }) => {
     const [randomImagesWithInfo, setRandomImagesWithInfo] = useState([]);
 
     useEffect(() => {
-        const fetchRandomImages = async () => {
-            const allImageUrls = new Set();
-
-            // Extract all image URLs from different folders (image1, image2, etc.)
-            data.forEach((project) => {
-                for (let i = 1; i <= 3; i++) {
-                    const imageUrls = project.imageUrls[`image${i}`];
-                    if (imageUrls && Array.isArray(imageUrls)) {
-                        imageUrls.forEach((url) => allImageUrls.add(url));
-                    }
-                }
-            });
-
-            const uniqueImageUrls = Array.from(allImageUrls);
-
-            // Shuffle the array to randomize the images
-            const shuffledImages = shuffleArray(uniqueImageUrls);
-
-            // Get the first 20 (or desired number) images for display
-            const randomImageUrls = shuffledImages.slice(0, 25);
-
-            const imagesWithInfo = randomImageUrls.map((imageUrl) => {
-                const project = data.find((project) =>
-                    Object.values(project.imageUrls).flat().includes(imageUrl)
-                );
-
-                const indexWithinProject = Object.values(project.imageUrls)
-                    .map((images) => images.indexOf(imageUrl))
-                    .find((index) => index !== -1);
-
-                return { imageUrl, project, indexWithinProject };
-            });
-
-            setRandomImagesWithInfo(imagesWithInfo);
-        };
-
         fetchRandomImages();
-    }, [data]);
+    }, []);
+
+   const fetchRandomImages = async () => {
+       const allImages = [];
+
+       // Extract all image URLs and blurhash values from different folders (image1, image2, etc.)
+       data.forEach((project) => {
+           for (let i = 1; i <= 3; i++) {
+               const imageUrls = project.imageUrls[`image${i}`];
+               if (imageUrls && Array.isArray(imageUrls)) {
+                   imageUrls.forEach((image) => {
+                       const imageUrl = image.url;
+                       const blurhash = image.blurhash;
+                       if (imageUrl && blurhash) {
+                           allImages.push({ imageUrl, blurhash, project });
+                       }
+                   });
+               }
+           }
+       });
+
+       // Shuffle the array to randomize the images
+       const shuffledImages = shuffleArray(allImages);
+
+       // Get the first 25 images for display
+       const randomImages = shuffledImages.slice(0, 25);
+
+       const imagesWithInfo = randomImages.map(({ imageUrl, blurhash, project }) => {
+           return { imageUrl, blurhash, project };
+       });
+
+       setRandomImagesWithInfo(imagesWithInfo);
+   };
+    
 
     const shuffleArray = (array) => {
         const shuffled = [...array];
@@ -470,7 +473,7 @@ useEffect(() => {
               trigger: `.${styles['random-masonry-image-view']}`,
               start: `-90px top`,
               end: ()=>`+=${tallestColumnHeight - (window.innerHeight/2.5)}`,
-              markers: true,
+        
               scrub: true,
             },
           });
@@ -490,7 +493,7 @@ useEffect(() => {
                     {randomImagesWithInfo.map((imageInfo, index) => (
                  
                  <Link to={`/projects/${imageInfo.project.id}/${imageInfo.indexWithinProject}`} key={index}>
-                    <ParallaxImage key={index} imageUrl={imageInfo.imageUrl} className={`${styles['random-masonry-image']}`} />
+                    <ParallaxImage key={index} imageUrl={imageInfo.imageUrl} blurhash={imageInfo.blurhash} className={`${styles['random-masonry-image']}`} />
                 </Link>
               
             ))}
@@ -502,7 +505,7 @@ useEffect(() => {
 };
 
 
-const ParallaxImage = ({ imageUrl }) => {
+const ParallaxImage = ({ imageUrl, blurhash }) => {
     const [isHovered, setIsHovered] = useState(false);
     const [maskPosition, setMaskPosition] = useState({ x: 0, y: 0 });
     const imageRef = useRef(null);

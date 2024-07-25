@@ -13,7 +13,7 @@ function FooterDefault() {
   
     useEffect(() => {
       const options = {
-        threshold: 0.1 // Trigger when 30% of the footer is visible
+        threshold: 0.4 // Trigger when 30% of the footer is visible
       };
   
       const observer = new IntersectionObserver(([entry]) => {
@@ -118,17 +118,7 @@ function FooterDefault() {
                 </div>
             </div>
             <div className={styles["footer-col-2"]}>
-            <div className={styles["acknowledgement-of-country"]}>
-                    <a>
-                        English
-                    </a>
-                    <a>
-                        French
-                    </a>
-                    <a>
-                        Japanese
-                    </a>
-                </div>
+
                 <div className={styles["acknowledgement-of-country"]}>
                     Max Dona © 2023<br/>
                     A Wyeth Site.

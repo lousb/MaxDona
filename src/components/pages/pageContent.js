@@ -11,20 +11,23 @@ import { HashRouter as Router, Routes, Route, Navigate} from 'react-router-dom';
 import FooterSmall  from '../molecules/footer/small/footer'
 import DefaultFooter  from '../molecules/footer/large/footer'
 import {FooterContextProvider, useFooter} from '../../context/FooterContext';
-import { projectInputs } from "./admin-pages/formSource";
+
 import AddProject from "./admin-pages/portfolio/addPortfolio/addPortfolio";
 import UpdateProject from "./admin-pages/portfolio/updatePortfolio/updatePortfolio";
 import Login from "./admin-pages/login/Login";
 import { AuthContext } from "../../context/AuthContext";
 import { useContext } from "react";
 import Single from "./single/single";
-import useMouseLeave from "../../utils/mouseOutCursor";
 import SingleImageView from "./image/image";
 import ReferencePeace from "./referencePeace/referencePeace";
+import ReferenceSingle from "./referencePeace/referenceSingle/referenceSingle";
 import About from "./about/about";
 
 import { gsap } from "gsap";
 import Lenis from "@studio-freight/lenis";
+import { LoadBundleTask } from "firebase/firestore";
+import Loading from "../molecules/LoadingScreen/loading";
+import AddReference from "./admin-pages/references/addReference/addReference";
 
 
 
@@ -64,6 +67,25 @@ function PageContent() {
     }
 
     requestAnimationFrame(raf)
+
+    // Function to handle mouse down and up events
+    const handleMouseDown = () => {
+      document.querySelector('.page-content').classList.add('press-down');
+    };
+
+    const handleMouseUp = () => {
+      document.querySelector('.page-content').classList.remove('press-down');
+    };
+
+    // Add event listeners
+    window.addEventListener('mousedown', handleMouseDown);
+    window.addEventListener('mouseup', handleMouseUp);
+
+    // Clean up event listeners
+    return () => {
+      window.removeEventListener('mousedown', handleMouseDown);
+      window.removeEventListener('mouseup', handleMouseUp);
+    };
   })
   
   return (
@@ -73,19 +95,37 @@ function PageContent() {
       <FooterContextProvider 
       >
       <Router>
-        
+      <Loading />
+      <div className="routes">
+
+   
         <Routes>
         
           <Route path="/" element={<Home />} />
           <Route path="/films" element={<Films />} />
           <Route path="/about" element={<About />} />
           <Route path="/contact" element={<Contact />} />
-          <Route path="/reference-peace" element={<ReferencePeace />} />
+          <Route path="/reference-peace" element={<ReferencePeace />}>
+          </Route>
+          <Route
+                path="reference-peace/:projectId"
+                element={
+
+                    <ReferenceSingle />
+                }
+
+          >
+
+          </Route>
           <Route path="/projects">
           <Route index element={<RequireAuth><AllProjects /></RequireAuth>} />
+          <Route
+              path="referencepeace/new"
+              element={<RequireAuth><AddReference title="Reference Peace" /></RequireAuth>}
+          />
             <Route
                 path="new"
-                element={<RequireAuth><AddProject inputs={projectInputs} title="Add New Project" /></RequireAuth>}
+                element={<RequireAuth><AddProject title="Add New Project" /></RequireAuth>}
             />
             <Route
                 path="update/:projectId"
@@ -110,13 +150,17 @@ function PageContent() {
 
  
         </Routes>
+        </div>
         <FooterSelector />
+   
+   
       </Router>
       </FooterContextProvider>
 
 
       <Top/>
-      <div className="transition-overlay"></div>
+      <div className="transition-overlay">
+      </div>
     </div>);
 }
 

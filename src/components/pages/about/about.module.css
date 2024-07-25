@@ -11,7 +11,12 @@
     position: relative;
 }
 .section-1-heading{
+    pointer-events: none;
     margin: 0;
+}
+.section-1-heading > div{
+    width: max-content !important;
+    pointer-events: all;
 }
 .section-1-content{
     height: 100%;
@@ -167,6 +172,10 @@
     margin: 40px;
     pointer-events: none;
     display: inline-block;
+    overflow: hidden;
+    height: 1em;
+    padding-top:0px;
+
 
 }
 .about-process-image-wrap .about-process-index{
@@ -175,11 +184,19 @@
     display: inline-flex;
     flex-direction: column;
     max-height: 7.2vw;
+    line-height: 1em;
+    margin-top: -1vw;
    
     overflow: hidden;
 }
 
-
+.about-last-cta-wrap-heading img{
+    transform: scale(2.8) rotate(-5deg);
+    position: absolute;
+    top:36%;
+    left:0.2%;
+    filter: drop-shadow(1.5px 1.5px 0 white) drop-shadow(-1px -0px 0 white);
+}
 .about-process-slides{
     margin-left: 54.4vw;
     height:240vh;
@@ -230,8 +247,9 @@
     cursor: none;
 }
 .section-1-text, .section-1-text > p{
-    width: 100%;
+    width: 14.5vw;
 }
+
 .section-1-heading{
     width: 100% !important;
 }
@@ -254,19 +272,16 @@
     display: flex;
     align-items: end;
 }
-.about-last-cta-wrap-heading::after{
-    content: '';
-    height:6px;
-    width: 100%;
-    background-color: black;
-    position: absolute;
-    bottom:0;
-    left:0;
-}
 .mobile-process-image-wrap{
     display: none;
 }
-
+.about-page-section-2{
+    height: fit-content !important;
+    padding-top:2em;
+}
+.about-page-section-2 h2{
+    margin:0;
+}
 
 @media only screen and (max-width:830px){
     .about-page section, .portfolio-slide-subtext, .testimonial-slide-subtext{

@@ -7,6 +7,7 @@
 /* define component style guide here */
 :root {
   --primary-color: #181818;
+  --secondary-dark:rgb(10, 10, 10);
   --secondary-color: #ffffff;
   --third-color: #d2d2d2;
   --outline-color:#dedede;
@@ -60,23 +61,10 @@
   transition-delay: 100ms;
   font-weight: 900;
 }
-
-.primary-button::before{
-  content: '';
-  position: absolute;
-  bottom: 0;
-  width: calc(100% - 34px);
-  height:0.2rem;
-  background-color: #181818;
-  transition: 0.5s ease-out all 0.2s;
-  transform-origin: top top;
-  mix-blend-mode: difference;
-}
-.primary-button:hover::before{
-  height:0%;
-  margin-bottom: 0.2rem;
+.primary-button:hover{
 
 }
+
 .primary-button::after{
   content:'';
   background-image: url(/public/Arrow/Black-Arrow.svg);
@@ -88,12 +76,78 @@
   scale:1.1;
   width:16px;
   height:40px;
-  transition: all ease-out 500ms;
-  transition-delay: 150ms;
+  transition: all ease-out 0ms;
+
   position: absolute;
 }
 .primary-button:hover::after{
+  transition: all ease-out 300ms;
+  transition-delay: 150ms;
   transform: translateY(-24px);
+ 
+}
+
+
+.primary-button.button-gradient{
+  margin-top: 0px !important;
+background: linear-gradient(90deg, rgba(255, 255, 255, 1) 0%, rgba(241, 241, 241, 0.803) 100%);
+line-height: 1em;
+padding-block: 10px !important;
+border-radius: 3px;
+padding-right: 48px !important;
+transition: all ease-out 550ms;
+transition-delay: 50ms;
+max-height: none;
+}
+.primary-button.button-gradient:hover{
+  background: linear-gradient(90deg, rgba(255, 255, 255, 1) 0%, rgba(235, 235, 235, 0.803) 100%);
+
+}
+.primary-button.button-gradient:hover::before{
+  transition: all ease-out 250ms;
+  transform: translateY(-28px);
+  transition-delay: 200ms;
+}
+.primary-button.button-gradient::before{
+  content:'';
+  background-image: url(/public/Arrow/Black-Arrow.svg);
+  background-position: top center;
+  background-size: contain;
+  background-repeat: no-repeat;
+
+  bottom:0;
+  margin-bottom:-29px;
+  right:15px;
+  scale:1.1;
+  width:16px;
+  height:24px;
+  transition-delay: 0ms;
+  transition: all ease-out 0ms;
+
+  position: absolute;
+}
+
+
+
+.primary-button.button-gradient::after{
+  content:'';
+  background-image: url(/public/Arrow/Black-Arrow.svg);
+  background-position: top center;
+  background-size: contain;
+  background-repeat: no-repeat;
+  margin-top: 4px;
+  margin-bottom:-16px;
+  right:15px;
+  scale:1.1;
+  width:16px;
+  height:24px;
+  transition: all ease-out 0ms;
+  transition-delay: 0ms;
+  position: absolute;
+}
+.primary-button.button-gradient:hover::after{
+  transition: all ease-out 200ms 100ms;
+  transform: translateY(-29px);
 }
 
 .body{
