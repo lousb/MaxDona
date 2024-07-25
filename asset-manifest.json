@@ -1,7 +1,7 @@
 {
   "files": {
-    "main.css": "/static/css/main.9be3b03d.css",
-    "main.js": "/static/js/main.81a3818b.js",
+    "main.css": "/static/css/main.e9876ee4.css",
+    "main.js": "/static/js/main.5dbafc6a.js",
     "static/media/Domengo Hero Image.png": "/static/media/Domengo Hero Image.c6befe65925fc4f0712c.png",
     "static/media/domengo.png": "/static/media/domengo.ce89422412677d3ea30b.png",
     "static/media/DonaGrotesk.otf": "/static/media/DonaGrotesk.b6d7d13ef8aa26c46dee.otf",
@@ -11,15 +11,17 @@
     "static/media/remove.svg": "/static/media/remove.ba93b671abd2fdd02f71.svg",
     "static/media/question-mark.svg": "/static/media/question-mark.915d19aeaa349aae22d4.svg",
     "static/media/update.svg": "/static/media/update.3d21ca28e64314d2d676.svg",
+    "static/media/grabable.svg": "/static/media/grabable.b801ca86167fab4302c7.svg",
     "index.html": "/index.html",
     "static/media/Black-Arrow.svg": "/static/media/Black-Arrow.7e8885fd90b0437e76c1.svg",
     "static/media/White-Arrow-Large.svg": "/static/media/White-Arrow-Large.529b444b6e2ae52d604c.svg",
     "static/media/add.svg": "/static/media/add.c36501ba447d0cc99933.svg",
-    "main.9be3b03d.css.map": "/static/css/main.9be3b03d.css.map",
-    "main.81a3818b.js.map": "/static/js/main.81a3818b.js.map"
+    "static/media/instagram.svg": "/static/media/instagram.fe2bba79750acbab3b3d.svg",
+    "main.e9876ee4.css.map": "/static/css/main.e9876ee4.css.map",
+    "main.5dbafc6a.js.map": "/static/js/main.5dbafc6a.js.map"
   },
   "entrypoints": [
-    "static/css/main.9be3b03d.css",
-    "static/js/main.81a3818b.js"
+    "static/css/main.e9876ee4.css",
+    "static/js/main.5dbafc6a.js"
   ]
 }
