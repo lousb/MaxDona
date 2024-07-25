@@ -323,6 +323,14 @@ const handleFileChange = (sectionIndex, imageIndex, file, isFeaturedImage) => {
   return (
     <div className="new">
       <div className="all-projects-page-wrap">
+        <div className="sidebar">
+          <div className="sidebar-top">
+          </div>
+          <div className="sidebar-middle">
+          </div>
+          <div className="sidebar-bottom">
+          </div>
+        </div>
         <div className="add-projects-content">
           <div className={`add-projects-list`}>
             <h1>New Project</h1>
