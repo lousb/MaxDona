@@ -28,6 +28,7 @@ import Lenis from "@studio-freight/lenis";
 import { LoadBundleTask } from "firebase/firestore";
 import Loading from "../molecules/LoadingScreen/loading";
 import AddReference from "./admin-pages/references/addReference/addReference";
+import NotFound from "./404/404";
 
 
 
@@ -45,28 +46,30 @@ function PageContent() {
   };
 
 
-  useEffect(()=>{
+  useEffect(() => {
     const lenis = new Lenis({
-      duration:0.8,
-      orientation:'vertical',
-      gestureOrientation:'vertical',
-      smoothWheel:true,
-      lerp:0.5,
-      })
+      duration: 1.2, // Adjust duration for smoother scroll
+      orientation: 'vertical',
+      gestureOrientation: 'vertical',
+      smoothWheel: true,
+      smoothTouch: false,
+      touchMultiplier: 2,
+    });
 
-      lenis.on('scroll', ScrollTrigger.update)
+    lenis.on('scroll', ScrollTrigger.update);
 
-      gsap.ticker.add((time)=>{
-        lenis.raf(time * 1000)
-      })
+    gsap.ticker.add((time) => {
+      lenis.raf(time * 1000);
+    });
 
-      gsap.ticker.lagSmoothing(0)
+    gsap.ticker.lagSmoothing(0);
+
     function raf(time) {
-      lenis.raf(time)
-      requestAnimationFrame(raf)
+      lenis.raf(time);
+      requestAnimationFrame(raf);
     }
 
-    requestAnimationFrame(raf)
+    requestAnimationFrame(raf);
 
     // Function to handle mouse down and up events
     const handleMouseDown = () => {
@@ -77,16 +80,44 @@ function PageContent() {
       document.querySelector('.page-content').classList.remove('press-down');
     };
 
+    // Function to check header class and update Lenis behavior
+    const updateLenisScroll = () => {
+      const header = document.querySelector('header'); // Adjust selector as needed
+      if (header && header.classList.contains('header-toggled-global')) {
+        lenis.stop(); // Stop the scroll effect
+      } else {
+        lenis.start(); // Restart the scroll effect
+      }
+    };
+
+    // Initial check
+    updateLenisScroll();
+
     // Add event listeners
     window.addEventListener('mousedown', handleMouseDown);
     window.addEventListener('mouseup', handleMouseUp);
 
-    // Clean up event listeners
+    // Monitor changes to the header class
+    const observer = new MutationObserver(updateLenisScroll);
+    const headerElement = document.querySelector('header'); // Adjust selector as needed
+
+    if (headerElement) {
+      observer.observe(headerElement, { attributes: true, attributeFilter: ['class'] });
+    }
+
+    // Clean up event listeners and observer
     return () => {
       window.removeEventListener('mousedown', handleMouseDown);
       window.removeEventListener('mouseup', handleMouseUp);
+      if (headerElement) {
+        observer.disconnect();
+      }
+
+      // Clean up Lenis and GSAP ticker
+      gsap.ticker.remove(lenis.raf);
+      lenis.destroy();
     };
-  })
+  }, []);
   
   return (
     <div className="page-content" id="smooth-scroll">
@@ -147,6 +178,7 @@ function PageContent() {
 
           </Route>
           <Route path="/login" element={<Login/>}></Route>
+          <Route path="*" element={<NotFound/>} />
 
  
         </Routes>

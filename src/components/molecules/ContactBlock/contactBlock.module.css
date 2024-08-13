@@ -1,5 +1,4 @@
 .about-page-section-3{
-    margin-top: 5rem;
     height: auto !important;
 }
 .about-last-cta-wrap-heading img{
@@ -23,7 +22,6 @@
     flex-direction: column;
     align-items: end;
     width: 100%;
-    margin-block:5rem;
 }
 .about-last-cta-top{
     align-self: self-start;

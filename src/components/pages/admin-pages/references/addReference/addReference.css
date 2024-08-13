@@ -2,7 +2,9 @@
 .all-projects-page-wrap svg *{
     transition: 500ms ease all;
 }
-
+.all-projects-page-wrap svg{
+    width: 100%;
+}
 .all-projects-page-wrap:has(.projectname input:active) svg .title path, .all-projects-page-wrap:has(.projectname input:focus) svg .title path, .all-projects-page-wrap:has(.projectname input:hover) svg .title path{
     fill:var(--project-color) !important;
 }

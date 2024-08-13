@@ -16,7 +16,7 @@
 .reference-peace-title-wrap{
     width:84vw;
     margin-bottom: -1em;
-
+ 
 
 display: flex;
 flex-direction: column;
@@ -39,14 +39,17 @@ pointer-events: none;
     display: block;
     font-size: 8.65vw;
 }
+.last-subtext{
+    width: 28%;
+}
 .trail-image{
     transform: translateY(-15%) translateX(-10%);
     clip-path: inset(0 0 100% 0 round 20px);
     scale: 0.8;
     border-radius: 10px;
     position: fixed;
-    width: 500px;
-    height:405px;
+    width: 24vw;
+    height:20vw;
     object-fit: cover;
     opacity: 0;
     cursor: none;
@@ -108,7 +111,7 @@ width: max-content;
     padding-inline: 4%;
     min-height: 100vh;
     background-color: white;
-    z-index: 100;
+
     position: relative;
     box-shadow: rgb(255 255 255 / 57%) 0px 2px 29px 0px;
 }
@@ -117,6 +120,8 @@ width: max-content;
     gap:9vw;
     padding-top: 3em;
     padding-bottom: 6em;
+    position: relative;
+
 }
 .subtext-description-wrap p:first-child{
     width: 45.4vw;
@@ -131,6 +136,9 @@ width: max-content;
     display: flex;
     gap:8.6%
 }
+.projects-listing > .pin-spacer{
+    pointer-events: all !important;
+}
 .projects-image-wrap{
    
   
@@ -138,7 +146,7 @@ width: max-content;
     width:22vw;
     height: 22vw !important;
     margin-bottom: 600px !important;
-
+    pointer-events: all !important;
 
 
     aspect-ratio:16/9;
@@ -148,16 +156,15 @@ width: max-content;
     transition: 200ms ease-out clip-path;
 
 }
-div:has(>.projects-image-wrap){
-    padding: 0 !important;
-    height: min-content !important;
-   
+.subtext-description-wrap:last-child{
+    width: 30%;
 }
 .projects-image{
-    width: 100%;
+    width: 22vw;
     object-fit: cover;
     aspect-ratio: 1;
     border-radius:10px;
+    margin-bottom: 20px;
 }
 .scroll-notification > p > p:after{
     content:'scroll';
@@ -192,6 +199,7 @@ div:has(>.projects-image-wrap){
 }
 .rp-title-wrap{
     padding-top:120px;
+    padding-bottom: 2vw;
     display: flex;
     align-items: end;
     justify-content: space-between;
@@ -204,7 +212,15 @@ div:has(>.projects-image-wrap){
     border-radius: 14px;
     display: flex;
     justify-content: center;
+    width: 22vw;
+    object-fit: cover;
+    aspect-ratio: 1;
+    border-radius:10px;
     transition: all 500ms ease;
+   
+}
+.parallax-image-wrap img{
+    object-fit: cover;
 }
 .masonry-section *{
     cursor: none !important;
@@ -237,3 +253,140 @@ div:has(> .rp-description){
     width: 16%;
     padding-right: 8%;
 }
+.main-section-image-wrap{
+    position: relative;
+    aspect-ratio: 16 / 9;
+    display: flex;
+    pointer-events: none;
+    justify-content: end;
+    align-items: end;
+
+    width:100%;
+    margin-top:4svw;
+
+
+}
+.main-section-image{
+    pointer-events: all;
+    width: 100%;
+    border-radius: 20px;
+    overflow: hidden;
+    aspect-ratio: 16 / 9;
+    position: relative;
+}
+.main-description-right-wrap{
+    display: flex;
+    flex-direction: column;
+    cursor: pointer;
+    transition: 1000ms ease all !important;
+    transition-delay: 150ms !important;
+    
+}
+.main-description-right-wrap *{
+    color:white;
+}
+.main-video-controls-overlay{
+    position: absolute;
+    display: flex;
+    width: 61%;
+    margin-left:35%;
+    height: calc(100% - 4svw);
+    bottom:0;
+    z-index: 100;
+    display: flex;
+    align-items: end;
+    pointer-events: none;
+}
+.play-text{
+    animation: none !important;
+    display: flex;
+    flex-direction: column;
+}
+.play-text p{
+    transition: 500ms ease all;
+    min-height: 20px;
+}
+.play-text-toggle p{
+    transform: translateY(-20px);
+ 
+}
+.play-text::after{
+    content: 'pause';
+    position: absolute;
+    transform: translateY(100%);
+
+}
+.main-video-controls-overlay > div{
+    pointer-events: all;
+}
+
+.main-section-image-overlay{
+    width: 100%;
+    opacity: 1;
+    height: 100%;
+    background-image: url(/public/imagery/Films/Domengo\ Hero\ Image.png);
+    background-size: cover;
+    position: absolute;
+    background-position: center;
+    z-index: 10;
+    pointer-events: none;
+    transition: all 500ms ease;
+}
+.main-section-image:has(.playing) .main-section-image-overlay{
+    opacity: 0;
+}
+.video_container {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    width: 100%;
+    
+ }
+.player__wrapper{
+    width: 100%;
+    aspect-ratio: 16 / 9;
+    overflow: hidden;
+    border-radius: 24px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+.player {
+    object-fit: cover;
+    padding: 0;
+    cursor: none;
+    margin: 0;
+    width: 50%;
+    height: calc(100%);
+    scale: 2;
+    display: flex;
+    justify-content: center;
+
+}
+ .player div:not(.scroll-notification){
+    pointer-events: none;
+
+    width: 100%;
+    aspect-ratio: 9 / 16;
+ }            
+ .progress-bar{
+    display: flex;
+    align-items: end;
+    position:absolute;
+    bottom: 0;
+    right: 0;
+    margin-bottom: 64px;
+    margin-right: 70px;
+
+    transition: 500ms ease all;
+    transition-delay: 200ms;
+    width: 260px;
+ }
+ .progress{
+    transform: translateY(20px);
+    background-color: white;
+    height: 3px !important;
+    border-radius: 1.5px;
+    overflow: hidden;
+ }

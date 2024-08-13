@@ -4,7 +4,6 @@
 .contact-page{
     width:92%;
     margin-inline: 4%;
-    pointer-events: none;
 
 }
 .contact-heading-wrap .heading{
@@ -183,7 +182,7 @@ a{
     width: 17%;
 }
 .contact-image-wrap .mask-mouse-area{
-    align-items: end;
+    align-items: start;
     height: calc(90vh - 180px);
 }
 .contact-image-wrap .mask-image-wrap{

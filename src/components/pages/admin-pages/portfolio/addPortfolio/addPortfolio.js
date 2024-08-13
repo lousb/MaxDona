@@ -240,8 +240,20 @@ const handleAdd = async (e) => {
       const uploadTask = uploadBytesResumable(storageRef, mainFeaturedImage);
       await uploadTask;
       const downloadURL = await getDownloadURL(uploadTask.snapshot.ref);
-      projectData.mainFeaturedImage = downloadURL;
+    
+      // Resize the mainFeaturedImage and generate BlurHash
+      const resizedImage = await resizeImage(mainFeaturedImage, 50);
+      
+      // Upload the resized image to Firebase Storage
+      const blurhashName = new Date().getTime() + '-blurhash.jpeg';
+      const blurhashStorageRef = ref(storage, `mainFeaturedImages/${blurhashName}`);
+      const blurhashUploadTask = uploadBytesResumable(blurhashStorageRef, resizedImage);
+      await blurhashUploadTask;
+      const blurhashDownloadURL = await getDownloadURL(blurhashUploadTask.snapshot.ref);
+    
+      projectData.mainFeaturedImage = { url: downloadURL, blurhash: blurhashDownloadURL };
     }
+    
 
     // Iterate over image sections
     for (let sectionIndex = 1; sectionIndex <= imageSectionCount + 2; sectionIndex++) {
@@ -280,34 +292,44 @@ const handleAdd = async (e) => {
       }
     }
 
-for (const detailSection of detailSections) {
-  const detailId = parseInt(detailSection.id.replace('detail', '')); // Extract numeric part and convert to zero-based index
-  projectData.details[detailId] = {
-    firstDescription: data[`${detailSection.id}-detailsFirstDescription`],
-    secondDescription: data[`${detailSection.id}-detailsSecondDescription`],
-    title: data[`${detailSection.id}-detailsTitle`],
-    featuredImage: imageFiles[detailId]?.featuredImage?.[0] || null, // Use detailId instead of detailSection.id
-  };
+  // Iterate over large image sections
+  for (let sectionIndex = 0; sectionIndex < largeImageSections.length; sectionIndex++) {
+    if (imageFiles[sectionIndex]?.largeImages?.[sectionIndex]) {
+      const file = imageFiles[sectionIndex].largeImages[sectionIndex];
+      const name = new Date().getTime() + file.name;
+      const storageRef = ref(storage, `largeImages/${name}`);
+      const uploadTask = uploadBytesResumable(storageRef, file);
+      await uploadTask;
+      const downloadURL = await getDownloadURL(uploadTask.snapshot.ref);
 
+      // Resize the image for BlurHash generation
+      const resizedImage = await resizeImage(file, 50);
 
+      // Generate BlurHash for the resized image
+      const blurhash = await generateBlurHash(resizedImage);
 
-  // If featured image is not null and is a File, upload and get download URL
-  if (imageFiles[detailId]?.featuredImage?.[0]) {
+      // Upload the blurhashed image to Firebase Storage with the modified filename
+      const blurhashName = new Date().getTime() + '-blurhash.jpeg';
+      const blurhashStorageRef = ref(storage, `largeImages/${blurhashName}`);
+      const blurhashUploadTask = uploadBytesResumable(blurhashStorageRef, resizedImage);
+      await blurhashUploadTask;
+      const blurhashDownloadURL = await getDownloadURL(blurhashUploadTask.snapshot.ref);
 
+      // Check if largeImageSections[sectionIndex] is undefined and initialize it as an empty object if needed
+      if (!projectData.largeImageSections[sectionIndex]) {
+        projectData.largeImageSections[sectionIndex] = {};
+      }
 
-    // Upload the featured image
-    const file = imageFiles[detailId].featuredImage[0];
-    const name = new Date().getTime() + file.name;
-    const storageRef = ref(storage, `featuredImages/${name}`);
-    const uploadTask = uploadBytesResumable(storageRef, file);
-    await uploadTask;
-    const downloadURL = await getDownloadURL(uploadTask.snapshot.ref);
-
-    // Update the projectData with the download URL
-    projectData.details[detailId].featuredImage = downloadURL;
+      // Save the large image URL and BlurHash URL
+      projectData.largeImageSections[sectionIndex] = {
+        url: downloadURL,
+        blurhash: blurhashDownloadURL // Save the URL of the blurhash image instead of the blurhash code
+      };
+    }
   }
 
-}
+
+    
     
     
 
@@ -329,28 +351,44 @@ for (const detailSection of detailSections) {
     }
 
  
+  // Process largeImage sections
+  for (let sectionIndex = 0; sectionIndex <= largeImageSections.length; sectionIndex++) {
+    const section = largeImageSections[sectionIndex];
 
-// Iterate over large image sections
-for (let sectionIndex = 0; sectionIndex <= largeImageSections.length; sectionIndex++) {
-  if (imageFiles[sectionIndex]?.largeImages?.[0]) {
-    const file = imageFiles[sectionIndex].largeImages[0];
-    const name = new Date().getTime() + file.name;
-    const storageRef = ref(storage, `largeImages/${name}`);
-    const uploadTask = uploadBytesResumable(storageRef, file);
-    await uploadTask;
-    const downloadURL = await getDownloadURL(uploadTask.snapshot.ref);
+    // Handle the case where imageFiles might not be properly aligned
+    if (imageFiles[sectionIndex] && imageFiles[sectionIndex].largeImages) {
+      for (let fileIndex = 0; fileIndex <= imageFiles[sectionIndex].largeImages.length; fileIndex++) {
+        const file = imageFiles[sectionIndex].largeImages[fileIndex];
 
-    // Check if largeImageSections[sectionIndex] is undefined and initialize it as an empty array if needed
-    if (!projectData.largeImageSections[sectionIndex]) {
-      projectData.largeImageSections[sectionIndex] = [];
+        if (file) {
+          const name = new Date().getTime() + file.name;
+          const storageRef = ref(storage, `largeImages/${name}`);
+          const uploadTask = uploadBytesResumable(storageRef, file);
+          await uploadTask;
+          const downloadURL = await getDownloadURL(uploadTask.snapshot.ref);
+
+          const resizedImage = await resizeImage(file, 50);
+          const blurhash = await generateBlurHash(resizedImage);
+
+          const blurhashName = new Date().getTime() + '-blurhash.jpeg';
+          const blurhashStorageRef = ref(storage, `largeImages/${blurhashName}`);
+          const blurhashUploadTask = uploadBytesResumable(blurhashStorageRef, resizedImage);
+          await blurhashUploadTask;
+          const blurhashDownloadURL = await getDownloadURL(blurhashUploadTask.snapshot.ref);
+
+          if (!projectData.largeImageSections[sectionIndex]) {
+            projectData.largeImageSections[sectionIndex] = [];
+          }
+
+          projectData.largeImageSections[sectionIndex].push({
+            largeImage: downloadURL,
+            blurhash: blurhashDownloadURL
+          });
+        }
+      }
     }
-
-    // Push the downloadURL onto the array at largeImageSections[sectionIndex]
-    projectData.largeImageSections[sectionIndex].push({
-      largeImage: downloadURL
-    });
   }
-}
+    
     if(title === 'Reference Peace'){
       const projectDocRef = doc(db, "referencePeace", data.displayName);
       await setDoc(projectDocRef, projectData);
@@ -845,8 +883,11 @@ return (
               </button>
             </div>
 
-            <button disabled={perc != null && perc < 100} type="submit">
+             <button disabled={perc != null && perc < 100} type="submit" className='submit-project'>
+              <span>
               Send
+              </span>
+              
             </button>
             {perc}
           </form>

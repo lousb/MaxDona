@@ -2,9 +2,12 @@ body{
     background-color: white;
     margin:0;
     overflow-x: hidden;
+
   
 }
-
+html{
+    scrollbar-color: var(--secondary-dark) transparent;
+}
 body:not(:has(.loading-wrap.is-loading)){
     background-color: white !important;
 }
@@ -73,11 +76,12 @@ body:has(.header-toggled-global){
     width: 100vw;
     height:100vh;
 }
-body:has(.reference-peace-page) .large-arrow-cursor{
+body:has(.reference-peace-first-page:hover) .large-arrow-cursor{
 
     transform: translateY(-100%) translateX(-100%) !important;
     scale:0.61;
     width: 85px;
+    transition: transform 500ms ease, max-height 500ms ease, max-width 500ms ease, margin 500ms ease, filter 300ms ease 0ms, scale 300ms ease 0s !important;
 }
 .large-arrow-cursor{
 
@@ -144,7 +148,7 @@ body:has(.header-menu-subtext-links:hover) .large-arrow-cursor, body:has(.header
 .page-transitioning .header-minimal-background{
     transition-delay: 50000ms !important;
 }
-.header-menu:has(.header-menu-link:hover) .link-desc{
+header:has(.header-menu-link:hover) .link-desc{
     opacity: 1 !important;
 }
 .transition-overlay{
@@ -179,12 +183,16 @@ body:has(.contact-page) .header-inner-content{
 }
 body:has(.home) .header-inner-content{
     padding-top: 22px;
+    padding-bottom: 22px;
     height: 120px;
 }
 .scrolled .header-inner-content{
     height:40px !important;
     padding-block: 22px !important;
 
+}
+footer a.primary-button{
+    color: #181818 !important;
 }
 .scrolled .contact-max-title{
     opacity: 0;
@@ -320,8 +328,8 @@ body:has(.mask-image:hover) .header-hamburger{
     top:0;
 
 }
-.press-down .home-hover-desc, .press-down .header-hover-desc{
-    scale: 1.02;
+.press-down .home-hover-desc{
+    scale: 1.02 !important;
 }
 .page-transitioning .project-color{
     transition: transform 2000ms ease !important;
@@ -374,6 +382,30 @@ body:has(.film-page-wrap.fast-active) .header-wrap {
 .scrolled:has(.film-page-wrap.fast-active) .floating-project-thumb-wrap > div{
     transition: 1000ms cubic-bezier(0.76, 0, 0.24, 1) ;
     height: 22vw;
+}
+body:has(.header-toggled-global) .large-arrow-cursor, .page-transitioning .App > .large-arrow-cursor, body:has(.loading-wrap.is-loading) .large-arrow-cursor{
+    height: 84px;
+    width: 84px;
+}
+
+html.lenis, html.lenis body {
+  height: auto;
+}
+
+.lenis.lenis-smooth {
+  scroll-behavior: auto !important;
+}
+
+.lenis.lenis-smooth [data-lenis-prevent] {
+  overscroll-behavior: contain;
+}
+
+.lenis.lenis-stopped {
+  overflow: hidden;
+}
+
+.lenis.lenis-smooth iframe {
+  pointer-events: none;
 }
 
 @keyframes spin {

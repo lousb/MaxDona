@@ -23,8 +23,13 @@ const AddReference = ({ inputs, title }) => {
   const [videoSectionCount, setVideoSectionCount] = useState(0);
   const [pdfFiles, setPdfFiles] = useState([]);
   const [displayName, setDisplayName] = useState('');
+  const [pdfTypeSelection, setPdfTypeSelection] = useState(null);
 
 
+const handlePdfTypeSelection = (type) => {
+  setPdfTypeSelection(type);
+};
+  
 
   
   const [file, setFile] = useState("");
@@ -126,13 +131,13 @@ const handleAddField = (section) => {
         let newIndex = 0;
 
 
-        if (section === "image" && imageSectionCount < 10) {
+        if (section === "image" && imageSectionCount < 1 && sections.length <=2) {
         sectionType = 'image';
         setImageSectionCount((prevCount) => prevCount + 1);
         newSection = `${sectionType + 1}`;
         newIndex = imageSectionCount + 1;
 
-        } else if (section === "PDF" && pdfSections.length < 10) {
+        } else if (section === "PDF" && pdfSections.length < 1 && sections.length <=2) {
         sectionType = 'PDF';
         const newPdfSection = { id: `PDF${pdfSections.length + 1}` };
         setPdfSections((prev) => [...prev, newPdfSection]);
@@ -140,7 +145,7 @@ const handleAddField = (section) => {
         newIndex = pdfSections.length + 1;
         setPdfFiles((prev) => [...prev, null]); // Ensure a corresponding slot in pdfFiles
 
-        } else if (section === "video" && videoSections.length < 10) {
+        } else if (section === "video" && videoSections.length < 1 && sections.length <=2) {
         sectionType = 'video';
         const newVideoSection = { id: `video${videoSections.length + 1}` };
         setVideoSections((prev) => [...prev, newVideoSection]);
@@ -169,8 +174,13 @@ useState(()=>{
   
 const handleRemoveField = (section) => {
   if (section !== "main") {
-    const sectionType = section.startsWith("image") ? "image" : section.startsWith("detail") ? "detail" : section.startsWith("PDF") ? "PDF" : section.startsWith("video") ? "video" : "title";
-    const sectionIndex = parseInt(section.replace(`${sectionType}`, ""), 10);
+    const sectionType = section.startsWith("image") ? "image" :
+                        section.startsWith("detail") ? "detail" :
+                        section.startsWith("PDF") ? "PDF" :
+                        section.startsWith("video") ? "video" :
+                        "title";
+    
+    const sectionIndex = parseInt(section.replace(`${sectionType}`, ""), 10) - 1;
 
     const updatedSections = sections.filter((s) => s !== section);
     setSections(updatedSections);
@@ -180,16 +190,25 @@ const handleRemoveField = (section) => {
       updatedImageFiles.splice(sectionIndex, 1);
       setImageFiles(updatedImageFiles);
       setImageSectionCount((prevCount) => prevCount - 1);
-    }  else if (sectionType === "PDF") {
+    } else if (sectionType === "PDF") {
       setPdfSections((prev) => prev.filter((pdf) => pdf.id !== section));
+      setPdfFiles((prev) => {
+        const updatedPdfFiles = [...prev];
+        updatedPdfFiles.splice(sectionIndex, 1); // Adjust index for array-based operations
+        return updatedPdfFiles;
+      });
       setPdfSectionCount((prevCount) => prevCount - 1);
+      // Reset PDF type selection when removing a PDF section
+      setPdfTypeSelection(null);
     } else if (sectionType === "video") {
       setVideoSections((prev) => prev.filter((video) => video.id !== section));
       setVideoSectionCount((prevCount) => prevCount - 1);
-    } 
-
+    }
   }
 };
+
+
+
 
   
 
@@ -199,13 +218,16 @@ const getDisplayName = async () => {
     const referenceSnapshot = await getDocs(referenceCollection);
     const docCount = referenceSnapshot.size + 1; // Adding 1 for the new document
     const formattedIndex = String(docCount).padStart(2, '0');
-
-    return `VOLUME${formattedIndex}`;
+    const displayName = `VOLUME${formattedIndex}`;
+    
+    console.log('Generated Display Name:', displayName); // Add this line
+    return displayName;
   } catch (error) {
     console.error('Error getting display name:', error);
     return null;
   }
 };
+
 
 useEffect(() => {
   const fetchDisplayName = async () => {
@@ -223,45 +245,59 @@ const handleAdd = async (e) => {
   e.preventDefault();
 
   try {
-     const displayName = await getDisplayName();
+    const displayName = await getDisplayName();
+    console.log('Display Name:', displayName);
+    if (!displayName) {
+      throw new Error('Display name could not be generated.');
+    }
 
+   // Determine the volumeType based on the sections
+   let volumeType = 'Unknown';
+
+   if (videoSections.length > 0) {
+     volumeType = 'Video';
+   } else if (pdfSections.length > 0) {
+     volumeType = `PDF`; // PDF1 or PDF2
+   } else if (imageSectionCount > 0) {
+     volumeType = 'Image';
+   }
 
     const projectData = {
       displayName: displayName,
       releaseDate: data.releaseDate,
       mainDescription1: data.mainDescription1,
       mainDescription2: data.mainDescription2,
-      mainFeaturedImage: mainFeaturedImage ? mainFeaturedImage : null,
+      mainFeaturedImage: null,
       timeStamp: serverTimestamp(),
+      volumeType: volumeType || 'Unknown', // Add the volumeType field
       imageSections: [],
       videoSections: [],
       pdfSections: [],
     };
 
+    // Handle video sections
+    for (let i = 0; i < videoSections.length; i++) {
+      const sectionId = videoSections[i].id;
+      console.log('VIDEO section ID ' + sectionId);
+      projectData.videoSections.push({
+        sectionId: sectionId,
+        videoUrl: data[`${sectionId}-videoLink`] || '',
+        videoName: data[`${sectionId}-videoName`] || '',
+      });
+    }
 
-for (let i = 0; i < videoSections.length; i++) {
-  const sectionId = videoSections[i].id;
-  console.log('VIDEO section ID ' + sectionId)
-  projectData.videoSections.push({
-    sectionId: sectionId,
-    videoUrl: data[`${sectionId}-videoLink`] || '', 
-    videoName: data[`${sectionId}-videoName`] || '',
-  });
-}
+    // Handle PDF sections
+    for (let i = 0; i < pdfSections.length; i++) {
+      const sectionId = pdfSections[i].id;
+      console.log('PDF section ID ' + sectionId);
+      projectData.pdfSections.push({
+        sectionId: sectionId,
+        pdfLink: data[`pdfLink${i}`] || '',
+        pdfName: data[`pdf${i + 1}-pdfName`] || '',
+      });
+    }
 
-for (let i = 0; i < pdfSections.length; i++) {
-   
-const sectionId = pdfSections[i].id ;
-console.log('PDF section ID' + sectionId)
-projectData.pdfSections.push({
-    sectionId: sectionId,
-    pdfLink: data[`pdfLink${i}`] || '',
-    pdfName: data[`pdf${i + 1}-pdfName`] || ''
-});
-}
-
-    
-
+    // Handle main featured image
     if (mainFeaturedImage) {
       const name = new Date().getTime() + mainFeaturedImage.name;
       const storageRef = ref(storage, `mainFeaturedImages/${name}`);
@@ -271,72 +307,56 @@ projectData.pdfSections.push({
       projectData.mainFeaturedImage = downloadURL;
     }
 
-    
-  // Populate image sections and image URLs
-  for (let sectionIndex = 1; sectionIndex <= imageSectionCount; sectionIndex++) {
-    const sectionImageUrls = [];
+    // Handle image sections
+    for (let sectionIndex = 1; sectionIndex <= imageSectionCount; sectionIndex++) {
+      const sectionImageUrls = [];
 
-    // Iterate over files in the image section
-    for (let fileIndex = 0; fileIndex < imageFiles[sectionIndex].length; fileIndex++) {
-      const file = imageFiles[sectionIndex][fileIndex];
+      for (let fileIndex = 0; fileIndex < imageFiles[sectionIndex].length; fileIndex++) {
+        const file = imageFiles[sectionIndex][fileIndex];
+        
+        if (file) {
+          const name = new Date().getTime() + file.name;
 
-      if (file) {
-        const name = new Date().getTime() + file.name;
+          // Upload the original image
+          const storageRef = ref(storage, `image${sectionIndex}/${name}`);
+          await uploadBytesResumable(storageRef, file);
+          const downloadURL = await getDownloadURL(storageRef);
 
-        // Upload the original image to Firebase Storage
-        const storageRef = ref(storage, `image${sectionIndex}/${name}`);
-        await uploadBytesResumable(storageRef, file);
-        const downloadURL = await getDownloadURL(storageRef);
+          // Resize the image and generate BlurHash
+          const resizedImage = await resizeImage(file, 50);
+          const blurhash = await generateBlurHash(resizedImage);
 
-        // Resize the image to 50px width (keeping aspect ratio)
-        const resizedImage = await resizeImage(file, 50);
+          // Upload the blurhashed image
+          const blurhashName = new Date().getTime() + '-blurhash.jpeg';
+          const blurhashStorageRef = ref(storage, `image${sectionIndex}/${blurhashName}`);
+          await uploadBytesResumable(blurhashStorageRef, resizedImage);
+          const blurhashDownloadURL = await getDownloadURL(blurhashStorageRef);
 
-        // Generate BlurHash for the resized image
-        const blurhash = await generateBlurHash(resizedImage);
+          sectionImageUrls.push({ url: downloadURL, blurhash: blurhashDownloadURL });
+        }
+      }
 
-        // Upload the blurhashed image to Firebase Storage with the modified filename
-        const blurhashName = new Date().getTime() + '-blurhash.jpeg';
-        const blurhashStorageRef = ref(storage, `image${sectionIndex}/${blurhashName}`);
-        await uploadBytesResumable(blurhashStorageRef, resizedImage);
-        const blurhashDownloadURL = await getDownloadURL(blurhashStorageRef);
-
-        sectionImageUrls.push({ url: downloadURL, blurhash: blurhashDownloadURL });
+      // Add image URLs to projectData if there are any
+      if (sectionImageUrls.length > 0) {
+        projectData.imageSections.push({
+          sectionIndex: sectionIndex,
+          images: sectionImageUrls,
+        });
       }
     }
 
-    // Add image URLs to projectData if there are any
-    if (sectionImageUrls.length > 0) {
-      projectData.imageSections.push({
-        sectionIndex: sectionIndex,
-        images: sectionImageUrls,
-      });
-        }
-  }
-
-  
-
-
-    
-    
-
-
- 
-
-    // Log projectData for debugging
-    console.log('Final Project Data:', projectData);
-    console.log('Raw Data:', data);
-
-    const projectDocRef = doc(db, "referencePeace", data.displayName);
-
+    // Save project data to Firestore
+    const projectDocRef = doc(db, "referencePeace", displayName);
     await setDoc(projectDocRef, projectData);
-
-  
 
     navigate(-1);
   } catch (err) {
-    console.error(err);
+    console.error('Error adding project:', err);
   }
 };
+
+
+
     
   
 const resizeImage = async (file, width) => {
@@ -608,33 +628,53 @@ return (
 
             {pdfSections.map((pdfSection, index) => (
               <div key={`pdf-${index + 1}`}>
-                <div className="section-wrap">
-                  <div className="section-title">{`PDF Section ${index + 1}`}</div>
-                  {pdfSectionSource.map((input) => (
-                    <div>
-                        <div className={`formInput ${getClassNameFromLabel(input.label)}`} key={input.id}>
-                        <label>{input.label}</label>
-                        <input
-                            id={`pdf${index + 1}-${input.id}`}
-                            type={input.type}
-                            placeholder={input.placeholder}
-                            onChange={handleInput}
-                            maxLength={input.maxLength || null}
-                            required
-                        />
+                {!pdfTypeSelection && (
+                  <div>
+                    <label>Select PDF Type:</label>
+                    <button type="button" onClick={() => handlePdfTypeSelection('1')}>
+                      1 Page PDF
+                    </button>
+                    <button type="button" onClick={() => handlePdfTypeSelection('2')}>
+                      2 Page PDF
+                    </button>
+                  </div>
+                )}
+
+                {pdfTypeSelection && (
+                  <div className="section-wrap">
+                    <div className="section-title">{`${pdfTypeSelection === '1' ? '1 Page PDF' : '2 Page PDF'} Selected`}</div>
+                    {pdfSections.map((pdfSection, index) => (
+                      <div key={`pdf-${index + 1}`}>
+                        <div className="section-wrap">
+                          <div className="section-title">{`PDF Section ${index + 1}`}</div>
+                          {pdfSectionSource.map((input) => (
+                            <div>
+                              <div className={`formInput ${getClassNameFromLabel(input.label)}`} key={input.id}>
+                                <label>{input.label}</label>
+                                <input
+                                  id={`pdf${index + 1}-${input.id}`}
+                                  type={input.type}
+                                  placeholder={input.placeholder}
+                                  onChange={handleInput}
+                                  maxLength={input.maxLength || null}
+                                  required
+                                />
+                              </div>
+                              <input type="file" accept="application/pdf" onChange={(e) => handlePdfFileChange(e, index)} />
+                            </div>
+                          ))}
+                          <button type="button" onClick={() => handleRemoveField(pdfSection.id)}>
+                            Remove PDF Section {index + 1}
+                          </button>
                         </div>
-                      <input type="file" accept="application/pdf" onChange={(e) => handlePdfFileChange(e, index)} />
-                    </div>
-                  
-                    
-                  ))}
-                  <button type="button" onClick={() => handleRemoveField(pdfSection.id)}>
-                    Remove PDF Section {index + 1}
-                  </button>
-                </div>
+                      </div>
+                    ))}
+                  </div>
+                )}
+
               </div>
             ))}
-
+            {sections.length <= 1 && 
             <div className="add-button-grid">
               <button
                 type="button"
@@ -663,6 +703,9 @@ return (
                 PDF Booklet Project
               </button>
             </div>
+            
+            }
+            
 
             <button disabled={perc != null && perc < 100} type="submit">
               Send

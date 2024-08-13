@@ -40,3 +40,13 @@
     opacity: 1 !important;
 
 }
+.submit-project{
+    width: 100% !important;
+    background-color:var(--project-color) !important;
+    border: 2px solid var(--project-color) !important;
+    
+}
+.submit-project span{
+    color: var(--project-color);
+    filter: invert(1) sepia(1) contrast(10);
+}

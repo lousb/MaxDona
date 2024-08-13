@@ -1,4 +1,4 @@
-import React, { createRef, useEffect, useLayoutEffect, useRef, useState } from 'react';
+import React, { createRef, useCallback, useEffect, useLayoutEffect, useRef, useState } from 'react';
 import styles from './referencePeace.module.css';
 import './referencePeace.css';
 import Reveal from "../../../utils/textElementReveal/textElementReveal";
@@ -8,7 +8,7 @@ import gsap from 'gsap';
 import { ScrollTrigger } from 'gsap/ScrollTrigger';
 import useMousePosition from '../../../utils/useMousePosition';
 import DelayLink from "../../../utils/delayLink";
-
+import ContactBlock from "../../molecules/ContactBlock/contactBlock";
 
 gsap.registerPlugin(ScrollTrigger);
 
@@ -33,11 +33,8 @@ function ReferencePeace() {
     const hoverDescRef = useRef(null);
     const wobbleTimeoutRef = useRef(null); // Ref to store the timeout
     const [projectColour, setProjectColour] = useState(0);
-
-
-
+    const imageCollectionRef = useRef([]);
     const [data, setData] = useState([]);
-
     const [prevHover, setPrevHover] = useState([data[0]]);
 
   useEffect(() => {
@@ -58,25 +55,45 @@ function ReferencePeace() {
       };
   }, []);
 
-    const manageMouseMove = (e) => {
-        const { clientX, clientY, movementX, movementY } = e;
 
-        step += Math.abs(movementY) + Math.abs(movementX) * 1.5;
+  useEffect(() => {
+        imageCollectionRef.current = [...Array(31).keys()].map(() => createRef());
+    }, []);
 
-        if (step >= 95 * currentIndex) {
-            MouseMove(clientX, clientY);
-            if (nbOfImages === maxImages) {
-                removeImage();
-            }
-        }
 
-        if (currentIndex === imageCollection.length) {
-            currentIndex = 0;
-            step = -95;
-        }
-    };
 
-    const handleHeroMouseLeave = () => {
+  const manageMouseMove = useCallback((e) => {
+      const { clientX, clientY, movementX, movementY } = e;
+
+      console.log('manageMouseMove called');
+      console.log('Current Index:', currentIndex);
+      console.log('Step:', step);
+      console.log('nbOfImages:', nbOfImages);
+      console.log('maxImages:', maxImages);
+
+      step += Math.abs(movementY) + Math.abs(movementX) * 1.5;
+
+      console.log('Updated Step:', step);
+
+      if (step >= 95 * currentIndex) {
+          MouseMove(clientX, clientY);
+          if (nbOfImages === maxImages) {
+              console.log('Removing image');
+              removeImage();
+          }
+      }
+
+      if (currentIndex === imageCollectionRef.current.length) {
+          console.log('Resetting index');
+          currentIndex = 0;
+          step = -95;
+      }
+  }, [currentIndex, nbOfImages, maxImages, step]);
+
+
+
+
+    const handleHeroMouseLeave = useCallback((e) => {
         imageCollection.forEach((imageRef) => {
             const image = imageRef.current;
             if (image) {
@@ -85,7 +102,28 @@ function ReferencePeace() {
                 image.style.scale = '0.2';
             }
         });
-    };
+    });
+
+    const handleHeroMouseEnter = useCallback((e) => {
+        // Reset the active image to the first step
+        if (imageCollectionRef.current[0]?.current) {
+            const firstImage = imageCollectionRef.current[0].current;
+            firstImage.style.transition = '500ms ease scale 0.2s, 500ms ease opacity 0.2s, clip-path 500ms ease-out';
+            firstImage.style.opacity = '0';
+            firstImage.style.scale = '0.2';
+            firstImage.style.zIndex = '0'; // Bring it to the front
+        }
+
+        // Reset other images to their default state
+        imageCollectionRef.current.forEach((imageRef) => {
+            const image = imageRef.current;
+            if (image && image !== imageCollectionRef.current[0].current) {
+                image.style.opacity = '0';
+                image.style.scale = '0.2';
+                image.style.zIndex = '0'; // Send it to the back
+            }
+        });
+    }, []);
 
     const removeImage = () => {
         const images = getImages();
@@ -97,15 +135,19 @@ function ReferencePeace() {
     };
 
     const MouseMove = (x, y) => {
-        const targetImage = imageCollection[currentIndex].current;
+        const targetImage = imageCollectionRef.current[currentIndex]?.current;
+
+        if (!targetImage) {
+            console.error('Target image is null at index:', currentIndex);
+            return;
+        }
 
         const maxX = window.innerWidth - 360;
         const newX = Math.min(x, maxX);
 
         targetImage.style.left = `${newX}px`;
         targetImage.style.top = `${y}px`;
-
-        targetImage.style.zIndex = '1';
+        targetImage.style.zIndex = '-9';
         targetImage.style.transition = '0ms opacity, 0ms scale, clip-path 500ms ease-out';
         targetImage.style.opacity = '1';
         targetImage.style.scale = '1';
@@ -115,6 +157,11 @@ function ReferencePeace() {
 
         resetZIndex();
     };
+    
+    useEffect(() => {
+        console.log('Image Collection:', imageCollectionRef.current.map(ref => ref.current));
+    }, [data]);
+    
 
     const resetZIndex = () => {
         const images = getImages();
@@ -128,68 +175,74 @@ function ReferencePeace() {
         const indexOfFirstImage = currentIndex - nbOfImages;
         for (let i = indexOfFirstImage; i < currentIndex; i++) {
             let targetIndex = i;
-            if (targetIndex < 0) targetIndex += imageCollection.length;
-            images.push(imageCollection[targetIndex].current);
+            if (targetIndex < 0) targetIndex += imageCollectionRef.current.length;
+            images.push(imageCollectionRef.current[targetIndex].current);
         }
         return images;
     };
 
     useLayoutEffect(() => {
-        ScrollTrigger.create({
-          trigger: projectListing.current,
-          pin: imageWrap.current,
-          start: `-${ window.innerWidth * 0.04} top`,
-          end: () => projectListing.current.innerHeight,
-          pinSpacer:false,
-          scrub:true,
+      const trigger = ScrollTrigger.create({
+        trigger: projectListing.current,
+        pin: imageWrap.current,
+        start: `-84px top`,
+        end: () => projectListing.current.offsetHeight + window.innerHeight - (window.innerWidth * 0.14),
+        scrub: true,
         
-        })
-        
-        gsap.to('.reference-peace-title-wrap ', {
+      });
 
-            scrollTrigger: {
-                trigger: '.reference-peace-page',
-                scrub: true,
-                start: `${window.innerHeight * 0.16} top`,
-                end: ()=> window.innerHeight * 1.2,
-            },
-            y:window.innerWidth * 0.08
 
-        })
-   
-        gsap.to('.reference-peace-subtext.subtext-top ', {
+      gsap.to('.reference-peace-title-wrap ', {
 
-            scrollTrigger: {
-                trigger: '.reference-peace-page',
-                scrub: true,
-                start: `${window.innerHeight * 0.2} top`,
-                end: ()=> window.innerHeight * 1.2,
-            },
-            y:window.innerWidth * 0.08
+          scrollTrigger: {
+              trigger: '.reference-peace-page',
+              scrub: true,
+              start: `${window.innerHeight * 0.16} top`,
+              end: ()=> window.innerHeight * 1.2,
+          },
+          y:window.innerWidth * 0.08
 
-        })
-        gsap.to('.reference-peace-first-page ', {
+      })
 
-            scrollTrigger: {
-                trigger: '.reference-peace-page',
-                scrub: true,
-                start: `top top`,
-                end: ()=> window.innerHeight * 1.2,
-            },
-           scale:0.97,
-            y:window.innerWidth * 0.04
-        })
-  
+      gsap.to('.reference-peace-first-page ', {
 
-        return () => {
-          ScrollTrigger.killAll();
-        };
-    });
+          scrollTrigger: {
+              trigger: '.reference-peace-page',
+              scrub: 1,
+              start: `top top`,
+              end: ()=> window.innerHeight * 1.2,
+          },
+         scale:0.97,
+          y:window.innerWidth * 0.04
+      })
+
+      return () => {
+        trigger.kill();
+      };
+    }, [projectListing, imageWrap]);
+
+    useLayoutEffect(() => {
+      const resizeObserver = new ResizeObserver(() => {
+        ScrollTrigger.refresh(); // Refresh ScrollTrigger on resize
+      });
+
+      if (projectListing.current) {
+        resizeObserver.observe(projectListing.current);
+      }
+
+      return () => {
+        if (projectListing.current) {
+          resizeObserver.unobserve(projectListing.current);
+        }
+      };
+    }, [projectListing]);
+    
+ 
 
     const handleProjectItemMouseEnter = (item, index) => {
         if (imageWrap.current) {
             gsap.to('.projects-image',{
-                y:`-${index}00%`
+                y: `-${((window.innerWidth * 0.22) * (index)) + (index) * 20}px`,
             })
         }
         // Update prevHover and trigger onHoverChange if different item
@@ -306,6 +359,7 @@ function ReferencePeace() {
                 ref={titleWrapRef}
                 onMouseMove={manageMouseMove}
                 onMouseLeave={handleHeroMouseLeave}
+                onMouseEnter={handleHeroMouseEnter}
             >
                 <Reveal custom={18} element={'p'} elementClass={`reference-peace-subtitle ${styles['reference-peace-subtitle']}`} textContent={'A Creative'}/>
 
@@ -320,7 +374,7 @@ function ReferencePeace() {
             <div className='reference-peace-subtext-wrap high-z-index-layer'>
                 <div className={`reference-peace-subtext ${styles['reference-peace-subtext']} subtext-top body`}>
                   
-                    <Reveal  textContent={'MULTI'} element={"p"}/>
+                    <Reveal elementClass={'high-z-index-layer'}  textContent={'MULTI'} element={"p"}/>
                     <Reveal  textContent={'MEDIA'} element={"p"}/>
                     <Reveal  textContent={'MAGAZINE'} element={"p"}/>
 
@@ -341,20 +395,22 @@ function ReferencePeace() {
                         <Reveal  textContent={'NAVIGATING AN UNINTERRUPTED STREAM OF MODERN CREATIVITY, BY DOCUMENTING A CURATED LINEUP OF ARTISTS & PROLIFICS'} element={"p"}/>
                       
                     </p>
-                    <p className='body high-z-index-layer'>
+                    <p className={`${styles['last-subtext']} body high-z-index-layer`}>
                         <p>*</p><br/>
-                        <Reveal  textContent={'LEARNING TOGETHER, ONE ISSUE AT A TIME'} element={"p"}/>
+                        <Reveal  textContent={'LEARNING & COLLABORATING TOGETHER, ONE VOLUME AT A TIME'} element={"p"}/>
                     </p>
                 </div>
             
-                <div ref={projectListing} className={`projects-listing ${styles['projects-listing']}`}> 
+                <div ref={projectListing} className={`projects-listing  ${styles['projects-listing']}`}> 
                 <div ref={imageWrap} className={`projects-image-wrap ${styles['projects-image-wrap']}`} >
                     {data.map((project, index) => (
-                        <img  src={project.mainFeaturedImage}  className={`projects-image ${styles['projects-image']}`}></img>
+                        <div className={`projects-image ${styles['projects-image']}`}>
+                            <ParallaxImage  imageUrl={project.mainFeaturedImage}></ParallaxImage>
+                        </div>
                     ))}
                     
                 </div>
-                <div  className={`projects-links-list ${styles['projects-links-list']}`} onMouseLeave={handleMouseLeave}> 
+                <div  className={`projects-links-list high-z-index-layer ${styles['projects-links-list']}`} onMouseLeave={handleMouseLeave}> 
                 <div
                       className={`projects-hover-desc`}
                       ref={hoverDescRef}
@@ -403,8 +459,7 @@ function ReferencePeace() {
             </div>
             <div className='images-wrap'>
                 {[...Array(31).keys()].map((index) => {
-                    const imageRef = createRef(null);
-                    imageCollection.push(imageRef);
+                    const imageRef = imageCollectionRef.current[index];
 
                     return (
                         <img
@@ -412,10 +467,16 @@ function ReferencePeace() {
                             className={`image-trail-${index} ${styles['trail-image']} trail-image`}
                             key={index}
                             src={`/imagery/referencePeace/${index}.webp`}
-                        ></img>
+                        />
                     );
                 })}
             </div>
+
+
+            <div className='reference-peace-contact-block'>
+                <ContactBlock referencePeace={true}/>
+            </div>
+            
 
         </section>
     );
@@ -437,5 +498,75 @@ const formatDate = (dateStr) => {
   // Return the formatted date with the suffix
   return `${day}<span>${suffix}</span> ${formattedDate}`;
 }
+
+const ParallaxImage = ({ imageUrl, blurhash, handleDelayStart }) => {
+  const [isHovered, setIsHovered] = useState(false);
+  const [maskPosition, setMaskPosition] = useState({ x: 0, y: 0 });
+  const imageRef = useRef(null);
+
+  const initialObjectPosition = "center center";
+
+  const handleMouseMove = (e) => {
+    if (!isHovered) return;
+    const { clientX, clientY, target } = e;
+
+    const { left, top, width, height } = target.getBoundingClientRect();
+
+    const maskCenterX = left + width / 2;
+    const maskCenterY = top + height / 2;
+
+    const distanceX = clientX - maskCenterX;
+    const distanceY = clientY - maskCenterY;
+
+    const sensitivity = 0.01;
+
+    const x = distanceX * sensitivity;
+    const y = distanceY * sensitivity;
+
+    setMaskPosition({ x, y });
+  };
+
+  const handleMouseEnter = () => {
+    if (imageRef.current) {
+      imageRef.current.style.transition =
+        "ease all 200ms";
+      setIsHovered(true);
+      setTimeout(() => {
+        if (imageRef.current) {
+          imageRef.current.style.transition =
+            "cubic-bezier(0.76, 0, 0.24, 1) all 0ms, object-position 0s ease";
+        }
+      }, 600);
+    }
+  };
+
+  const handleMouseLeave = () => {
+    setIsHovered(false);
+    if (imageRef.current) {
+      imageRef.current.style.transition =
+        "ease all 200ms";
+        imageRef.current.style.transform = "translate(0px, 0px) scale(1.1)";
+    }
+  };
+
+  return (
+    <div
+      className={styles['parallax-image-wrap']}
+      onMouseEnter={handleMouseEnter}
+      onMouseLeave={handleMouseLeave}
+      onMouseMove={handleMouseMove}
+    >
+      <img
+        ref={imageRef}
+        src={imageUrl}
+        alt="Parallax Image"
+        className={styles['masonry-image']}
+        style={{
+          transform: `translate(${maskPosition.x}px, ${maskPosition.y}px) scale(1.1)`,
+        }}
+      />
+    </div>
+  );
+};
 
 export default ReferencePeace;

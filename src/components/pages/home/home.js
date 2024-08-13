@@ -15,6 +15,7 @@ import DelayLink from "../../../utils/delayLink";
 import useMousePosition from "../../../utils/useMousePosition";
 import useFetchFeaturedProjects from "./fetchFeaturedList";
 import useRealtimeFeaturedProjects from "./fetchFeaturedList";
+import ContactBlock from "../../molecules/ContactBlock/contactBlock";
 
 
 gsap.registerPlugin(ScrollTrigger);
@@ -109,7 +110,7 @@ function Home() {
         triggers.push(ScrollTrigger.create({
           trigger: aboutReferenceSectionRef.current,
           pin: '.page-five',
-          start: '-92px top',
+          start:()=> `-${windowHeight*2 - windowWidth * 0.08 + 80 } top`,
           pinSpacer:false,
           end: 'bottom bottom',
         }));
@@ -123,7 +124,7 @@ function Home() {
         const aboutReferenceSectionScrollTrigger = () => {
           triggers.push(ScrollTrigger.create({
             trigger: aboutReferenceSectionRef.current,
-            start: `-${windowWidth * 0.06}px top`,
+            start: `-84px top`,
             pin: '.dynamic-video-player-5',
             pinSpacer:false,
             end: 'bottom bottom',
@@ -133,12 +134,12 @@ function Home() {
           clipPath: "polygon(100% 0, 100% 0, 100% 100%, 100% 100%)",
    
           scrollTrigger: {
-            start: '200px top',
-           
-            end: "80vh",
-            scrub: true,
+            trigger: '.page-six',
+            start: "-710px top",
+            end: "-550px top",
+            scrub: 1,
             id: "scrub",
-            trigger: aboutReferenceSectionRef.current,
+            
           },
         });
   
@@ -154,10 +155,10 @@ function Home() {
         });
   
         gsap.fromTo(".dynamic-video-player-1 .mask-image-wrap, .dynamic-video-player-1 .mask-mouse-area", {
-          height: 'calc(95vh - 180px)',
+          height: 'calc(100vh - 4vw - 164px)',
   
         },{
-          height: 'calc(100vh - 10vw)',
+          height: 'calc(100vh - 4vw - 84px)',
           scrollTrigger: {
             trigger: welcomeSectionRef.current, 
             start: 'top top',
@@ -181,10 +182,9 @@ function Home() {
         });
 
         gsap.to(".dynamic-video-player-5 .mask-image", {
-          '-webkit-filter':'blur(10px)',
-          filter: 'blur(10px)',
           width: "92vw",
-          maxWidth:"92vw",
+          scale:2,
+          transformOrigin:'top left',
           scrollTrigger: {
             trigger: '.page-six',
             start: "-610px top",
@@ -195,15 +195,57 @@ function Home() {
     
         });
 
+        gsap.to(".mask-image, .scroll-video", {
+          '-webkit-filter':'blur(10px)',
+          filter: 'blur(10px)',
+          transformOrigin:'top left',
+          scrollTrigger: {
+            trigger: '.page-six',
+            start: "-610px top",
+            end: "-550px top",
+            scrub: 2,
+            id: "scrub",
+          },
+
+        });
+
+        gsap.to(".dynamic-video-player-4.middle .mask-image", {
+          width: "92vw",
+          transformOrigin:'top left',
+          scale:1.5,
+          scrollTrigger: {
+            trigger: '.page-six',
+            start: "-610px top",
+            end: "-550px top",
+            scrub: 2,
+            id: "scrub",
+          },
+
+        });
+
+
         gsap.to(".dynamic-video-player-5 .mask-image-wrap", {
   
           width: "92vw",
-          maxWidth:"92vw",
+          minWidth:"92vw",
           scrollTrigger: {
             trigger: '.page-six',
             start: "-600px top",
             end: "-550px top",
             scrub: 2,
+            id: "scrub",
+          },
+        });
+
+        gsap.to(".dynamic-video-player-4.middle .mask-image-wrap", {
+
+          width: "68.7vw",
+          minWidth:"68.7vw",
+          scrollTrigger: {
+            trigger: '.page-six',
+            start: "-600px top",
+            end: "-550px top",
+            scrub: 4,
             id: "scrub",
           },
         });
@@ -474,7 +516,12 @@ useEffect(() => {
               <Section5 title={'About'}/>
               <Section6 title={'ReferencePeace'}/>
               <Section7 title={'ReferencePeace-2'}/>
+    
             </div>
+            <div className="home-contact-wrap">
+                <ContactBlock/>
+            </div>
+      
         </main>
     );
 }
@@ -525,7 +572,10 @@ const DynamicVideoPlayer = ({ image, isSection3Visible, windowWidth, data, hover
       if(videoRef.current){
       videoRef.current.style.transition = "object-position 0s ease, min-width 0.5s ease-out 0s, scale 0.3s ease-out"; // Disable transition for smooth hover effect
       }
-      imageRef.current.style.transition = "object-position 0s ease, min-width 0.5s ease-out 0s, scale 0.3s ease-out"; // Disable transition for smooth hover effect
+      if(imageRef.current){
+        imageRef.current.style.transition = "object-position 0s ease, min-width 0.5s ease-out 0s, scale 0.3s ease-out"; // Disable transition for smooth hover effect
+
+      }
     }, 600);
   };
 
@@ -1078,82 +1128,134 @@ const handleScroll = () => {
 
 
 
-const Section4 = () =>(
+const Section4 = () => {
+  const [mouseY, setMouseY] = useState(0);
+  const [toggle, setToggle] = useState(false);
+  const containerRef = useRef(null);
+  const imageWrapRef = useRef(null);
 
-    <div className="page-four high-z-index-layer">
-      <div className="page-four-top-wrap">
+  const handleMouseMove = (event) => {
+    if (containerRef.current && imageWrapRef.current) {
+      const containerRect = containerRef.current.getBoundingClientRect();
+      const mouseRelativeY = event.clientY - containerRect.top;
+      setMouseY(mouseRelativeY);
+    }
+  };
+
+  const toggleService = () => {
+    if(toggle){
+      setToggle(false);
+      gsap.to('',{
+        
+      })
+    }else{
+      setToggle(true)
+    }
+  }
+
+const serviceImageAnimation = (i) => () => {
+  gsap.to('.page-four-service-image', {
+    y: `-${((window.innerWidth * 0.11) * (i - 1)) + (i - 1) * 20}px`,
+  });
+};
+    
+
+  useEffect(() => {
+    if (containerRef.current && imageWrapRef.current) {
+      const containerHeight = containerRef.current.clientHeight;
+      const imageWrapHeight = imageWrapRef.current.clientHeight;
+
+      // Calculate the top position ensuring it stays within the bounds
+      let topPosition = mouseY - imageWrapHeight / 2;
+      if (topPosition < 0) topPosition = 0;
+      if (topPosition + imageWrapHeight > containerHeight) topPosition = containerHeight - imageWrapHeight;
+
+      imageWrapRef.current.style.top = `${topPosition}px`;
+    }
+  }, [mouseY]);
+
+  return (
+    <div className="page-four">
+      <div className="page-four-top-wrap high-z-index-layer">
         <div>
-          <p className="title-body">
-            What I Do:
-          </p>
+          <p className="title-body">What I Do:</p>
         </div>
         <div className="page-four-top-wrap-desc">
-          <p className="body">Covering various visual diciplines</p>
+          <p className="body">Covering various visual disciplines</p>
           <p className="body">Working with the inspired to produce the inspiring</p>
         </div>
-        <div className="">
-          <p className="primary-button what-i-do-cta button-gradient insta-button" >
-            Instagram
-          </p>
+        <div>
+          <p className="primary-button what-i-do-cta button-gradient insta-button">Instagram</p>
         </div>
       </div>
-      <div className="page-four-middle-wrap">
-        <div className="page-four-service-one page-four-service">
-          
-         <Reveal custom={1} textContent={'Art Direction'} element={"div"} elementClass={"title"}/>
+      <div
+        className={`page-four-middle-wrap ${toggle ? 'service-toggle-desc' : 'service-toggle-image'}`}
+        onMouseMove={handleMouseMove}
+        onClick={toggleService}
+        style={{ position: 'relative'}} // Ensure the height is set correctly
+        ref={containerRef}
+      >
+        <div
+          className="page-four-service-image-wrap"
+          ref={imageWrapRef}
+          style={{
+            position: 'absolute',
+            right: 0,
+          }}
+        >
+          <div className="page-four-service-image"></div>
+          <div className="page-four-service-image"></div>
+          <div className="page-four-service-image"></div>
+        </div>
+        <div className="page-four-service-one page-four-service" onMouseEnter={serviceImageAnimation(1)}>
+          <Reveal custom={1} textContent={'Art Direction'} element={"div"} elementClass={"title"} />
           <div className="service-desc">
-            <div className="service-img-wrap">
-              <img src="/imagery/Mask-group-1.png"></img>
-            </div>
-
             <p className="body">
               DEFINING STRONG CONCEPTUAL NARRATIVES BY NAVIGATING THE NUANCES OF A CLIENT’S REQUIREMENTS.
             </p>
           </div>
         </div>
-        <div className="page-four-service-two page-four-service">
-
-          <Reveal custom={2} textContent={'Collaboration'} element={"div"} elementClass={"title"}/>
-
-
+        <div className="page-four-service-two page-four-service" onMouseEnter={serviceImageAnimation(2)}>
+          <Reveal custom={2} textContent={'Collaboration'} element={"div"} elementClass={"title"} />
           <div className="service-desc">
-            <div className="service-img-wrap">
-              <img src="/imagery/Mask-group-1.png"></img>
-            </div>
             <p className="body">
-              SEEING EYE TO EYE WITH CREATIVES & PRODUCING VISUALS TO MATCH tHEIR VISION.
+              SEEING EYE TO EYE WITH CREATIVES & PRODUCING VISUALS TO MATCH THEIR VISION.
             </p>
           </div>
         </div>
-        <div className="page-four-service-three page-four-service">
-          <Reveal custom={3} textContent={'Production'} element={"div"} elementClass={"title"}/>
+        <div className="page-four-service-three page-four-service" onMouseEnter={serviceImageAnimation(3)}>
+          <Reveal custom={3} textContent={'Production'} element={"div"} elementClass={"title"} />
           <div className="service-desc">
-            <div className="service-img-wrap">
-              <img src="/imagery/Mask-group-1.png"></img>
-            </div>
             <p className="body">
-            END TO END EXECUTION
-            WITH THE SAME LEVEL OF INTENTION THROUGHOUT,<br/>
-            FROM PRE <span>&#8594;</span> POST PRODUCTION.
+              END TO END EXECUTION
+              WITH THE SAME LEVEL OF INTENTION THROUGHOUT,<br />
+              FROM PRE <span>&#8594;</span> POST PRODUCTION.
             </p>
           </div>
         </div>
       </div>
-      <div className="page-four-bottom-wrap">
+      <div className="page-four-bottom-wrap high-z-index-layer">
         <DelayLink
-         to={`/contact`} // Specify the destination link here
-         delay={1500} // Set the delay in milliseconds (e.g., 1000ms = 1 second)
-         onDelayStart={handleDelayStart} // Callback when delay starts
-         onDelayEnd={handleDelayEnd} // Callback when delay ends and navigation happens
-         >
-        <div className="primary-button button-gradient">
-          Let's work
-        </div>
+          to={`/contact`} // Specify the destination link here
+          delay={1500} // Set the delay in milliseconds (e.g., 1000ms = 1 second)
+          onDelayStart={handleDelayStart} // Callback when delay starts
+          onDelayEnd={handleDelayEnd} // Callback when delay ends and navigation happens
+        >
+          <div className="primary-button button-gradient">Let's work</div>
         </DelayLink>
       </div>
+      <div className="page-four-dynamic-wrap">
+        <div className="dynamic-video-player dynamic-video-player-4">
+          <DynamicVideoPlayer image={'/domengo.png'} section={4} index={4} />
+        </div>
+        <div className="dynamic-video-player dynamic-video-player-4 middle">
+          <DynamicVideoPlayer image={'/esoteric.webp'} section={4} index={4} />
+        </div>
+      </div>
     </div>
+  );
+};
 
-)
 const Section5 = () =>{
   const section5Ref = useRef(null);
   const [isVisible, setIsVisible] = useState(false);
@@ -1191,7 +1293,8 @@ const Section5 = () =>{
     <div className={`page-five high-z-index-layer ${isVisible ? "visible" : ""}`} ref={section5Ref} >
 
       <div className="page-five-left">
-   
+
+
       </div>
       <div className="page-five-right ">
         <div>
@@ -1278,6 +1381,7 @@ const Section6 = () => {
           </div>
         </div>
       </div>
+    
     </div>
   );
 };

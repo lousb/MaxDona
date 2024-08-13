@@ -47,6 +47,8 @@
     transform: translateY(100%);
     transition: 500ms ease;
 }
+
+
 body:has(.view-project-link:hover) .projects-hover-svg-wrap > svg > path{
     transform: translateY(0%);
 }
@@ -65,6 +67,15 @@ body:not(:has(.view-project-link:hover)) .projects-hover-desc{
     vertical-align: text-top;
     transform: translateY(0.1em);
     display: inline-block;
+}
+.images-wrap{
+    height: 100vh;
+    width: 100%;
+    overflow: hidden;
+    clip-path: polygon(0 0, 100% 0, 100% 100%, 0% 100%);
+    position: absolute;
+    top:0;
+    pointer-events: none;
 }
 .projects-hover-desc > .link-desc{
     margin:0 !important;
@@ -129,4 +140,18 @@ body:has(.view-project-link:hover) .projects-hover-desc > p  > span{
 }
 body:has( .reference-peace-single) .header-inner-content, body:has(.reference-peace-single) footer{
     filter:invert(1);
+}
+.pdf-section{
+    padding-bottom: 5px;
+}
+.pdf-section canvas{
+    border-radius: 20px;
+}
+.reference-peace-contact-block{
+    width: 92%;
+    margin-inline:4%;
+    margin-top:6rem;
+}
+.reference-peace-contact-block .body:not(.link-desc){
+    padding-bottom: 1em;
 }

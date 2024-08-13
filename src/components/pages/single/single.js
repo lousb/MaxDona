@@ -98,6 +98,8 @@ const Single = () => {
   const sectionRef = useRef(null);
   const masonrySection = useRef(null);
 
+  const [mainImageLoaded, setMainImageLoaded] = useState(false);
+
 
 
   useEffect(() => {
@@ -221,8 +223,16 @@ const Single = () => {
       if (element) {
         if (window.scrollY > 190) {
           element.style.filter = 'invert(1)';
+          element.querySelectorAll('span').forEach(child => {
+            child.style.color = 'black';
+          })
+          
         } else {
           element.style.filter = 'invert(0)';
+          element.querySelectorAll('span').forEach(child => {
+            child.style.color = 'var(--primary-color)';
+          })
+        
         }
       }
       
@@ -329,6 +339,7 @@ const renderSection = (section, index) => {
       return (
         <LargeImageSection
           key={`largeImage-${index}`}
+          sectionKey={`largeImage-${index}`}
           value={largeImageArray ? largeImageArray[0] : null}
         />
       );
@@ -344,7 +355,7 @@ const renderSection = (section, index) => {
       <div className={`main-video-controls-overlay ${styles['main-video-controls-overlay']}`}>
         {projectData ? 
           <div className={`body main-description-right-wrap ${styles['main-description-right-wrap']}`} onClick={()=>scrollToPercentageOfViewportHeight(140)}>
-            <span>{projectData.videoName} (2022)</span>
+            <span>{projectData.videoName} ( {new Date(projectData.releaseDate).getFullYear()} )</span>
             <span className='primary-button'>
             Full Video
             </span>
@@ -410,8 +421,13 @@ const renderSection = (section, index) => {
             </section>
             <div className={`${styles['main-section-image-wrap']} main-section-image-wrap`}>
                 <div className={`${styles['main-section-image']} main-section-image`}>
-                <div className={`${styles['main-section-image-overlay']} main-section-image-overlay`} style={{ backgroundImage: `url(${projectData?.mainFeaturedImage})` }}>
-
+                <div className={`${styles['main-section-image-overlay']} main-section-image-overlay`} style={{ backgroundImage: `url(${mainImageLoaded ? projectData?.mainFeaturedImage?.url : projectData?.mainFeaturedImage?.blurhash})`, filter:  `${mainImageLoaded ?'blur(0px)':'blur(10px)'}`, scale:  `${mainImageLoaded ?'1':'1.1'}`}}>
+                <img
+                  src={projectData?.mainFeaturedImage?.url}
+                  alt="main featured"
+                  style={{ display: 'none' }}
+                  onLoad={() => setMainImageLoaded(true)}
+                />
                 </div>
                   <div className={styles['video-container']}>
                     <div className={`player__wrapper ${styles['player__wrapper']}`}>
@@ -534,7 +550,6 @@ useEffect(() => {
             trigger: `.${styles['masonry-section']}.${groupKey}`,
             start: `-90px top`,
             end: ()=>`+=${tallestColumnHeight - (window.innerHeight/2.5)}`,
-            markers: true,
             scrub: 1,
           },
         });
@@ -605,8 +620,12 @@ useEffect(() => {
 };
 
 const DetailsSection = ({ sectionKey, value, index }) => {
+  // Always call useState at the top level
+  const [imageLoaded, setImageLoaded] = useState(false);
+
+  // Return early if value is not provided
   if (!value) {
-    return <p>nodesets</p>; // or return a placeholder like <p>No details available</p>
+    return <p>No details available</p>; // Placeholder if no value is provided
   }
 
   const { firstDescription, secondDescription, title, featuredImage } = value;
@@ -614,8 +633,20 @@ const DetailsSection = ({ sectionKey, value, index }) => {
 
   return (
     <div key={sectionKey} className={`${styles['details-section']}  ${oddSection ? styles['details-section-wrap-reversed'] : ''}`}>
-      <div className={styles['details-section-image']} style={{ backgroundImage: `url(${featuredImage})` }}>
-                
+      <div
+        className={styles['details-section-image']}
+        style={{
+          backgroundImage: `url(${imageLoaded ? featuredImage?.url : featuredImage?.blurhash})`,
+          filter:  `${imageLoaded ?'blur(0px)':'blur(10px)'}`, scale:  `${imageLoaded ?'1':'1.1'}`
+        }}
+      >
+        {/* Preload the actual image to detect when it has loaded */}
+        <img
+          src={featuredImage?.url}
+          alt="detail featured"
+          style={{ display: 'none' }}
+          onLoad={() => setImageLoaded(true)}
+        />
       </div>
       <div className={`${styles['details-section-wrap']} high-z-index-layer`}>
         <h2 key="title" className={`heading ${styles['details-title']}`}>{title}</h2>
@@ -766,15 +797,37 @@ const TitleSection = ({ sectionKey, value }) => {
 
 
 const LargeImageSection = ({ sectionKey, value }) => {
+  // Always call useState at the top level
+  const [isLoading, setIsLoading] = useState(true);
+
   if (!value) {
     return <p>No image available</p>; // Placeholder message
   }
 
-  const { largeImage } = value;
+  const { largeImage, blurhash } = value;
+
+  // Handle image load event
+  const handleImageLoad = () => {
+    setIsLoading(false);
+  };
 
   return (
-    <div key={sectionKey} className={`${styles['large-section']}`}>
-      <img className={`${styles['large-section-wrap']}`} src={largeImage} alt="Large Image" />
+    <div key={sectionKey} className={styles['large-section']}>
+      {isLoading && blurhash && (
+        <img
+          className={styles['large-section-wrap']}
+          src={blurhash}
+          alt="Blurhash"
+          style={{ width: '100%', height: 'auto', position: 'absolute', top: 0, left: 0, zIndex: 1 }}
+        />
+      )}
+      <img
+        className={styles['large-section-wrap']}
+        src={largeImage}
+        alt="Large Image"
+        onLoad={handleImageLoad}
+        style={{ display: isLoading ? 'none' : 'block', width: '100%', height: 'auto', zIndex: 2 }}
+      />
     </div>
   );
 };

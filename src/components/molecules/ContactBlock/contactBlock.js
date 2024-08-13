@@ -4,9 +4,23 @@ import useMousePosition from "../../../utils/useMousePosition";
 import './contactBlock.css';
 import gsap from "gsap";
 
-const ContactBlock = () => {
+const ContactBlock = ({ referencePeace = false }) => {
     const copyToClipboard = () => {
-        navigator.clipboard.writeText("maxdona@gmail.com")
+        navigator.clipboard.writeText("maxdona@gmail.com");
+
+        gsap.to('.contact-hover-desc .link-desc > span', {
+          y: '100%',
+          duration: 0.3,
+          delay: 0,
+          onComplete:()=>{
+            setCopyLinkDesc('Email Copied');
+            gsap.to('.contact-hover-desc .link-desc > span', {
+              y: '0%',
+              duration: 0.3,
+              delay: 0,
+            });
+          }
+        });
     };
 
     const [hoverDescHeight, setHoverDescHeight] = useState(0);
@@ -16,6 +30,9 @@ const ContactBlock = () => {
     const [currentProject, setCurrentProject] = useState(''); // Initialize with first item's focusGenre
     const [wobble, setWobble] = useState({ translateY: 0, rotate: 0 }); // State for wobble effect
     const hoverDescRef = useRef(null);
+    const [isHovered, setIsHovered] = useState(false);
+    const [copyLinkDesc, setCopyLinkDesc] = useState('Click to Copy');
+
     const wobbleTimeoutRef = useRef(null); // Ref to store the timeout
 
 
@@ -27,20 +44,25 @@ const ContactBlock = () => {
 
     const [prevHover, setPrevHover] = useState([data[0]]);
 
-    const handleProjectItemMouseEnter = () => {
-     
+const handleProjectItemMouseEnter = () => {
+    setIsHovered(true);
+    setCopyLinkDesc('Click to Copy');
 
-        gsap.to('.contact-hover-desc .link-desc > span', {
-          y: '0%',
-          opacity: 1,
-          duration: 0.3,
-          delay: 0.3,
-        });
-    };
+    gsap.to('.contact-hover-desc .link-desc > span', {
+      y: '0%',
+      opacity: 1,
+      duration: 0.3,
+      delay: 0.3,
+    });
+};
+
+const handleMouseLeave = () => {
+    setIsHovered(false);
+};
 
 
     useEffect(() => {
-
+      if (!isHovered) return;
 
 
         const calculateVelocity = () => {
@@ -56,7 +78,7 @@ const ContactBlock = () => {
 
 
 
-    }, [x, y]);
+    }, [x, y, isHovered]);
 
     const clamp = (value, min, max) => Math.max(min, Math.min(max, value));
 
@@ -65,6 +87,8 @@ const ContactBlock = () => {
 
 
     useEffect(() => {
+      if (!isHovered) return;
+
     const wobbleEffect = {
       translateY: clamp(velocity.vy * 1.5, -maxTranslation, maxTranslation),
       rotate: clamp(velocity.vx * 1.5, -maxRotation, maxRotation),
@@ -82,7 +106,11 @@ const ContactBlock = () => {
     return () => clearTimeout(wobbleTimeoutRef.current);
 
 
-    }, [velocity]);
+    }, [velocity, isHovered]);
+
+
+
+  
 
     return (
         <section className={`${styles["about-page-section-3"]} high-z-index-layer`}>
@@ -95,6 +123,7 @@ const ContactBlock = () => {
                 top: `${y - hoverDescHeight / 2}px`,
                 transform: `translateY(${wobble.translateY}px) rotate(${wobble.rotate}deg)`,
               }}
+             
             >
               <div className="contact-hover-svg-wrap">
                 <svg width="17" height="25" viewBox="0 0 17 25" fill="none" xmlns="http://www.w3.org/2000/svg" className="contact-hover-arrow">
@@ -103,7 +132,8 @@ const ContactBlock = () => {
               </div>
 
               <p className={`body link-desc`}>
-                <span>Click to copy</span>
+
+                <span>{copyLinkDesc}</span>
               </p>
             </div>
             <div className={`${styles["about-last-cta-wrap"]}`}>
@@ -111,12 +141,20 @@ const ContactBlock = () => {
                     <p className={`body ${styles["body"]}  ${styles["first"]}`}>
                         Contact
                     </p>
-                    <p className={`body ${styles["body"]}`}>Click my email<br/>
+                    <p className={`body ${styles["body"]}`} style={{width : '220px'}}>
+                    {referencePeace && (
+                        <>
+                          Submit your project, artwork & passion to be featured in reference peace.
+                          <br /><br />
+                        </>
+                      )}
+                      Click my email<br/>
                         To get in touch!
                     </p>
                 </div>
 
-                <div className={`heading about-last-cta-wrap-heading ${styles["about-last-cta-wrap-heading"]}`} onMouseEnter={()=>handleProjectItemMouseEnter}>
+                <div className={`heading about-last-cta-wrap-heading ${styles["about-last-cta-wrap-heading"]}`} onMouseEnter={handleProjectItemMouseEnter}
+                onMouseLeave={handleMouseLeave}>
                     <a className="heading" onClick={copyToClipboard}><span className="white-char">M</span>axdona@gmail.com</a>
                     <img src="/LOGO-DESKTOP.svg" alt='logo-desktop' />
                 </div>

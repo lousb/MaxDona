@@ -7,22 +7,34 @@ import { useLoading } from "../LoadingContext";
 function Reveal({ textContent, element, elementClass = "", custom, variant }) {
   const [isVisible, setIsVisible] = useState(false);
   const [delayPassed, setDelayPassed] = useState(false); // New state for delay
+  const [isScreenWide, setIsScreenWide] = useState(window.innerWidth >= 830); // State for screen size
   const ref = useRef(null);
   const { isLoading } = useLoading();
+
+  useEffect(() => {
+    const handleResize = () => {
+      setIsScreenWide(window.innerWidth >= 830);
+    };
+
+    window.addEventListener("resize", handleResize);
+    return () => {
+      window.removeEventListener("resize", handleResize);
+    };
+  }, []);
 
   useEffect(() => {
     let delayTimeout;
     if (isLoading) {
       setDelayPassed(false);
       delayTimeout = setTimeout(() => {
-        setDelayPassed(true); // Delay of 200ms before setting delayPassed to true
+        setDelayPassed(true); // Delay of 600ms before setting delayPassed to true
       }, 600);
     } else {
       setDelayPassed(true);
     }
 
     const handleScroll = () => {
-      if (ref.current && delayPassed) {
+      if (ref.current && delayPassed && isScreenWide) {
         const elementTop = ref.current.getBoundingClientRect().top;
         setIsVisible(elementTop < window.innerHeight);
       }
@@ -37,15 +49,13 @@ function Reveal({ textContent, element, elementClass = "", custom, variant }) {
       clearTimeout(delayTimeout);
       window.removeEventListener("scroll", handleScroll);
     };
-  }, [isLoading, delayPassed]);
+  }, [isLoading, delayPassed, isScreenWide]);
+
+  if (!isScreenWide) {
+    return <div className={`text-reveal-container ${elementClass}`}>{textContent}</div>;
+  }
 
   const MotionComponent = motion[element] || motion.div;
-
-  const variants = {
-    initial: "initial",
-    open: "open",
-    closed: "closed",
-  };
 
   const classes = elementClass.split(" ").join(" ");
 
@@ -105,6 +115,5 @@ function Reveal({ textContent, element, elementClass = "", custom, variant }) {
     );
   }
 }
-
 
 export default Reveal;

@@ -1,4 +1,4 @@
-import React, { useEffect, useRef, useState } from "react";
+import React, { useCallback, useEffect, useRef, useState } from "react";
 import { useFooter } from "../../../../context/FooterContext";
 import styles from '../referencePeace.module.css';
 import '../referencePeace.module.css';
@@ -8,12 +8,8 @@ import { db } from '../../../../firebase/firebase';
 import Reveal from "../../../../utils/textElementReveal/textElementReveal";
 import Masonry, { ResponsiveMasonry } from "react-responsive-masonry";
 import gsap from "gsap";
-import { version } from 'pdfjs-dist';
-import { getDocument, GlobalWorkerOptions } from 'pdfjs-dist/legacy/build/pdf';
-
-
-// Set the workerSrc globally for PDF.js
-GlobalWorkerOptions.workerSrc = `${process.env.PUBLIC_URL}/pdf.worker.min.js`;
+import { usePdf } from '@mikecousins/react-pdf';
+import YouTube from 'react-youtube';
 
 
 const ReferenceSingle = () =>{
@@ -22,6 +18,9 @@ const ReferenceSingle = () =>{
   const [projectData, setProjectData] = useState(null);
   const [selectedImageIndex, setSelectedImageIndex] = useState(0);
   const scrollPositionRef = useRef(0);
+
+  const [videoProgress, setVideoProgress] = useState(0);
+  const [isPlayingProp, setIsPlayingProp] = useState(false);
 
   useEffect(() => {
     return () => {
@@ -71,9 +70,47 @@ const ReferenceSingle = () =>{
     switch (section.type) {
       case 'video':
         return (
-          <div key={`video-${index}`}>
-            <h2>{section.videoName}</h2>
-            <iframe src={section.videoUrl} title={section.videoName} />
+          <div className={`${styles['main-section-image-wrap']} main-section-image-wrap`}>
+            <div className={`${styles['main-section-image']} main-section-image`}>
+            <div className={`${styles['main-section-image-overlay']} main-section-image-overlay`} style={{ backgroundImage: `url(${projectData?.mainFeaturedImage})` }}>
+
+            </div>
+              <div className={styles['video-container']}>
+                <div className={`player__wrapper ${styles['player__wrapper']}`}>
+                  <CustomYouTubePlayer setVideoProgress={setVideoProgress} setIsPlayingProp={setIsPlayingProp} videoUrl={section.videoUrl}/>
+
+                </div>
+              </div> 
+            </div>
+            <div className={`main-video-controls-overlay ${styles['main-video-controls-overlay']}`}>
+              {projectData ? 
+                <div className={`body main-description-right-wrap ${styles['main-description-right-wrap']}`} >
+                  <span>{projectData.videoName} (2022)</span>
+                  <span className='primary-button'>
+                  Full Video
+                  </span>
+                </div>
+              :
+                <></>
+              }  
+              <div className={`body scroll-notification scroll-notification-single ${styles['scroll-notification']}`}>
+                <p>
+                  (<div><span>SCROLL</span></div>)
+                </p>
+                <p className={`body single-click-anywhere ${styles['single-click-anywhere']}`}>
+                  Click Anywhere To 
+                  <p className={`play-text ${styles['play-text']} ${ isPlayingProp ? 'play-text-toggle':''}`}>
+                    <p>play</p>
+                    <p>pause</p>
+                  </p> 
+                </p>
+
+              </div>
+              <div className={`${styles['progress-bar']} ${ isPlayingProp ? '':'stop-progress-toggle'}`}>
+                  <div className={`${styles['progress']}  `} style={{ width: `${videoProgress}%` }}></div>
+              </div>
+            </div>
+
           </div>
         );
       case 'image':
@@ -89,11 +126,7 @@ const ReferenceSingle = () =>{
         );
       case 'PDF':
         return (
-          <div key={`pdf-${index}`}>
-            <h2>{section.pdfName}</h2>
-            <a href={section.pdfLink} target="_blank" rel="noopener noreferrer">
-              {section.pdfName}
-            </a>
+          <div className="pdf-section" key={`pdf-${index}`}>
             <PDFViewer pdfLink={section.pdfLink} />
           </div>
         );
@@ -385,68 +418,213 @@ useEffect(() => {
 };
 
 const PDFViewer = ({ pdfLink }) => {
-  const [pdf, setPdf] = useState(null);
-  const [currentPage, setCurrentPage] = useState(0);
-  const canvasRefs = [useRef(null), useRef(null)];
+  const [page, setPage] = useState(1);
+  const [mode, setMode] = useState('single'); // Set the default mode here ('single' or 'double')
+  const canvasRef1 = useRef(null);
+  const canvasRef2 = useRef(null); // For the second page in 2-page mode
 
-  useEffect(() => {
-    const fetchPDF = async () => {
-      try {
-        const loadingTask = getDocument(pdfLink);
-        const pdfDoc = await loadingTask.promise;
-        setPdf(pdfDoc);
-      } catch (error) {
-        console.error('Error fetching PDF:', error);
-      }
-    };
-
-    fetchPDF();
-  }, [pdfLink]);
-
-  useEffect(() => {
-    if (pdf) {
-      renderPage(currentPage, 0);
-      renderPage(currentPage + 1, 1);
+  const handleDocumentLoadSuccess = useCallback((document) => {
+    console.log("Document loaded successfully:", document);
+    // Adjust the page if it's odd when switching to double mode
+    if (mode === 'double' && page % 2 !== 0) {
+      setPage(prevPage => Math.max(prevPage - 1, 1)); // Move to the previous even page
     }
-  }, [pdf, currentPage]);
+  }, [mode, page]);
 
-  const renderPage = async (pageNum, canvasIndex) => {
-    if (pdf && pageNum < pdf.numPages) {
-      const page = await pdf.getPage(pageNum + 1);
-      const viewport = page.getViewport({ scale: 1.5 });
-      const canvas = canvasRefs[canvasIndex].current;
-      const context = canvas.getContext('2d');
-      canvas.height = viewport.height;
-      canvas.width = viewport.width;
+  const handleDocumentLoadError = useCallback((error) => {
+    console.error("Error loading document:", error);
+  }, []);
 
-      const renderContext = {
-        canvasContext: context,
-        viewport: viewport,
-      };
-      await page.render(renderContext).promise;
-    } else {
-      const canvas = canvasRefs[canvasIndex].current;
-      if (canvas) {
-        const context = canvas.getContext('2d');
-        context.clearRect(0, 0, canvas.width, canvas.height);
+  const { pdfDocument, pdfPage } = usePdf({
+    file: pdfLink,
+    page,
+    canvasRef: canvasRef1,
+    onDocumentLoadSuccess: handleDocumentLoadSuccess,
+    onError: handleDocumentLoadError,
+  });
+
+  const { pdfPage: pdfPage2 } = usePdf({
+    file: pdfLink,
+    page: mode === 'double' && page + 1 <= pdfDocument?.numPages ? page + 1 : null,
+    canvasRef: canvasRef2,
+    onDocumentLoadSuccess: handleDocumentLoadSuccess,
+    onError: handleDocumentLoadError,
+  });
+
+  const handleCanvasClick = (e) => {
+    const rect = e.target.getBoundingClientRect();
+    const clickX = e.clientX - rect.left;
+    const midPoint = rect.width / 2;
+
+    if (mode === 'single') {
+      if (clickX < midPoint) {
+        setPage(prev => Math.max(prev - 1, 1));
+      } else {
+        setPage(prev => Math.min(prev + 1, pdfDocument.numPages));
+      }
+    } else if (mode === 'double') {
+      if (clickX < midPoint) {
+        setPage(prev => Math.max(prev - 2, 1));
+      } else {
+        setPage(prev => {
+          const newPage = prev + 2;
+          return newPage <= pdfDocument.numPages ? newPage : prev;
+        });
       }
     }
   };
 
-  const handleClick = (event) => {
-    const { left, width } = event.target.getBoundingClientRect();
-    const clickX = event.clientX - left;
-    if (clickX < width / 2) {
-      if (currentPage > 0) setCurrentPage(currentPage - 2);
+  useEffect(() => {
+    // Ensure proper page handling at the end of the document
+    if (mode === 'double' && pdfDocument && page + 1 > pdfDocument.numPages) {
+      setPage(prev => Math.max(prev - 2, 1));
+    }
+    else if (mode === 'single' && pdfDocument && page + 1 > pdfDocument.numPages) {
+      setPage(1);
+    }
+  }, [pdfDocument, page, mode]);
+
+  // Ensure safe access to pdfDocument.numPages
+  const numPages = pdfDocument?.numPages || 0;
+  const nextPageNumber = mode === 'double' && page + 1 <= numPages ? page + 1 : null;
+
+  return (
+    <div>
+      
+
+      {!pdfDocument && !pdfPage && <span>Loading PDF...</span>}
+      {pdfDocument && (
+        <>
+          {mode === 'single' && (
+            <canvas  style={{ width:'100%', }} ref={canvasRef1} onClick={(e) => handleCanvasClick(e)} />
+          )}
+          {mode === 'double' && (
+            <div style={{ display: 'flex', justifyContent: 'space-between' }}>
+              <canvas ref={canvasRef1} onClick={(e) => handleCanvasClick(e)} style={{ width: '49%', height: 'auto' }} />
+              {nextPageNumber && (
+                <canvas ref={canvasRef2} onClick={(e) => handleCanvasClick(e)} style={{ width: '49%', height: 'auto' }} />
+              )}
+            </div>
+          )}
+        </>
+      )}
+
+      <div style={{ textAlign: 'center', marginBlock: '10px', color: 'white' }}>
+        {pdfDocument && (
+          <>
+            {mode === 'single' && <span>Page {page} of {numPages}</span>}
+            {mode === 'double' && (
+              <span>
+                Pages {page} - {nextPageNumber} of {numPages}
+              </span>
+            )}
+          </>
+        )}
+      </div>
+    </div>
+  );
+};
+
+
+
+
+const CustomYouTubePlayer = ({ setVideoProgress, setIsPlayingProp, videoUrl }) => {
+  const [isPlaying, setIsPlaying] = useState(false);
+  const [isBuffering, setIsBuffering] = useState(false);
+  const [progress, setProgress] = useState(0); // State for progress
+  const playerRef = useRef(null);
+  const progressRef = useRef(null); // Ref to store the interval
+
+  // Function to extract video ID from URL
+  const extractVideoId = (url) => {
+    try {
+      const parsedUrl = new URL(url);
+      const params = new URLSearchParams(parsedUrl.search);
+      return params.get('v');
+    } catch (error) {
+      console.error('Invalid URL', error);
+      return null;
+    }
+  };
+
+  // YouTube player options
+  const opts = {
+    height: '100%',
+    width: '100%',
+    playerVars: {
+      controls: 0,
+      modestbranding: 1,
+      fs: 0,
+      rel: 0,
+    },
+  };
+
+  // Handle player state changes
+  const onReady = (event) => {
+    const player = event.target;
+    player.mute();
+    event.target.addEventListener('onStateChange', (e) => {
+      if (e.data === window.YT.PlayerState.PLAYING) {
+        setIsPlaying(true);
+        setIsBuffering(false);
+        startProgressTracking(event.target);
+      } else if (e.data === window.YT.PlayerState.BUFFERING) {
+        setIsBuffering(true);
+      } else {
+        setIsPlaying(false);
+        setIsBuffering(false);
+      }
+    });
+  };
+
+  // Start tracking progress
+  const startProgressTracking = (player) => {
+    const interval = 500; // Interval for progress updates
+    const updateProgress = () => {
+      const currentTime = player.getCurrentTime();
+      const duration = player.getDuration();
+      const newProgress = (currentTime / duration) * 100;
+      setVideoProgress(newProgress);
+      setProgress(newProgress); // Update internal state
+    };
+
+    progressRef.current = setInterval(updateProgress, interval);
+  };
+
+  // Cleanup progress tracking on unmount
+  useEffect(() => {
+    return () => {
+      if (progressRef.current) {
+        clearInterval(progressRef.current);
+      }
+    };
+  }, []);
+
+  // Toggle play/pause state
+  const togglePlayPause = () => {
+    if (isPlaying) {
+      playerRef.current.internalPlayer.pauseVideo();
+      setIsPlayingProp(false);
+      setIsPlaying(false);
     } else {
-      if (currentPage + 2 < pdf.numPages) setCurrentPage(currentPage + 2);
+      playerRef.current.internalPlayer.playVideo();
+      setIsPlayingProp(true);
+      setIsPlaying(true);
     }
   };
 
   return (
-    <div className="pdf-viewer">
-      <canvas ref={canvasRefs[0]} className="pdf-canvas" onClick={handleClick} />
-      <canvas ref={canvasRefs[1]} className="pdf-canvas" onClick={handleClick} />
+    <div
+      className={`${styles['player']} ${isPlaying ? styles['playing'] : ''} ${isBuffering ? styles['buffering'] : ''}`}
+      onClick={togglePlayPause}
+    >
+      <YouTube
+        videoId={extractVideoId(videoUrl)}
+        opts={opts}
+        onReady={onReady}
+        ref={playerRef}
+      />
+     
     </div>
   );
 };

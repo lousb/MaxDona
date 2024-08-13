@@ -6,6 +6,7 @@ import { db } from '../../../firebase/firebase';
 import { Link } from "react-router-dom";
 import { DragDropContext, Droppable, Draggable } from '@hello-pangea/dnd';
 
+
 const AllProjects = () => {
   const { dispatch } = useFooter();
 

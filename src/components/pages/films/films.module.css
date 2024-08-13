@@ -64,6 +64,7 @@
     background-size: cover;
     background-position: center;
     position: relative;
+    transition: 500ms background-image ease;
 
 }
 .film-project-item::before{
@@ -96,7 +97,6 @@ background: linear-gradient(36deg, rgba(0,0,0,0.5228466386554622) 0%, rgba(255,2
 
     max-height:calc(100svh - 4vw - 90px);
     margin-bottom: 4vw;
-    overflow-y: scroll;
     overflow-x: hidden;
     border-radius: 18px;
     width: 100%;
@@ -104,12 +104,6 @@ background: linear-gradient(36deg, rgba(0,0,0,0.5228466386554622) 0%, rgba(255,2
     pointer-events: all;
     display: flex;
     align-items: end;
-}
-.film-project-scroll-container a:nth-child(even) .film-project-item{
-    background-color: red;
-}
-.film-project-scroll-container a:nth-child(odd) .film-project-item{
-    background-color: blue;
 }
 .film-project-item p{
     margin-block: 0em;
@@ -177,7 +171,7 @@ a:has(.film-project-item) > .film-project-item:nth-child(2){
     opacity: 1;
 }
 
-.film-page-wrap button.view-toggle-active{
+button.view-toggle-active{
     opacity: 1;
 }
 
@@ -211,33 +205,33 @@ a:has(.film-project-item) > .film-project-item:nth-child(2){
     margin:0;
 }
 
-.film-page-wrap:has(.slow-toggle.view-toggle-active) .view-bracket-wrap{
+.film-page:has(.slow-toggle.view-toggle-active) .view-bracket-wrap{
     top:0;
     width: 80%;
     left:10%;
   }
-.film-page-wrap:has(.fast-toggle.view-toggle-active) .view-bracket-wrap{
+.film-page:has(.fast-toggle.view-toggle-active) .view-bracket-wrap{
     top:29%;
     width: 72%;
     left:15%;
   }
-  .film-page-wrap:has(.medium-toggle.view-toggle-active) .view-bracket-wrap{
+  .film-page:has(.medium-toggle.view-toggle-active) .view-bracket-wrap{
     top:57%;
     width: 70%;
     left:15%;
   }
 
-  .film-page-wrap:has(.slow-toggle:hover) .view-bracket-wrap{
+  .film-page:has(.slow-toggle:hover) .view-bracket-wrap{
     top:0;
     width: 80%;
     left:10%;
 }
-.film-page-wrap:has(.medium-toggle:hover) .view-bracket-wrap{
+.film-page:has(.medium-toggle:hover) .view-bracket-wrap{
     top:57%;
     width: 70%;
     left:15%;
 }
-.film-page-wrap:has(.fast-toggle:hover) .view-bracket-wrap{
+.film-page:has(.fast-toggle:hover) .view-bracket-wrap{
     top:29%;
     width: 72%;
     left:15%;
@@ -302,6 +296,9 @@ a:has(.film-project-item) > .film-project-item:nth-child(2){
 }
 .film-page-title-wrap div:has(h2){
     width: 49.2% !important;
+}
+.film-page-wrap .pin-spacer{
+    padding:0;
 }
 .scroll-notification{
     color:black;

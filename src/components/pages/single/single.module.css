@@ -54,7 +54,7 @@
     width: 100%;
     opacity: 1;
     height: 100%;
-    background-image: url(/public/imagery/Films/Domengo\ Hero\ Image.png);
+    background: #EEEEEE;
     background-size: cover;
     position: absolute;
     background-position: center;
@@ -193,6 +193,10 @@
 .details-title{
     width: 100%;
     margin-bottom: 20px !important;
+    word-break: break-all;
+    -moz-hyphens: manual;
+    -ms-hyphens: manual;
+    hyphens: manual;
 }
 
 
@@ -215,7 +219,7 @@
     cursor: none;
     border-radius: 20px;
     width:49.2%;
-    background-image: url(/public/imagery/Films/Domengo\ Hero\ Image.png);
+    background: #EEEEEE;
 }
 .details-description{
     width: 14.2vw !important;
@@ -265,8 +269,11 @@
 }
 
 .details-section-wrap{
-    width: 49.2%;
+
+    width: calc(49.2% - 4svw);
+
 }
+
 .gallery-page{
     width: 92svw;
     margin-inline: 4svw;

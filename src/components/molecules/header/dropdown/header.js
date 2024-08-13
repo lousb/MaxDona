@@ -7,6 +7,7 @@ import Hamburger from "../../../../components/atoms/buttons/hamburger/hamburger.
 import { Link } from "react-router-dom";
 import { gsap } from "gsap";
 import useMousePosition from "../../../../utils/useMousePosition.js";
+import DelayLink from "../../../../utils/headerDelayLink.js";
 
 function Header() {
   // State variables to manage header and navigation visibility
@@ -23,6 +24,7 @@ function Header() {
   const hoverDescRef = useRef(null);
   const wobbleTimeoutRef = useRef(null); // Ref to store the timeout
 
+  
   
   let xPercent = 0;
 
@@ -157,6 +159,7 @@ useEffect(() => {
         isActive ? styles["header-toggled"] : ''
       } ${isActive ?'header-toggled-global' : ''}`} // Set class names based on isActive state
       onExitComplete={handleNavExitComplete} // Callback when navigation exit animation completes
+      
     >
       <div className={`header-wrap ${styles["header-wrap"]}`}>
         <div>
@@ -183,9 +186,16 @@ useEffect(() => {
       >
         {/* Header logo */}
         <div className={styles["header-logo"]}>
-          <a className='header-logo-link 'href='/'>
+        <DelayLink
+            className='header-logo-link '
+            to={`/`} // Specify the destination link here
+            delay={2000} // Set the delay in milliseconds (e.g., 1000ms = 1 second)
+          >
             <img className="header-logo" src="/LOGO-DESKTOP.svg" alt="Logo" ></img>
-          </a>
+          </DelayLink>
+
+            
+
 
         </div>
 
@@ -210,7 +220,7 @@ useEffect(() => {
       </motion.div>
       </div>
       </div>
-
+        
       <div
         className={`header-hover-desc ${styles["header-hover-desc"]}`}
         ref={hoverDescRef}
