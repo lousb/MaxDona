@@ -59,6 +59,9 @@ function Home() {
 
 
     useEffect(() => {
+      document.documentElement.style.setProperty('--primary-color', '#181818');
+      document.documentElement.style.setProperty('--secondary-dark', 'rgb(10, 10, 10)');
+      
       return () => {
         window.scrollTo(0, 0);
       };

@@ -6,6 +6,14 @@
     margin-inline: 4%;
 
 }
+.contact-page .mask-image{
+    transform: translateY(-100%);
+    transform-origin: center center !important;
+    object-position: center top;
+}
+.contact-page .mask-image:hover{
+    transform: translateY(-95%);
+}
 .contact-heading-wrap .heading{
     margin-left:122px;
     font-size: 6em !important;
@@ -183,7 +191,8 @@ a{
 }
 .contact-image-wrap .mask-mouse-area{
     align-items: start;
-    height: calc(90vh - 180px);
+    height: fit-content;
+    padding-bottom: 5rem;
 }
 .contact-image-wrap .mask-image-wrap{
     transition: cubic-bezier(0.76, 0, 0.24, 1) all 700ms, height 0ms;

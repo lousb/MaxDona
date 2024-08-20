@@ -292,42 +292,45 @@ const handleAdd = async (e) => {
       }
     }
 
-  // Iterate over large image sections
-  for (let sectionIndex = 0; sectionIndex < largeImageSections.length; sectionIndex++) {
-    if (imageFiles[sectionIndex]?.largeImages?.[sectionIndex]) {
-      const file = imageFiles[sectionIndex].largeImages[sectionIndex];
+  
+
+
+  // For detail sections
+  for (const detailSection of detailSections) {
+    const detailId = parseInt(detailSection.id.replace('detail', '')); // Extract numeric part and convert to zero-based index
+    projectData.details[detailId] = {
+      firstDescription: data[`${detailSection.id}-detailsFirstDescription`],
+      secondDescription: data[`${detailSection.id}-detailsSecondDescription`],
+      title: data[`${detailSection.id}-detailsTitle`],
+      featuredImage: {}, // Initialize featuredImage as a map
+    };
+
+    // If featured image is not null and is a File, upload and get download URL
+    if (imageFiles[detailId]?.featuredImage?.[0]) {
+      const file = imageFiles[detailId].featuredImage[0];
       const name = new Date().getTime() + file.name;
-      const storageRef = ref(storage, `largeImages/${name}`);
+      const storageRef = ref(storage, `featuredImages/${name}`);
       const uploadTask = uploadBytesResumable(storageRef, file);
       await uploadTask;
       const downloadURL = await getDownloadURL(uploadTask.snapshot.ref);
 
-      // Resize the image for BlurHash generation
+      // Generate and upload blurhash
       const resizedImage = await resizeImage(file, 50);
-
-      // Generate BlurHash for the resized image
       const blurhash = await generateBlurHash(resizedImage);
 
-      // Upload the blurhashed image to Firebase Storage with the modified filename
       const blurhashName = new Date().getTime() + '-blurhash.jpeg';
-      const blurhashStorageRef = ref(storage, `largeImages/${blurhashName}`);
+      const blurhashStorageRef = ref(storage, `featuredImages/${blurhashName}`);
       const blurhashUploadTask = uploadBytesResumable(blurhashStorageRef, resizedImage);
       await blurhashUploadTask;
       const blurhashDownloadURL = await getDownloadURL(blurhashUploadTask.snapshot.ref);
 
-      // Check if largeImageSections[sectionIndex] is undefined and initialize it as an empty object if needed
-      if (!projectData.largeImageSections[sectionIndex]) {
-        projectData.largeImageSections[sectionIndex] = {};
-      }
-
-      // Save the large image URL and BlurHash URL
-      projectData.largeImageSections[sectionIndex] = {
+      // Update the projectData with the map of URLs
+      projectData.details[detailId].featuredImage = {
         url: downloadURL,
-        blurhash: blurhashDownloadURL // Save the URL of the blurhash image instead of the blurhash code
+        blurhash: blurhashDownloadURL,
       };
     }
   }
-
 
     
     

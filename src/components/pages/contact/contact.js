@@ -17,6 +17,11 @@ function Contact(){
         
     }, [location]);
 
+    useEffect(()=>{
+      document.documentElement.style.setProperty('--primary-color', '#181818');
+      document.documentElement.style.setProperty('--secondary-dark', 'rgb(10, 10, 10)');
+    }, [])
+
     const DynamicVideoPlayer = ({ image, isSection3Visible, windowWidth }) => {
         const maskRef = useRef(null);
         const imageRef = useRef(null);
@@ -124,7 +129,7 @@ function Contact(){
                     </div>
                 </div>
                 <div className="contact-image-wrap">
-                    <DynamicVideoPlayer image={'./Imagery/DP.webp'}/>
+                    <DynamicVideoPlayer image={'./maxPortrait.jpg'}/>
                   
 
                 </div>

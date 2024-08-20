@@ -11,6 +11,7 @@ import Reveal from "../../../utils/textElementReveal/textElementReveal";
 import { AnimatePresence , motion} from "framer-motion";
 import Masonry, {ResponsiveMasonry} from "react-responsive-masonry";
 import DelayLink from "../../../utils/delayLink";
+import useMousePosition from "../../../utils/useMousePosition";
 
 
 gsap.registerPlugin(ScrollTrigger);
@@ -68,6 +69,10 @@ function Films() {
     }, [dispatch]);
 
     useEffect(() => {
+        ScrollTrigger.refresh();
+    }, [data]);
+
+    useEffect(() => {
         const unsub = onSnapshot(collection(db, "projects"), (snapShot) => {
             let list = [];
             snapShot.docs.forEach((doc) => {
@@ -77,6 +82,9 @@ function Films() {
         }, (error) => {
             console.error(error);
         });
+
+        document.documentElement.style.setProperty('--primary-color', '#181818');
+        document.documentElement.style.setProperty('--secondary-dark', 'rgb(10, 10, 10)');
 
         return () => unsub();
     }, []);
@@ -149,64 +157,90 @@ function Films() {
        }, 800);
    };
     
-    
-
    const slowViewAnimations = () => {
-       const filmProjectItems = document.querySelectorAll('.film-project-item');
-       const itemHeight = window.innerHeight * 0.8 - 90;
-       const totalHeight = (data.length - 1) * itemHeight;
-       const maxTranslateY = (data.length - 1) * 100 - 20.8;
+        const filmProjectItems = document.querySelectorAll('.film-project-item');
+        const itemHeight = window.innerHeight * 0.8 - 90;
+        const totalHeight = (data.length - 1) * itemHeight;
+        const maxTranslateY = (data.length - 1) * 100 - 20.8;
 
-       ScrollTrigger.create({
-           trigger: '.film-page-wrap',
-           start: 'top top',
-           pin: '.film-page-wrap',
-           end: () => `+=${totalHeight}`,
-           onUpdate: (self) => {
-               const progress = self.progress * maxTranslateY;
-               filmProjectItems.forEach((item) => {
-                   gsap.to(item, { y: `-${progress}%`, ease: 'none' });
-               });
-           },
-       });
+        ScrollTrigger.create({
+            trigger: '.film-page-wrap',
+            start: 'top top',
+            pin: '.film-page-wrap',
+            end: () => `+=${totalHeight}`,
+            onUpdate: (self) => {
+                const progress = self.progress * maxTranslateY;
+                filmProjectItems.forEach((item) => {
+                    gsap.to(item, { y: `-${progress}%`, ease: 'none' });
+                });
+            },
+        });
 
-       gsap.fromTo('.film-project-scroll-container', {
-           height: 'calc(70svh - 90px)',
-       }, {
-           height: 'calc(100svh - 4vw - 90px)',
-           scrollTrigger: {
-               trigger: '.page-content',
-               start: 'top top',
-               end: '600',
-               scrub: true,
-               id: "scrub",
-           },
-       });
+        gsap.fromTo('.film-project-scroll-container', {
+            height: 'calc(70svh - 90px)',
+        }, {
+            height: 'calc(100svh - 4vw - 90px)',
+            scrollTrigger: {
+                trigger: '.page-content',
+                start: 'top top',
+                end: '600',
+                scrub: true,
+                id: "scrub",
+            },
+        });
 
-       gsap.fromTo('.film-project-item', {
-           height: 'calc(70svh - 90px)'
-       }, {
-           height: 'calc(80svh - 90px)',
-           scrollTrigger: {
-               trigger: '.page-content',
-               start: 'top top',
-               end: '200',
-               scrub: true,
-               id: "scrub",
-           },
-       });
+        gsap.fromTo('.film-project-item', {
+            height: 'calc(70svh - 90px)'
+        }, {
+            height: 'calc(80svh - 90px)',
+            scrollTrigger: {
+                trigger: '.page-content',
+                start: 'top top',
+                end: '200',
+                scrub: true,
+                id: "scrub",
+            },
+        });
 
-       gsap.to('.film-page-title-wrap', {
-           y: '-300px',
-           scrollTrigger: {
-               trigger: document.body,
-               start: 'top top',
-               end: '500px top',
-               scrub: true,
-               id: "scrub",
-           },
-       });
-   };
+        gsap.to('.film-page-title-wrap', {
+            y: '-300px',
+            scrollTrigger: {
+                trigger: document.body,
+                start: 'top top',
+                end: '500px top',
+                scrub: true,
+                id: "scrub",
+            },
+        });
+
+        //    filmProjectItems.forEach((item) => {
+        //        const detailsElement = item.querySelector('.project-item-details');
+        //        console.log("Creating ScrollTrigger for:", detailsElement);
+
+        //        if (detailsElement) {
+        //            const itemRect = item.getBoundingClientRect();
+        //            const start = itemRect.top + window.scrollY;
+        //            const end = start + item.offsetHeight;
+
+        //            ScrollTrigger.create({
+        //                trigger: item,
+        //                start: `-=${window.innerHeight + (window.innerWidth * 0.04) - detailsElement.offsetHeight} top`, // Adjusted start to match the filmProjectItem's top
+        //                end: () => `+=${item.offsetHeight}`, // End is the height of the item to match its end
+        //                scrub: 1,
+        //                markers: true, // Use markers to debug and adjust
+        //                onUpdate: (self) => {
+        //                    // Calculate the Y translation based on scroll progress
+        //                    gsap.to(detailsElement, {
+        //                        y: self.progress * (item.offsetHeight - detailsElement.offsetHeight),
+        //                        duration: 0,
+        //                        overwrite: 'auto',
+        //                    });
+        //                }
+        //            });
+        //        }
+        //    });
+    };
+
 
 
     const mediumViewAnimations = () => {
@@ -222,6 +256,16 @@ function Films() {
                 id: "scrub",
             },
         });
+        gsap.to('.film-page-title-wrap', {
+            y: '-30vh',
+            scrollTrigger: {
+                trigger: document.body,
+                start: 'top top',
+                end: '500px top',
+                scrub: true,
+                id: "scrub",
+            },
+        });
     };
 
     const fastViewAnimations = () => {
@@ -233,6 +277,16 @@ function Films() {
                 trigger: '.film-page-wrap',
                 start: 'top top',
                 end: '1000',
+                scrub: true,
+                id: "scrub",
+            },
+        });
+        gsap.to('.film-page-title-wrap', {
+            y: '-30vh',
+            scrollTrigger: {
+                trigger: document.body,
+                start: 'top top',
+                end: '500px top',
                 scrub: true,
                 id: "scrub",
             },
@@ -256,6 +310,117 @@ function Films() {
         }, 800); // Allow time for layout recalculations
     }, [activeView, data]);
     
+
+
+
+
+
+
+
+    const hoverDescRef = useRef(null);
+    const { x, y } = useMousePosition(".App");
+    const [hoverDescHeight, setHoverDescHeight] = useState(0);
+    const [prevX, setPrevX] = useState(0);
+    const [prevY, setPrevY] = useState(0);
+    const [velocity, setVelocity] = useState({ vx: 0, vy: 0 });
+    const [currentProject, setCurrentProject] = useState(''); // Initialize with first item's focusGenre
+    const [wobble, setWobble] = useState({ translateY: 0, rotate: 0 }); // State for wobble effect
+    const wobbleTimeoutRef = useRef(null); // Ref to store the timeout
+    const [projectColour, setProjectColour] = useState(0);
+    const [prevHover, setPrevHover] = useState([data[0]]);
+    const [lastHoveredIndex, setLastHoveredIndex] = useState(null);
+    const [currentHoveredIndex, setCurrentHoveredIndex] = useState(null);
+
+    const infiniteScrollData = data.length < 5 ? [...data, ...data.slice(0, 5 - data.length)] : data;
+
+    const handleMouseLeave = () => {
+        setCurrentHoveredIndex(null);
+        gsap.to('.fast-hover-desc .link-desc > span', {
+            y: '100%',
+            duration: 0.2,
+        });
+    };
+
+    useEffect(() => {
+        if (currentHoveredIndex !== null && currentHoveredIndex !== lastHoveredIndex) {
+            setLastHoveredIndex(currentHoveredIndex);
+        }
+    }, [currentHoveredIndex, lastHoveredIndex]);
+
+    const handleMouseEnter = (item) => {
+        setProjectColour(item.projectColor);
+        gsap.to('.fast-hover-desc .link-desc > span', {
+            y: '100%',
+            duration: 0.3,
+            onComplete: () => {
+                setCurrentProject(item.focusGenre);
+                gsap.to('.fast-hover-desc .link-desc > span', {
+                    y: '100%',
+                    color: item.projectColor,
+                    opacity: 0,
+                    duration: 0,
+                    onComplete: () => {
+                        gsap.to('.fast-hover-desc .link-desc > span', {
+                            y: '0%',
+                            opacity: 1,
+                            duration: 0.3,
+                            delay: 0.3,
+                        });
+                    },
+                });
+            },
+        });
+    };
+
+    useEffect(() => {
+        const calculateVelocity = () => {
+            const vx = x - prevX;
+            const vy = y - prevY;
+            setVelocity({ vx, vy });
+            setPrevX(x);
+            setPrevY(y);
+        };
+
+        calculateVelocity();
+    }, [x, y]);
+
+    const clamp = (value, min, max) => Math.max(min, Math.min(max, value));
+
+    const maxTranslation = 3;
+    const maxRotation = 1.5;
+
+    useEffect(() => {
+        const wobbleEffect = {
+            translateY: clamp(velocity.vy * 1.5, -maxTranslation, maxTranslation),
+            rotate: clamp(velocity.vx * 1.5, -maxRotation, maxRotation),
+        };
+        setWobble(wobbleEffect);
+
+        if (wobbleTimeoutRef.current) {
+            clearTimeout(wobbleTimeoutRef.current);
+        }
+
+        wobbleTimeoutRef.current = setTimeout(() => {
+            setWobble({ translateY: 0, rotate: 0 }); // Reset to baseline
+        }, 100); // Reset after 100ms of inactivity
+
+        return () => clearTimeout(wobbleTimeoutRef.current);
+    }, [velocity]);
+
+    useEffect(() => {
+        const spanElement = document.querySelector('.fast-hover-desc .link-desc > span');
+
+        if (activeView === 'fast') {
+            gsap.to('.fast-hover-desc', {
+                width: spanElement.clientWidth,
+                duration: 0,
+            });
+            gsap.to('.fast-hover-desc', {
+                height: spanElement.clientHeight,
+                duration: 1,
+            });
+        }
+    }, [currentProject, activeView]);
     
     
 
@@ -339,16 +504,40 @@ function Films() {
                 )}
                
                {activeView === 'fast' && (
-                   <motion.div
-                       className={`${styles['project-wrap']} project-wrap`}
+                <>
+                <div
+                  className={`fast-hover-desc`}
+                  ref={hoverDescRef}
+                  style={{
+                    position: "fixed",
+                    left: `${x - 14}px`,
+                    top: `${y - hoverDescHeight / 2}px`,
+                    transform: `translateY(${wobble.translateY}px) rotate(${wobble.rotate}deg)`,
+                  }}
+                >
+                  <div className={`fast-hover-svg-wrap`}>
+                    <svg width="17" height="25" viewBox="0 0 17 25" fill="none" xmlns="http://www.w3.org/2000/svg" className={`fast-hover-arrow`}>
+                    <path style={{ fill: `${projectColour}` }} fill-rule="evenodd" clip-rule="evenodd" d="M2.0078 4.99998H0.29C0.193334 4.99998 0 4.95453 0 4.77271V0.22727C0 0 0.348 0 0.580001 0H1.74023H6.38H6.38086H8.12023H11.2382H12.1809H16.2405V4.63965V6.37983V10.4395V10.4473H16.2435V16.2471C16.2435 16.4791 16.2435 16.8271 16.0053 16.8271H11.2411C11.0506 16.8271 11.0029 16.6338 11.0029 16.5371V10.7739C11.0009 10.7578 11 10.7427 11 10.7295V8.99603L6.39529 13.6006L6.39552 13.6008L3.92365 16.0726C3.82477 16.1715 3.67646 16.3198 3.50954 16.1529L0.171188 12.8146C0.037654 12.6811 0.0866662 12.5653 0.127864 12.5241L1.48753 11.1645L1.4873 11.1642L7.65128 5.00047H2.03023C2.02257 5.00047 2.01509 5.0003 2.0078 4.99998Z" fill="#181818"/>
+                    </svg>
+                  </div>
+
+                  <p className={`body link-desc`}>
+                    <span dangerouslySetInnerHTML={{ __html: currentProject }}></span>
+                  </p>
+                </div>
+                <motion.div
+                       className={`${styles['project-wrap']} high-z-index-layer project-wrap`}
                        key="fast"
                        initial={{ opacity: 0, y: '20%' }}
                        animate={{ opacity: 1, y: '0%', transition: { duration: 1, delay: 0.4, ease: [0.76, 0, 0.24, 1] } }}
                        exit={{ opacity: 0, y: '20%' }}
                        transition={{ duration: 0.8, ease: [0.76, 0, 0.24, 1] }}
                    >
-                       <FastView data={data} filmProjectItemsRef={filmProjectItemsRef} onHoverImage={handleHoveredImageChange} handleDelayStart={handleDelayStart} />
+                       <FastView data={data} filmProjectItemsRef={filmProjectItemsRef} onHoverImage={handleHoveredImageChange} handleDelayStart={handleDelayStart} onMouseEnter={handleMouseEnter} onMouseLeave={handleMouseLeave} setCurrentHoveredIndex={setCurrentHoveredIndex}
+                       />
                    </motion.div>
+                </>
+                   
                )}
                  {activeView === 'medium' && (
                     <motion.div
@@ -385,18 +574,17 @@ const SlowView = ({ data, filmProjectItemsRef, handleDelayStart }) => {
                             key={`slow-${project.id}-${index}`} // Ensure unique key
                         >
                             <div
-                                style={{ backgroundImage: `url(${mainImageLoaded ? project?.mainFeaturedImage?.url : project?.mainFeaturedImage?.blurhash})`}}
+                                style={{ backgroundImage: `url(${project?.mainFeaturedImage?.blurhash}`}}
                                 ref={(el) => (filmProjectItemsRef.current[index] = el)}
                                 className={`${styles['film-project-item']} film-project-item`}
                             >
                                 <img
                                   src={project?.mainFeaturedImage?.url}
                                   alt="main featured"
-                                  style={{ display: 'none' }}
                                   onLoad={() => setMainImageLoaded(true)}
                                 />
                                 {index === 0 ? (
-                                    <>
+                                    <div>
                                         <h2 className={`header-reduced ${styles['film-project-title']} ${styles['film-project-desc-item']}`}>
                                             {project.displayName}
                                         </h2>
@@ -407,10 +595,10 @@ const SlowView = ({ data, filmProjectItemsRef, handleDelayStart }) => {
                                             {project.videoName} ({new Date(project.releaseDate).getFullYear()})
                                         </div>
                                         <p className={`primary-button ${styles['film-project-cta']} ${styles['film-project-desc-item']}`}>FULL PROJECT</p>
-                                    </>
+                                    </div>
                                 ) : (
-                                    <>
-                                        <h2 className={`header-reduced ${styles['film-project-title']} ${styles['film-project-desc-item']}`}>
+                                    <div className="project-item-details">
+                                        <h2 className={`header-reduced ${styles['film-project-title']} ${styles['film-project-desc-item']}`} style={{paddingBottom:'14px'}}>
                                             <Reveal custom={0} textContent={project.displayName} element={"span"} elementClass={`heading`} />
                                         </h2>
                                         <h3 className={`body ${styles['film-project-director']} ${styles['film-project-desc-item']}`} >
@@ -419,10 +607,10 @@ const SlowView = ({ data, filmProjectItemsRef, handleDelayStart }) => {
                                         <div className={`body ${styles['film-project-video-name']} ${styles['film-project-desc-item']}`} >
                                             <Reveal custom={2} textContent={`${project.videoName} (${new Date(project.releaseDate).getFullYear()})`} element={'p'} elementClass={"body"} />
                                         </div>
-                                        <div className={`primary-button ${styles['film-project-cta']} ${styles['film-project-desc-item']}`} >
-                                            <Reveal custom={3} textContent={`FULL PROJECT HERE`} element={'p'} elementClass={`primary-button ${styles['film-project-cta']} ${styles['film-project-desc-item']}`} />
+                                        <div className={` ${styles['film-project-cta']} ${styles['film-project-desc-item']}`} >
+                                            <Reveal custom={3} textContent={`FULL PROJECT`} element={'p'} elementClass={`primary-button ${styles['film-project-cta']} ${styles['film-project-desc-item']}`} />
                                         </div>
-                                    </>
+                                    </div>
                                 )}
                             </div>
                         </DelayLink>
@@ -532,6 +720,7 @@ const MediumView = ({ data, handleDelayStart }) => {
             <ResponsiveMasonry columnsCountBreakPoints={{ 300: 1, 500: 2, 700: 3, 900: 4 }}>
                 <Masonry columnsCount={4} gutter="1.4vw">
                     {randomImagesWithInfo.map((imageInfo, index) => (
+                        
                         <DelayLink 
                             delay={1500} 
                             onDelayStart={() => handleDelayStart(imageInfo.projectColor)}  
@@ -624,48 +813,65 @@ const ParallaxImage = ({ imageUrl, blurhash, handleDelayStart }) => {
     );
   };
 
-  const FastView = ({ data, filmProjectItemsRef, onHoverImage, handleDelayStart }) => {
-      const [lastHoveredIndex, setLastHoveredIndex] = useState(null);
-      const [currentHoveredIndex, setCurrentHoveredIndex] = useState(null);
+  const FastView = ({ data, filmProjectItemsRef, onHoverImage, handleDelayStart, onMouseEnter, onMouseLeave }) => {
+    const [lastHoveredIndex, setLastHoveredIndex] = useState(0);
+    const [currentHoveredIndex, setCurrentHoveredIndex] = useState(null);
+    
 
-      const infiniteScrollData = data.length < 5 ? [...data, ...data.slice(0, 5 - data.length)] : data;
+    const infiniteScrollData = data.length < 5 ? [...data, ...data.slice(0, 5 - data.length)] : data;
 
-      const handleHoverImage = (url, blurhash, index) => {
-          onHoverImage({ url, blurhash });
-          setCurrentHoveredIndex(index);
-      };
+    const handleHoverImage = (url, blurhash, index, project) => {
+        onHoverImage({ url, blurhash });
+        setCurrentHoveredIndex(index);
 
-      const handleMouseLeave = () => {
-          setCurrentHoveredIndex(null);
-      };
+        onMouseEnter(project);
+    };
 
-      useEffect(() => {
-          if (currentHoveredIndex !== null && currentHoveredIndex !== lastHoveredIndex) {
-              setLastHoveredIndex(currentHoveredIndex);
-          }
-      }, [currentHoveredIndex, lastHoveredIndex]);
+    const handleMouseLeave = () => {
+        setCurrentHoveredIndex(null);
+
+
+        onMouseLeave();
+    };
+
+    useEffect(() => {
+        if (currentHoveredIndex !== null && currentHoveredIndex !== lastHoveredIndex) {
+            setLastHoveredIndex(currentHoveredIndex);
+        }
+    }, [currentHoveredIndex, lastHoveredIndex]);
+
+
+
+
+   
+
 
       return (
-          <div className={`${styles['infinite-scroll-map-wrap']} infinite-scroll-map-wrap`}>
+          <div className={`infinite-scroll-map-wrap  ${styles['infinite-scroll-map-wrap']}`}>
+            
               {infiniteScrollData.map((project, index) => (
-                  <DelayLink
-                      delay={1500}
-                      to={`/projects/${project.id}`}
-                      onDelayStart={() => handleDelayStart(project.projectColor)}
-                      className={`${styles['view-list-item-link']} view-list-item-link`}
-                      key={`fast-link-${project.id}-${index}`}
-                  >
-                      <div
-                          onMouseEnter={() => handleHoverImage(project?.mainFeaturedImage?.url, project?.mainFeaturedImage?.blurhash, index)}
-                          onMouseLeave={handleMouseLeave}
-                          className={`${styles['infinite-film-project-item']} film-project-item infinite-film-project-item ${(lastHoveredIndex === index || currentHoveredIndex === index) ? 'hovered-project' : ''}`}
-                          key={`fast-item-${project.id}-${index}`}
-                      >
-                          <h2 className={`title ${styles['infinite-film-title']}`}>
-                              {project.displayName}
-                          </h2>
-                      </div>
-                  </DelayLink>
+                <div className={`${styles['fast-project-wrap']} ${(lastHoveredIndex === index || currentHoveredIndex === index) ? `hovered-fast-project-wrap` : ''}`}>
+                    <div className={`project-color`} style={{ backgroundColor: project.projectColor }}></div>
+                    <DelayLink
+                        delay={1500}
+                        to={`/projects/${project.id}`}
+                        onDelayStart={() => handleDelayStart(project.projectColor)}
+                        className={`view-list-item-link view-list-item-link `}
+                        key={`fast-link-${project.id}-${index}`}
+                    >
+                        <div
+                            onMouseEnter={() => handleHoverImage(project?.mainFeaturedImage?.url, project?.mainFeaturedImage?.blurhash, index, project)}
+                            onMouseLeave={handleMouseLeave}
+                            className={`infinite-film-project-item  film-project-item ${styles['infinite-film-project-item']} ${(lastHoveredIndex === index || currentHoveredIndex === index) ? 'hovered-project' : ''}`}
+                            key={`fast-item-${project.id}-${index}`}
+                        >
+                            <h2 className={`title infinite-film-title`}>
+                                {project.displayName}
+                            </h2>
+                        </div>
+                    </DelayLink>
+                </div>
+                
               ))}
           </div>
       );

@@ -2,12 +2,18 @@ body{
     background-color: white;
     margin:0;
     overflow-x: hidden;
-
+    
   
 }
-html{
-    scrollbar-color: var(--secondary-dark) transparent;
+/* #root{
+display: flex;
+justify-content: center;
 }
+.App{
+    max-width: 3000px;
+    width: 100vw;
+} */
+
 body:not(:has(.loading-wrap.is-loading)){
     background-color: white !important;
 }
@@ -166,8 +172,8 @@ header:has(.header-menu-link:hover) .link-desc{
     z-index: 9999 !important;
 }
 
-.scrolled .hovered-project h2{
-    transform: translateX(0.3em);
+.hovered-project h2{
+    transform: translateX(0.2em);
 }
 body:has(.contact-page) .header-logo{
     filter: drop-shadow(1.5px 1.5px 0 white) 
@@ -193,6 +199,15 @@ body:has(.home) .header-inner-content{
 }
 footer a.primary-button{
     color: #181818 !important;
+}
+.film-project-item .primary-button::after{
+    transition: 500ms ease all !important;
+    margin-top:0.15em;
+}
+.film-project-item .primary-button{
+    padding-right: 38px !important;
+    height: fit-content;
+    line-height: 0.9em;
 }
 .scrolled .contact-max-title{
     opacity: 0;
@@ -388,9 +403,7 @@ body:has(.header-toggled-global) .large-arrow-cursor, .page-transitioning .App >
     width: 84px;
 }
 
-html.lenis, html.lenis body {
-  height: auto;
-}
+
 
 .lenis.lenis-smooth {
   scroll-behavior: auto !important;

@@ -57,6 +57,9 @@ function ReferencePeace() {
 
 
   useEffect(() => {
+    document.documentElement.style.setProperty('--primary-color', '#181818');
+    document.documentElement.style.setProperty('--secondary-dark', 'rgb(10, 10, 10)');
+    
         imageCollectionRef.current = [...Array(31).keys()].map(() => createRef());
     }, []);
 

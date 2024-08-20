@@ -186,6 +186,9 @@ function About(){
         function handleResize() {
           setWindowWidth(window.innerWidth);
         }
+
+        document.documentElement.style.setProperty('--primary-color', '#181818');
+        document.documentElement.style.setProperty('--secondary-dark', 'rgb(10, 10, 10)');
     
         // Add event listener for window resize
         window.addEventListener("resize", handleResize);

@@ -51,7 +51,7 @@ function FooterSmall() {
                 <a href="/#/about">About</a>
             </div>
             <div className={styles["footer-col-3"]}>
-                <a href="/#/films">Archive</a>
+                <a href="/#/archive">Archive</a>
                 <a href="/#/contact">Contact</a>
   
 

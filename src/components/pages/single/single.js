@@ -17,78 +17,6 @@ import './single.css'
 
 gsap.registerPlugin(ScrollTrigger);
 
-const ParallaxImage = ({ imageUrl, blurhashUrl }) => {
-  const [isHovered, setIsHovered] = useState(false);
-  const [maskPosition, setMaskPosition] = useState({ x: 0, y: 0 });
-  const imageRef = useRef(null);
-  const [imageSrc, setImageSrc] = useState(blurhashUrl);
-
-  useEffect(() => {
-    const img = new Image();
-    img.src = imageUrl;
-    img.onload = () => {
-      setImageSrc(imageUrl);
-    };
-  }, [imageUrl]);
-
-  const handleMouseMove = (e) => {
-    if (!isHovered) return;
-    const { clientX, clientY, target } = e;
-    const { left, top, width, height } = target.getBoundingClientRect();
-    const maskCenterX = left + width / 2;
-    const maskCenterY = top + height / 2;
-    const distanceX = clientX - maskCenterX;
-    const distanceY = clientY - maskCenterY;
-    const sensitivity = 0.01;
-    const x = distanceX * sensitivity;
-    const y = distanceY * sensitivity;
-    setMaskPosition({ x, y });
-  };
-
-  const handleMouseEnter = () => {
-    if (imageRef.current) {
-      imageRef.current.style.transition = 'ease all 200ms';
-      setIsHovered(true);
-      setTimeout(() => {
-        if (imageRef.current) {
-          imageRef.current.style.transition = 'cubic-bezier(0.76, 0, 0.24, 1) all 0ms, object-position 0s ease';
-        }
-      }, 600);
-    }
-  };
-
-  const handleMouseLeave = () => {
-    setIsHovered(false);
-    if (imageRef.current) {
-      imageRef.current.style.transition = 'ease all 200ms';
-      imageRef.current.style.transform = 'translate(0px, 0px) scale(1.1)';
-    }
-  };
-
-  return (
-    <div
-      className={styles['parallax-image-wrap']}
-      onMouseEnter={handleMouseEnter}
-      onMouseLeave={handleMouseLeave}
-      onMouseMove={handleMouseMove}
-    >
-      <img
-        ref={imageRef}
-        src={imageSrc}
-        alt="Parallax Image"
-        className={styles['masonry-image']}
-        style={{
-          transform: `translate(${maskPosition.x}px, ${maskPosition.y}px) scale(1.1)`,
-          filter: imageSrc === blurhashUrl ? 'blur(10px)' : 'blur(0px)',
-        }}
-      />
-    </div>
-  );
-};
-
-
-
-
 const Single = () => {
   const { projectId } = useParams();
   const [projectData, setProjectData] = useState(null);
@@ -153,17 +81,22 @@ const Single = () => {
      const projectPageSection1 = document.querySelector(`.${styles['project-page-section-1']}`);
 
      if (mainSectionDetails) {
-       gsap.to(mainSectionDetails, {
+       gsap.fromTo(mainSectionDetails, {
+         y: '0',
+         clipPath: 'polygon(0 0, 100% 0, 100% 100%, 0 100%)',
+       },{
          y: '-100',
+         clipPath: 'polygon(0 0, 1% 0, 1% 100%, 0 100%)',
          scrollTrigger: {
-           start: 'top top',
-           end: sectionRef.current.clientHeight,
-           scrub: 2,
+           start: '100px',
+           end: () => sectionRef.current.clientHeight / 0.75,
+           scrub: 1.5,
            id: 'scrub',
            trigger: sectionRef.current,
          },
        });
      }
+    
 
      if (textRevealElement) {
        gsap.to(textRevealElement, {
@@ -190,6 +123,11 @@ const Single = () => {
          },
        });
      }
+
+
+      
+
+     
 
      if (projectPageSection1) {
        gsap.to(projectPageSection1, {
@@ -421,17 +359,29 @@ const renderSection = (section, index) => {
             </section>
             <div className={`${styles['main-section-image-wrap']} main-section-image-wrap`}>
                 <div className={`${styles['main-section-image']} main-section-image`}>
-                <div className={`${styles['main-section-image-overlay']} main-section-image-overlay`} style={{ backgroundImage: `url(${mainImageLoaded ? projectData?.mainFeaturedImage?.url : projectData?.mainFeaturedImage?.blurhash})`, filter:  `${mainImageLoaded ?'blur(0px)':'blur(10px)'}`, scale:  `${mainImageLoaded ?'1':'1.1'}`}}>
-                <img
-                  src={projectData?.mainFeaturedImage?.url}
-                  alt="main featured"
-                  style={{ display: 'none' }}
-                  onLoad={() => setMainImageLoaded(true)}
-                />
+                <div
+                  className={`${styles['main-section-image-overlay']} main-section-image-overlay`}
+                  // key={mainImageLoaded ? projectData?.mainFeaturedImage?.url : projectData?.mainFeaturedImage?.blurhash}
+                  style={{
+                    backgroundImage: `url(${projectData?.mainFeaturedImage?.blurhash})`,
+                    filter: `${mainImageLoaded ? 'blur(0px)' : 'blur(10px)'}`,
+                    transform: `scale(${mainImageLoaded ? '1' : '1.1'})`,  // Use 'transform' for scaling
+                  }}
+                >
+                  <img
+                    src={projectData?.mainFeaturedImage?.url}
+                    alt="main featured"
+                  
+                    onLoad={() => {
+                      setMainImageLoaded(true);
+                    }}
+                     loading='lazy'
+                  />
+
                 </div>
                   <div className={styles['video-container']}>
                     <div className={`player__wrapper ${styles['player__wrapper']}`}>
-                      <CustomYouTubePlayer setVideoProgress={setVideoProgress} setIsPlayingProp={setIsPlayingProp}/>
+                      <CustomYouTubePlayer setVideoProgress={setVideoProgress} setIsPlayingProp={setIsPlayingProp} videoUrl={projectData?.videoLink}/>
 
                     </div>
                   </div> 
@@ -477,147 +427,236 @@ const renderSection = (section, index) => {
 export default Single;
 
 
-const ImageSection=({ groupKey, groupImages, groupIndex, handleImageClick, projectData })=>{
-  const column = useRef(null);
+const ImageSection = ({ groupKey, groupImages, groupIndex, handleImageClick, projectData }) => {
   const { projectId } = useParams();
 
-  const calculateCumulativeIndex = (groupIndex, imageIndex, data) => {
-  let clickedIndex = 0;
+  const calculateTotalIndex = (groupIndex, imageIndex, projectData) => {
+    let totalIndex = 0;
 
-  // Loop through previous groups and accumulate their image counts
-  for (let i = 0; i < groupIndex; i++) {
-    if (data?.imageUrls[`image${i + 1}`]) {
-      clickedIndex += data.imageUrls[`image${i + 1}`].length;
+    for (let i = 0; i < groupIndex; i++) {
+      const groupImages = projectData?.imageUrls[`image${i + 1}`];
+      if (groupImages) {
+        totalIndex += groupImages.length;
+      }
     }
-  }
 
-  // Add the current image index within its group
-  clickedIndex += imageIndex;
+    totalIndex += imageIndex;
+    return totalIndex;
+  };
 
-  return clickedIndex;
-};
-const calculateTotalIndex = (groupIndex, imageIndex, projectData) => {
-  let totalIndex = 0;
-
-  for (let i = 0; i < groupIndex; i++) {
-    const groupImages = projectData?.imageUrls[`image${i + 1}`];
-    if (groupImages) {
-      totalIndex += groupImages.length;
-    }
-  }
-
-  totalIndex += imageIndex;
-  return totalIndex;
-};
-
-useEffect(() => {
-  const handleImagesLoaded = () => {
-    const masonrySection = document.querySelector(`.${styles['masonry-section']}.${groupKey} > div > div`);
-
-    if (masonrySection) {
+  useEffect(() => {
+    const handleImagesLoaded = () => {
+      // Force ScrollTrigger refresh after image loading
+      ScrollTrigger.refresh();
+      
+      const masonrySection = document.querySelector(`.${styles['masonry-section']}.${groupKey} > div > div`);
+      if (!masonrySection) {
+        console.log('No masonry section found.');
+        return;
+      }
+  
       const childCount = masonrySection.childElementCount;
-
       for (let i = 0; i < childCount; i++) {
         const child = masonrySection.children[i];
         child.classList.add(`column-${i + 1}`);
         child.classList.add(`masonry-column`);
       }
-
+  
       const calculateTallestColumnHeight = () => {
         let tallestHeight = 0;
         const columns = document.querySelectorAll(`.${styles['masonry-section']}.${groupKey} .masonry-column`);
-    
         columns.forEach((column) => {
           const height = column.offsetHeight;
           if (height > tallestHeight) {
             tallestHeight = height;
           }
         });
-    
         return tallestHeight;
       };
-    
+  
       const tallestColumnHeight = calculateTallestColumnHeight();
       const columns = document.querySelectorAll(`.${styles['masonry-section']}.${groupKey} .masonry-column`);
-
+  
       columns.forEach((column) => {
         const columnHeight = column.offsetHeight;
         const difference = tallestColumnHeight - columnHeight;
-
+  
         gsap.to(column, {
           marginTop: difference,
           scrollTrigger: {
             trigger: `.${styles['masonry-section']}.${groupKey}`,
             start: `-90px top`,
-            end: ()=>`+=${tallestColumnHeight - (window.innerHeight/2.5)}`,
+            end: () => `+=${tallestColumnHeight - (window.innerHeight / 2.5)}`,
             scrub: 1,
+            markers: true,
           },
         });
       });
-    } else {
-      console.log('No masonry section found.');
-    }
-  };
-
-  // Check if all images are loaded
-  const images = document.querySelectorAll(`.${styles['masonry-section']}.${groupKey} img`);
-  let loadedCount = 0;
-
-  const checkAllImagesLoaded = () => {
-    loadedCount++;
-    if (loadedCount === images.length) {
-      handleImagesLoaded();
-    }
-  };
-
-  images.forEach((image) => {
-    if (image.complete) {
-      checkAllImagesLoaded();
-    } else {
-      image.addEventListener('load', checkAllImagesLoaded);
-    }
-  });
-
-  return () => {
-    images.forEach((image) => {
-      image.removeEventListener('load', checkAllImagesLoaded);
-    });
-  };
-}, [groupKey, projectData]);
-
+    };
   
+    const images = document.querySelectorAll(`.${styles['masonry-section']}.${groupKey} img`);
+    let loadedCount = 0;
   
+    const checkAllImagesLoaded = () => {
+      loadedCount++;
+      if (loadedCount === images.length) {
+        handleImagesLoaded();
+      }
+    };
   
- 
- 
+    const waitForImages = () => {
+      return new Promise((resolve) => {
+        const onImageLoad = () => {
+          checkAllImagesLoaded();
+          if (loadedCount === images.length) {
+            resolve();
+          }
+        };
+  
+        images.forEach((image) => {
+          if (image.complete) {
+            onImageLoad();
+          } else {
+            image.addEventListener('load', onImageLoad);
+          }
+        });
+  
+        // Fallback timeout to ensure the initialization happens eventually
+        setTimeout(() => {
+          if (loadedCount < images.length) {
+            resolve();
+          }
+        }, 5000); // 5 seconds timeout
+      });
+    };
+  
+    const refreshUntilStable = (maxAttempts = 3) => {
+      let attempt = 0;
+      const checkStability = () => {
+        return waitForImages().then(() => {
+          if (attempt < maxAttempts) {
+            const masonrySection = document.querySelector(`.${styles['masonry-section']}.${groupKey}`);
+            if (masonrySection && masonrySection.children.length > 0) {
+              handleImagesLoaded();
+            } else {
+              attempt++;
+              setTimeout(checkStability, 1000); // Wait 1 second before rechecking
+            }
+          }
+        });
+      };
+  
+      checkStability();
+    };
+  
+    refreshUntilStable();
+  
+    return () => {
+      images.forEach((image) => {
+        image.removeEventListener('load', checkAllImagesLoaded);
+      });
+    };
+  }, [groupKey, projectData]);
+  
 
-
-  return(
+  return (
     <div className={`masonry-section ${styles['masonry-section']} ${groupKey}`} key={groupKey}>
       <ResponsiveMasonry columnsCountBreakPoints={{ 300: 1, 500: 2, 700: 3, 900: 4 }}>
         <Masonry columnsCount={4} gutter="1.4vw">
-          
-        {groupImages.map((imageUrl, index) => {
-        const totalIndex = calculateTotalIndex(groupIndex, index, projectData);
+          {groupImages.map((imageUrl, index) => {
+            const totalIndex = calculateTotalIndex(groupIndex, index, projectData);
 
-        return (
-          <Link to={`/projects/${projectId}/${totalIndex}`} key={index}>
-            <div className="column">
-              <ParallaxImage key={index} imageUrl={imageUrl.url} blurhashUrl={imageUrl.blurhash}/>
-            </div>
-          </Link>
-        );
-      })}
-
-
+            return (
+              <Link to={`/projects/${projectId}/${totalIndex}`} key={index}>
+                <div className="column">
+                  <ParallaxImage key={index} imageUrl={imageUrl.url} blurhashUrl={imageUrl.blurhash} />
+                </div>
+              </Link>
+            );
+          })}
         </Masonry>
       </ResponsiveMasonry>
-
-
     </div>
   );
-
 };
+
+const ParallaxImage = ({ imageUrl, blurhashUrl }) => {
+  const [isHovered, setIsHovered] = useState(false);
+  const [maskPosition, setMaskPosition] = useState({ x: 0, y: 0 });
+  const imageRef = useRef(null);
+  const [imageSrc, setImageSrc] = useState(blurhashUrl);
+
+  useEffect(() => {
+    const img = new Image();
+    img.src = imageUrl;
+    img.onload = () => {
+      setImageSrc(imageUrl);
+    };
+  }, [imageUrl]);
+
+  const handleMouseMove = (e) => {
+    if (!isHovered) return;
+    const { clientX, clientY, target } = e;
+    const { left, top, width, height } = target.getBoundingClientRect();
+    const maskCenterX = left + width / 2;
+    const maskCenterY = top + height / 2;
+    const distanceX = clientX - maskCenterX;
+    const distanceY = clientY - maskCenterY;
+    const sensitivity = 0.01;
+    const x = distanceX * sensitivity;
+    const y = distanceY * sensitivity;
+    setMaskPosition({ x, y });
+  };
+
+  const handleMouseEnter = () => {
+    if (imageRef.current) {
+      imageRef.current.style.transition = 'ease all 200ms';
+      setIsHovered(true);
+      setTimeout(() => {
+        if (imageRef.current) {
+          imageRef.current.style.transition = 'cubic-bezier(0.76, 0, 0.24, 1) all 0ms, object-position 0s ease';
+        }
+      }, 600);
+    }
+  };
+
+  const handleMouseLeave = () => {
+    setIsHovered(false);
+    if (imageRef.current) {
+      imageRef.current.style.transition = 'ease all 200ms';
+      imageRef.current.style.transform = 'translate(0px, 0px) scale(1.1)';
+    }
+  };
+
+  return (
+    <div
+      className={styles['parallax-image-wrap']}
+      onMouseEnter={handleMouseEnter}
+      onMouseLeave={handleMouseLeave}
+      onMouseMove={handleMouseMove}
+    >
+      <img
+        ref={imageRef}
+        src={imageSrc}
+        alt="Parallax Image"
+        className={styles['masonry-image']}
+        style={{
+          transform: `translate(${maskPosition.x}px, ${maskPosition.y}px) scale(1.1)`,
+          filter: imageSrc === blurhashUrl ? 'blur(10px)' : 'blur(0px)',
+        }}
+        loading="lazy"
+      />
+    </div>
+  );
+};
+
+
+  
+  
+  
+ 
+ 
+
 
 const DetailsSection = ({ sectionKey, value, index }) => {
   // Always call useState at the top level
@@ -633,21 +672,25 @@ const DetailsSection = ({ sectionKey, value, index }) => {
 
   return (
     <div key={sectionKey} className={`${styles['details-section']}  ${oddSection ? styles['details-section-wrap-reversed'] : ''}`}>
+      <div className={styles['details-section-image-wrap']}>
       <div
-        className={styles['details-section-image']}
-        style={{
-          backgroundImage: `url(${imageLoaded ? featuredImage?.url : featuredImage?.blurhash})`,
-          filter:  `${imageLoaded ?'blur(0px)':'blur(10px)'}`, scale:  `${imageLoaded ?'1':'1.1'}`
-        }}
-      >
-        {/* Preload the actual image to detect when it has loaded */}
-        <img
-          src={featuredImage?.url}
-          alt="detail featured"
-          style={{ display: 'none' }}
-          onLoad={() => setImageLoaded(true)}
-        />
+          className={styles['details-section-image']}
+          style={{
+            backgroundImage: `url(${featuredImage?.blurhash})`,
+            filter:  `${imageLoaded ?'blur(0px)':'blur(10px)'}`, scale:  `${imageLoaded ?'1':'1.1'}`
+          }}
+        >
+          {/* Preload the actual image to detect when it has loaded */}
+          <img
+            src={featuredImage?.url}
+            alt="detail featured"
+            onLoad={() => setImageLoaded(true)}
+            loading='lazy'
+          />
+        </div>
+
       </div>
+      
       <div className={`${styles['details-section-wrap']} high-z-index-layer`}>
         <h2 key="title" className={`heading ${styles['details-title']}`}>{title}</h2>
         <div className={`${styles['details-description-wrap']}`}>
@@ -661,13 +704,22 @@ const DetailsSection = ({ sectionKey, value, index }) => {
 
 
 
-const CustomYouTubePlayer = ({ setVideoProgress, setIsPlayingProp }) => {
+const CustomYouTubePlayer = ({ setVideoProgress, setIsPlayingProp, videoUrl }) => {
   const [isPlaying, setIsPlaying] = useState(false);
   const [isBuffering, setIsBuffering] = useState(false);
   const [progress, setProgress] = useState(0); // New state for progress
   const playerRef = useRef(null);
 
-  const videoId = 'xuQhwS6j18s';
+  const extractVideoId = (url) => {
+    try {
+      const parsedUrl = new URL(url);
+      const params = new URLSearchParams(parsedUrl.search);
+      return params.get('v');
+    } catch (error) {
+      console.error('Invalid URL', error);
+      return null;
+    }
+  };
 
   const opts = {
     height: '100%',
@@ -728,9 +780,9 @@ const CustomYouTubePlayer = ({ setVideoProgress, setIsPlayingProp }) => {
   };
 
   return (
-    <div className={`${styles['player']} ${isPlaying && styles['playing']} ${isBuffering && styles['buffering']}`} onClick={togglePlayPause}>
+    <div className={`${styles['player']} ${isPlaying && !isBuffering && styles['playing']} ${isBuffering && styles['buffering']}`} onClick={togglePlayPause}>
       <YouTube
-        videoId={videoId}
+         videoId={extractVideoId(videoUrl)}
         opts={opts}
         onReady={onReady}
         ref={playerRef}
@@ -818,7 +870,8 @@ const LargeImageSection = ({ sectionKey, value }) => {
           className={styles['large-section-wrap']}
           src={blurhash}
           alt="Blurhash"
-          style={{ width: '100%', height: 'auto', position: 'absolute', top: 0, left: 0, zIndex: 1 }}
+          style={{display: !isLoading ? 'none' : 'block', width: '100%', height: 'auto'}}
+           loading='lazy'
         />
       )}
       <img
@@ -826,7 +879,8 @@ const LargeImageSection = ({ sectionKey, value }) => {
         src={largeImage}
         alt="Large Image"
         onLoad={handleImageLoad}
-        style={{ display: isLoading ? 'none' : 'block', width: '100%', height: 'auto', zIndex: 2 }}
+        style={{  width: '100%', zIndex: 2 }}
+         loading='lazy'
       />
     </div>
   );

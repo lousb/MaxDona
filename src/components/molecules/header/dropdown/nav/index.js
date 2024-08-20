@@ -57,7 +57,7 @@ const handleDelayEnd = (e, to) => {
   const navigationLinks = [
     { text: "Home", link: "/", desc:'Introduction' },
     { text: "About", link: "/#/about", desc:'Get to<br/>know me'  },
-    { text: "Archive", link: "/#/films", desc:'My Projects'  },
+    { text: "Archive", link: "/#/archive", desc:'My Projects'  },
     { text: "Contact", link: "/#/contact",  desc:'Get in Touch' },
     { text: "Reference Peace", link: "/#/reference-peace", desc:'A Max Dona<br/>Magazine', class:'reference-peace-link' },
   ];

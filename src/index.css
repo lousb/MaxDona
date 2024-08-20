@@ -3,7 +3,11 @@
   src: local("DonaGrotesk"),
     url("./fonts/DonaGrotesk.otf") format("truetype");
 }
-
+@media (min-width: 830px) {
+  :root {
+      --size: 1500;
+  }
+}
 /* define component style guide here */
 :root {
   --primary-color: #181818;
@@ -21,13 +25,33 @@
 
   --font-size-heading:6.95vw;
   --font-size-title:7.65vw;
-
-
+  --size: 390;
 
   
   --title-letter-spacing:0.025em;
 
 }
+html{
+  scrollbar-color: var(--secondary-dark) transparent;
+  font-feature-settings: "kern" off;
+  font-kerning: none;
+  font-size: clamp(1px, 16px, 10* 100vw / 390);
+  font-size: clamp(1px, 16px, 10* 100vw / var(--size));
+  -webkit-text-size-adjust: none;
+  -webkit-font-smoothing: subpixel-antialiased;
+  -webkit-font-smoothing: antialiased;
+  -webkit-tap-highlight-color: transparent;
+}
+
+html.lenis, html.lenis body {
+  height: auto;
+}
+::selection {
+  background-color: #1e1e1e;
+  color: #ffffff;
+}
+
+
 @media screen and (min-width: 1450px){
   .title{
     font-size:110px !important;
@@ -61,10 +85,6 @@
   transition-delay: 100ms;
   font-weight: 900;
 }
-.primary-button:hover{
-
-}
-
 .primary-button::after{
   content:'';
   background-image: url(/public/Arrow/Black-Arrow.svg);
@@ -155,14 +175,14 @@ max-height: none;
   text-transform: uppercase;
   font-size: 18px;
   letter-spacing: -1.1px;
-  line-height: 18px;
+  line-height: 1em;
 }
 .title-body{
   font-family: var(--body-family);
   text-transform: uppercase;
   font-size: 22px;
   letter-spacing: -1.3px;
-  line-height: 20px;
+  line-height: 1;
   opacity: 1;
 }
 .title{
@@ -171,7 +191,7 @@ max-height: none;
   font-size: var(--font-size-title) !important;
   font-weight: 600;
   text-transform: uppercase;
-  line-height: 8.2vw;
+  line-height: 1.1em;
   letter-spacing: 0.02em;
 }
 .header-reduced, .header-reduced .heading{
@@ -182,7 +202,7 @@ max-height: none;
   letter-spacing: var(--title-letter-spacing);
  
   text-transform: uppercase;
-  line-height: 60px;
+  line-height: 1.1em;
 }
 
 .heading{
@@ -192,7 +212,7 @@ max-height: none;
   font-size: var(--font-size-heading);
   padding-top:10px;
   margin: 0;
-  line-height: var(--font-size-heading);
+  line-height: 1.1em;
   text-transform: uppercase;
 }
 .grid-overlay{
@@ -206,7 +226,6 @@ max-height: none;
   z-index: 9999;
   pointer-events: none;
 }
-
 
 @media only screen and (max-width:830px){
   .grid-overlay{

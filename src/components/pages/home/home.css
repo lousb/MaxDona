@@ -95,7 +95,7 @@ section{
     padding-bottom: 0.2em !important;
 
 }
-.prev-hover .project-color{
+.prev-hover .project-color, .hovered-fast-project-wrap .project-color{
     clip-path: polygon(0 0, 100% 0, 100% 100%, 0 100%);
     height: 1vw;
     background-color: var(--primary-color);
@@ -559,7 +559,7 @@ a{
 .page-four-service .title{
     padding-bottom: 0.1em;
 }
-.home-hover-desc{
+.home-hover-desc, .fast-hover-desc{
     height:fit-content;
     min-height: 1em;
     
@@ -577,28 +577,28 @@ a{
     border-radius: 4px;
     overflow: hidden;
 }
-.home-hover-svg-wrap{
+.home-hover-svg-wrap, .fast-hover-svg-wrap{
     aspect-ratio: 1;
     overflow: hidden;
     position: absolute;
     left:16px;
     top:15px;
 }
-.home-hover-svg-wrap > svg{
+.home-hover-svg-wrap > svg, .fast-hover-svg-wrap > svg{
     
     transform: scaleX(-1);
 }
-.home-hover-svg-wrap > svg > path{
+.home-hover-svg-wrap > svg > path, .fast-hover-svg-wrap > svg > path{
     transform: translateY(100%);
     transition: 500ms ease;
 }
-body:has(.featured-project-link:hover) .home-hover-svg-wrap > svg > path{
+body:has(.featured-project-link:hover) .home-hover-svg-wrap > svg > path, body:has(.infinite-film-title:hover) .fast-hover-svg-wrap > svg > path{
     transform: translateY(0%);
 }
-body:has(.featured-project-link:hover) .home-hover-desc{
+body:has(.featured-project-link:hover) .home-hover-desc, body:has(.infinite-film-title:hover) .fast-hover-desc{
     clip-path: polygon(0 0, 100% 0, 100% 100%, 0% 100%);
 }
-body:not(:has(.featured-project-link:hover)) .home-hover-desc{
+body:not(:has(.featured-project-link:hover)) .home-hover-desc, body:not(:has(.infinite-film-title:hover)) .fast-hover-desc{
     transition: 0s 0.7s, opacity 0.6s 0.1s, clip-path 0.5s 0.1s !important;
     opacity: 0;
     clip-path: polygon(0 0, 0 0, 0 100%, 0 100%);
@@ -606,7 +606,7 @@ body:not(:has(.featured-project-link:hover)) .home-hover-desc{
 
 }
 
-.home-hover-desc > .link-desc{
+.home-hover-desc > .link-desc, .fast-hover-desc > .link-desc{
     margin:0 !important;
     clip-path: polygon(0 0, 100% 0, 100% 100%, 0% 100%);
     position: relative;
@@ -615,7 +615,7 @@ body:not(:has(.featured-project-link:hover)) .home-hover-desc{
     transition: clip-path 500ms ease-out 0s, color 500ms ease 0ms, width 500ms ease !important;
     pointer-events: none !important;
 }
-.home-hover-desc::before{
+.home-hover-desc::before, .fast-hover-desc::before{
 
 
     content: '';
@@ -629,7 +629,7 @@ body:not(:has(.featured-project-link:hover)) .home-hover-desc{
     transition: 700ms ease-out all, clip-path 200ms ease-out !important;
 }
 
-.home-hover-desc > .link-desc > span{
+.home-hover-desc > .link-desc > span, .fast-hover-desc > .link-desc > span{
     min-width: max-content;
 
     text-align: right;
@@ -669,7 +669,7 @@ body:has(.featured-project-link:hover) .home-hover-desc{
     transition: transform 500ms ease 0s, width 500ms ease 0s, max-height 500ms ease 0s, max-width 500ms ease 0s, padding 500ms ease 0.5s, clip-path 500ms ease 0s !important;
     clip-path: polygon(100% 0, 0 0, 0 100%, 100% 100%) !important;
 }
-body:has(.featured-project-link:hover) .home-hover-desc > p  > span{
+body:has(.featured-project-link:hover) .home-hover-desc > p  > span, body:has(.infinite-film-title:hover) .fast-hover-desc > p  > span{
     transition: clip-path 500ms ease-out 0s, filter 500ms ease 0ms !important;
     clip-path: polygon(0 0, 100% 0, 100% 100%, 0% 100%) !important;
 }
