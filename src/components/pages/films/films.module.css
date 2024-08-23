@@ -2,7 +2,7 @@
     width:92%;
     margin-inline:4%;
     min-height:100vh;
-    min-height:100svh;
+    min-height:100vh;
     
 }
 .film-page-wrap.fast-active{
@@ -63,7 +63,7 @@
     background-position: center;
     position: relative;
     transition: 500ms background-image ease;
-    height: calc(70svh - 90px);
+    height: calc(70vh - 90px);
 
 }
 .film-project-item::after{
@@ -84,7 +84,7 @@ background: linear-gradient(90deg, rgba(0,0,0,0.5228466386554622) 0%, rgba(0, 0,
     display: none;
 }
 .film-project-scroll-wrap{
-    height: calc(100svh - 8vw);
+    height: calc(100vh - 8vw);
 
     display: flex;
     align-items: end;
@@ -95,7 +95,7 @@ background: linear-gradient(90deg, rgba(0,0,0,0.5228466386554622) 0%, rgba(0, 0,
 
 .film-project-scroll-container{
 
-    max-height:calc(100svh - 4vw - 90px);
+    max-height:calc(100vh - 4vw - 90px);
     margin-bottom: 4vw;
     overflow-x: hidden;
     border-radius: 18px;
@@ -111,7 +111,7 @@ background: linear-gradient(90deg, rgba(0,0,0,0.5228466386554622) 0%, rgba(0, 0,
 .film-project-item{
     padding-left:26px;
     width: 100%;
-    height: calc(70svh - 90px);
+    height: calc(70vh - 90px);
     display: flex;
     flex-direction: column;
 
@@ -343,9 +343,12 @@ button.view-toggle-active{
     display: flex;
     justify-content: flex-end;
 }
+.film-page:has( .infinite-scroll-map-wrap) .parallax-image-wrap{
+    height: 22vw;
+}
 .parallax-image-wrap{
     overflow: hidden;
-    height: 22vw;
+    /* height: 22vw; */
     width: 22vw;
     border-radius: 14px;
     display: flex;

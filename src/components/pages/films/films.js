@@ -177,9 +177,9 @@ function Films() {
         });
 
         gsap.fromTo('.film-project-scroll-container', {
-            height: 'calc(70svh - 90px)',
+            height: 'calc(70vh - 90px)',
         }, {
-            height: 'calc(100svh - 4vw - 90px)',
+            height: 'calc(100vh - 4vw - 90px)',
             scrollTrigger: {
                 trigger: '.page-content',
                 start: 'top top',
@@ -190,9 +190,9 @@ function Films() {
         });
 
         gsap.fromTo('.film-project-item', {
-            height: 'calc(70svh - 90px)'
+            height: 'calc(70vh - 90px)'
         }, {
-            height: 'calc(80svh - 90px)',
+            height: 'calc(80vh - 90px)',
             scrollTrigger: {
                 trigger: '.page-content',
                 start: 'top top',

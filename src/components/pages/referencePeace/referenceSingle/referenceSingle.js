@@ -1,4 +1,4 @@
-import React, { useCallback, useEffect, useRef, useState } from "react";
+import React, { useCallback, useEffect, useImperativeHandle, useRef, useState } from "react";
 import { useFooter } from "../../../../context/FooterContext";
 import styles from '../referencePeace.module.css';
 import '../referencePeace.module.css';
@@ -21,6 +21,12 @@ const ReferenceSingle = () =>{
 
   const [videoProgress, setVideoProgress] = useState(0);
   const [isPlayingProp, setIsPlayingProp] = useState(false);
+
+  const [currentPage, setCurrentPage] = useState(1);
+  const [nextPageNumber, setNextPageNumber] = useState(false);
+
+  const childRef = useRef();
+
 
   useEffect(() => {
     return () => {
@@ -71,7 +77,7 @@ const ReferenceSingle = () =>{
       case 'video':
         return (
           <div className={`${styles['main-section-image-wrap']} main-section-image-wrap`}>
-            <div className={`${styles['main-section-image']} main-section-image`}>
+            <div className={`${styles['main-section-image']} main-section-image arrow-hover`}>
             <div className={`${styles['main-section-image-overlay']} main-section-image-overlay`} style={{ backgroundImage: `url(${projectData?.mainFeaturedImage})` }}>
 
             </div>
@@ -127,7 +133,7 @@ const ReferenceSingle = () =>{
       case 'PDF':
         return (
           <div className="pdf-section" key={`pdf-${index}`}>
-            <PDFViewer pdfLink={section.pdfLink} />
+            <PDFViewer ref={childRef} pdfLink={section.pdfLink} pdfType={section.pdfType} currentPage={currentPage} nextPageNumber={nextPageNumber} setNextPageNumber={setNextPageNumber} setCurrentPage={setCurrentPage}/>
           </div>
         );
       default:
@@ -151,18 +157,20 @@ const ReferenceSingle = () =>{
   const sections = [];
 
   // Add image sections
-  if (projectData.imageSections) {
-    projectData.imageSections.forEach((section, index) => {
-      sections.push({
-        type: 'image',
-        images: section.images,
-        index,
+  if(projectData.volumeType && projectData.volumeType === 'Image' && projectData.imageSections){
+      projectData.imageSections.forEach((section, index) => {
+        sections.push({
+          type: 'image',
+          images: section.images,
+          index,
+        });
       });
-    });
+
   }
+  
 
   // Add video sections
-  if (projectData.videoSections) {
+    if(projectData.volumeType && projectData.volumeType === 'Video' && projectData.videoSections){
     projectData.videoSections.forEach((section, index) => {
       sections.push({
         type: 'video',
@@ -174,25 +182,59 @@ const ReferenceSingle = () =>{
   }
 
   // Add PDF sections
-  if (projectData.pdfSections) {
+    if(projectData.volumeType && projectData.volumeType === 'PDF' && projectData.pdfSections){
     projectData.pdfSections.forEach((section, index) => {
       sections.push({
         type: 'PDF',
         pdfName: section.pdfName,
         pdfLink: section.pdfLink,
+        pdfType: section.pdfType, 
         index,
       });
     });
   }
 
+const handlePreviousPageInChild = () => {
+  if (childRef.current) {
+    childRef.current.goToPreviousPage();
+  }
+};
 
+const handleNextPageInChild = () => {
+  if (childRef.current) {
+    childRef.current.goToNextPage();
+  }
+};
 
     return(
         <div className={`reference-peace-single ${styles['reference-peace-single']}`}>
             <div className={`${styles['rp-title-wrap']}`}>
               <Reveal element={'p'} custom={10} elementClass={`title ${styles['rp-title']}`} textContent={projectData ? projectData.displayName : 'Loading...'}/>
-              <Reveal element={'p'} custom={25} elementClass={`body ${styles['rp-description']}`} textContent={projectData ? projectData.mainDescription1 : 'Loading...'}/>
-              <Reveal element={'p'} custom={25} elementClass={`body ${styles['rp-description']}`} textContent={projectData ? projectData.mainDescription2 : 'Loading...'}/>
+              {
+                projectData.volumeType && projectData.volumeType === 'PDF' && projectData.pdfSections ? (
+                  <>
+                    <div className={`body ${styles['pdf-page-numbers']}`}>
+                      Page {currentPage}{nextPageNumber && <>,</>}<br/>
+                      {nextPageNumber && <>
+                      Page {nextPageNumber}
+                      </>}
+                    </div>
+                    <div className={`${styles['pdf-page-switchers']}`}>
+                    <button className={`${styles['pdf-page-prev']}`} onClick={handlePreviousPageInChild}>
+                      Previous
+                    </button>
+                    <button className={`${styles['pdf-page-next']}`} onClick={handleNextPageInChild}>
+                      Next
+                    </button>
+                    </div>
+                  </>
+                ) : (
+                  <>
+                    <Reveal element={'p'} custom={25} elementClass={`body ${styles['rp-description']}`} textContent={projectData ? projectData.mainDescription1 : 'Loading...'}/>
+                    <Reveal element={'p'} custom={25} elementClass={`body ${styles['rp-description']}`} textContent={projectData ? projectData.mainDescription2 : 'Loading...'}/>
+                  </>
+                )
+              }
 
         
             </div>
@@ -391,7 +433,7 @@ useEffect(() => {
 
 
   return(
-    <div className={`masonry-section ${styles['masonry-section']} ${groupKey}`} key={groupKey}>
+    <div className={`arrow-hover masonry-section ${styles['masonry-section']} ${groupKey}`} key={groupKey}>
       <ResponsiveMasonry columnsCountBreakPoints={{ 300: 1, 500: 2, 700: 3, 900: 4 }}>
         <Masonry columnsCount={4} gutter="1.4vw">
           
@@ -417,17 +459,16 @@ useEffect(() => {
 
 };
 
-const PDFViewer = ({ pdfLink }) => {
-  const [page, setPage] = useState(1);
-  const [mode, setMode] = useState('single'); // Set the default mode here ('single' or 'double')
-  const canvasRef1 = useRef(null);
-  const canvasRef2 = useRef(null); // For the second page in 2-page mode
+const PDFViewer = React.forwardRef(({ pdfLink, pdfType, currentPage, nextPageNumber, setNextPageNumber, setCurrentPage, onPreviousPage, onNextPage }, ref) => {
+const [page, setPage] = useState(1);
+const [mode, setMode] = useState('single');
+const canvasRef1 = useRef(null);
+const canvasRef2 = useRef(null);
 
   const handleDocumentLoadSuccess = useCallback((document) => {
     console.log("Document loaded successfully:", document);
-    // Adjust the page if it's odd when switching to double mode
     if (mode === 'double' && page % 2 !== 0) {
-      setPage(prevPage => Math.max(prevPage - 1, 1)); // Move to the previous even page
+      setPage(prevPage => Math.max(prevPage - 1, 1)); // Ensure even page number in double mode
     }
   }, [mode, page]);
 
@@ -459,14 +500,21 @@ const PDFViewer = ({ pdfLink }) => {
     if (mode === 'single') {
       if (clickX < midPoint) {
         setPage(prev => Math.max(prev - 1, 1));
+        setCurrentPage(prev => Math.max(prev - 1, 1));
       } else {
         setPage(prev => Math.min(prev + 1, pdfDocument.numPages));
+        setCurrentPage(prev => Math.min(prev + 1, pdfDocument.numPages));
       }
     } else if (mode === 'double') {
       if (clickX < midPoint) {
         setPage(prev => Math.max(prev - 2, 1));
+        setCurrentPage(prev => Math.max(prev - 2, 1));
       } else {
         setPage(prev => {
+          const newPage = prev + 2;
+          return newPage <= pdfDocument.numPages ? newPage : prev;
+        });
+        setCurrentPage(prev => {
           const newPage = prev + 2;
           return newPage <= pdfDocument.numPages ? newPage : prev;
         });
@@ -478,52 +526,86 @@ const PDFViewer = ({ pdfLink }) => {
     // Ensure proper page handling at the end of the document
     if (mode === 'double' && pdfDocument && page + 1 > pdfDocument.numPages) {
       setPage(prev => Math.max(prev - 2, 1));
-    }
-    else if (mode === 'single' && pdfDocument && page + 1 > pdfDocument.numPages) {
+    } else if (mode === 'single' && pdfDocument && page > pdfDocument.numPages) {
       setPage(1);
     }
   }, [pdfDocument, page, mode]);
 
-  // Ensure safe access to pdfDocument.numPages
+  useEffect(() => {
+    if (pdfType === '1-page') {
+      setMode('single');
+    } else {
+      setMode('double');
+    }
+  }, [pdfType]);
+
   const numPages = pdfDocument?.numPages || 0;
-  const nextPageNumber = mode === 'double' && page + 1 <= numPages ? page + 1 : null;
+  setNextPageNumber(mode === 'double' && page + 1 <= numPages ? page + 1 : null);
+
+  const goToPreviousPage = () => {
+    if (mode === 'single') {
+      setPage(prev => Math.max(prev - 1, 1));
+      setCurrentPage(prev => Math.max(prev - 1, 1));
+    } else if (mode === 'double') {
+      setPage(prev => Math.max(prev - 2, 1));
+      setCurrentPage(prev => Math.max(prev - 2, 1));
+    }
+  };
+
+  const goToNextPage = () => {
+    if (mode === 'single') {
+      setPage(prev => Math.min(prev + 1, pdfDocument.numPages));
+      setCurrentPage(prev => Math.min(prev + 1, pdfDocument.numPages));
+    } else if (mode === 'double') {
+      setPage(prev => {
+        const newPage = prev + 2;
+        return newPage <= pdfDocument.numPages ? newPage : prev;
+      });
+      setCurrentPage(prev => {
+        const newPage = prev + 2;
+        return newPage <= pdfDocument.numPages ? newPage : prev;
+      });
+    }
+  };
+
+  // Expose the functions to the parent component
+   useImperativeHandle(ref, () => ({
+    goToPreviousPage,
+    goToNextPage,
+  }));
+
 
   return (
-    <div>
-      
-
+    <div className='arrow-hover'>
       {!pdfDocument && !pdfPage && <span>Loading PDF...</span>}
       {pdfDocument && (
         <>
           {mode === 'single' && (
-            <canvas  style={{ width:'100%', }} ref={canvasRef1} onClick={(e) => handleCanvasClick(e)} />
+            <canvas style={{ width: '100%' }} ref={canvasRef1} onClick={handleCanvasClick} />
           )}
           {mode === 'double' && (
             <div style={{ display: 'flex', justifyContent: 'space-between' }}>
-              <canvas ref={canvasRef1} onClick={(e) => handleCanvasClick(e)} style={{ width: '49%', height: 'auto' }} />
+              <canvas ref={canvasRef1} onClick={handleCanvasClick} style={{ width: '49%', height: 'auto' }} />
               {nextPageNumber && (
-                <canvas ref={canvasRef2} onClick={(e) => handleCanvasClick(e)} style={{ width: '49%', height: 'auto' }} />
+                <canvas ref={canvasRef2} onClick={handleCanvasClick} style={{ width: '49%', height: 'auto' }} />
               )}
             </div>
           )}
         </>
       )}
-
       <div style={{ textAlign: 'center', marginBlock: '10px', color: 'white' }}>
         {pdfDocument && (
           <>
             {mode === 'single' && <span>Page {page} of {numPages}</span>}
             {mode === 'double' && (
-              <span>
-                Pages {page} - {nextPageNumber} of {numPages}
-              </span>
+              <span>Pages {page} - {nextPageNumber} of {numPages}</span>
             )}
           </>
         )}
       </div>
     </div>
   );
-};
+});
 
 
 

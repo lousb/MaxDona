@@ -8,7 +8,7 @@
 }
 .projectPageSection1{
     width:92%;
-    height:90svh;
+    height:90vh;
     margin: 4%;
     margin-top: 0;
     display: flex;
@@ -30,11 +30,11 @@
     width: 100%;
     position: relative;
     justify-content: center !important;
-    max-height: calc(100svh - 4vw - 90px);
+    max-height: calc(100vh - 4vw - 90px);
 }
 .imageWrap img{
     width: 100%;
-    max-height: calc(100svh - 4vw - 90px);
+    max-height: calc(100vh - 4vw - 90px);
     object-fit: cover;
     border-radius: 16px;
 }

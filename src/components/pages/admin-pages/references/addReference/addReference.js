@@ -294,6 +294,7 @@ const handleAdd = async (e) => {
         sectionId: sectionId,
         pdfLink: data[`pdfLink${i}`] || '',
         pdfName: data[`pdf${i + 1}-pdfName`] || '',
+        pdfType: pdfTypeSelection + '-page' || 'defaultType', // Add pdfTypeSelection here
       });
     }
 
@@ -442,6 +443,7 @@ useEffect(() => {
       (error) => console.log('Error during upload:', error),
       async () => {
         const downloadURL = await getDownloadURL(uploadTask.snapshot.ref);
+        console.log(`PDF ${sectionIndex} uploaded with URL:`, downloadURL);  // Debugging log
         setData((prev) => ({ ...prev, [`pdfLink${sectionIndex}`]: downloadURL }));
       }
     );
@@ -451,6 +453,7 @@ useEffect(() => {
     if (file) uploadPdfFile(file, index);
   });
 }, [pdfFiles]);
+
 
   
   
@@ -574,7 +577,7 @@ return (
                     </div>
                   ))}
                   <button type="button" onClick={() => handleRemoveField(videoSections.id)}>
-                    Remove PDF Section {index + 1}
+                    Remove PDF Section
                   </button>
                 </div>
               </div>
@@ -583,7 +586,7 @@ return (
             {Array.from({ length: imageSectionCount }).map((_, index) => (
               <div className='uploaded-image-section-wrap' key={`image-section-${index + 1}`}>
                 <div className="body image-section-title">
-                  <span>Image Section {index + 1}</span>
+                  <span>Image Section</span>
                   <div className={`image-section-${index + 1}`}>
                     {[...Array(24)].map((_, imageIndex) => (
                       <div
@@ -619,7 +622,7 @@ return (
                       </div>
                     ))}
                     <button type="button" onClick={() => handleRemoveField(`image${index + 1}`)}>
-                      Remove Image Section {index + 1}
+                      Remove Image Section 
                     </button>
                   </div>
                 </div>
@@ -664,7 +667,7 @@ return (
                             </div>
                           ))}
                           <button type="button" onClick={() => handleRemoveField(pdfSection.id)}>
-                            Remove PDF Section {index + 1}
+                            Remove PDF Section 
                           </button>
                         </div>
                       </div>

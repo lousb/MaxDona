@@ -1376,9 +1376,7 @@ const Section6 = () => {
           <Reveal textContent={'PURSUITS.'} element={"div"} elementClass={"heading"}/>
         </div>
         <div className="home-reference-bottom-right home-reference-bottom-column">
-          <p className="body">
-             REFERENCE PEACE AIMS TO BRIDGE THE GAP BETWEEN IMPRESSION & EXPRESSION; BY PUTTING A SPOTLIGHT ON UN-SPOTLIGHTED*
-          </p>
+          <Reveal textContent={'REFERENCE PEACE AIMS TO BRIDGE THE GAP BETWEEN IMPRESSION & EXPRESSION; BY PUTTING A SPOTLIGHT ON UN-SPOTLIGHTED*'} element={"p"} elementClass={"body"}/>
           <div className="primary-button">
             Read More
           </div>

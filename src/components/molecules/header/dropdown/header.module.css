@@ -10,6 +10,7 @@
 
 
 }
+
 .minimal-header *{
     
     pointer-events: none;
@@ -37,6 +38,7 @@
 }
 .header-toggled .header-inner-content{
     height:120px;
+    cursor: default;
 }
 
 .header-wrap{
@@ -110,12 +112,13 @@ header > div{
     transition: 700ms ease-out all, clip-path 200ms ease-out;
 }
 
-.menu-time-wrap > p{
-    cursor: auto !important;
-}
-.header-subtext-link, .menu-time-wrap > p{
+
+.header-subtext-link{
     cursor: pointer !important;
 
+}
+.menu-time-wrap > p{
+    cursor: default !important;
 }
 .minimal-header:has(.header-menu-link:hover:not(:last-child)) > .header-hover-desc::before{
     clip-path: polygon(0 0, 100% 0, 100% 100%, 0% 100%);
@@ -203,7 +206,9 @@ header > div{
     padding-top: 22px;
 
 }
-
+.header-toggled .header-inner-content .header-hamburger *{
+ cursor: pointer !important;
+}
 .header-inner-content .header-logo, .header-inner-content .header-hamburger{
     display: flex;
     align-items: center;
@@ -475,6 +480,7 @@ header > div{
 .menu-time-func{
     margin-bottom:-8px;
     text-transform: uppercase;
+    
 
 }
 .colon{

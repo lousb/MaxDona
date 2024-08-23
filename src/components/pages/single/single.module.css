@@ -25,21 +25,21 @@
     margin-bottom: calc(150vh);
 }
 .main-section-details{
-    margin-bottom: 4svw;
+    margin-bottom: 4vw;
 }
 .main-section-image-wrap{
     position: absolute;
     top: 0;
-    height: calc(100svh - 8svw);
+    height: calc(100vh - 8vw);
     display: flex;
     pointer-events: none;
     justify-content: end;
     align-items: end;
 
     width:92%;
-    margin-inline: 4svw;
-    margin-top:4svw;
-    margin-bottom:4svw;
+    margin-inline: 4vw;
+    margin-top:4vw;
+    margin-bottom:4vw;
 
 }
 .main-section-image{
@@ -47,7 +47,7 @@
     width: 49%;
     border-radius: 20px;
     overflow: hidden;
-    height: calc(100svh - 8svw);
+    height: calc(100vh - 8vw);
     position: relative;
 }
 .main-section-image-overlay{
@@ -125,7 +125,7 @@
     display: flex;
     width: 61%;
     margin-left:35%;
-    height: calc(100% - 4svw);
+    height: calc(100% - 4vw);
     top:0;
     z-index: 100;
     display: flex;
@@ -147,7 +147,7 @@
 .details-section-image-wrap{
     border-radius: 20px;
     width: 49.2%;
-    height: calc(100svh - 90px);
+    height: calc(100vh - 90px);
     overflow: hidden;
 }
 
@@ -209,10 +209,10 @@
 
 
 .details-section{
-    min-height: calc(100svh - 90px);
+    min-height: calc(100vh - 90px);
 
-    margin-top: 1.2svw;
-    margin-bottom: 1.2svw;
+    margin-top: 1.2vw;
+    margin-bottom: 1.2vw;
     display: flex;
     justify-content: space-between;
     align-items: end;
@@ -220,7 +220,7 @@
 .details-section-image{
     background-size: cover !important;
     background-position: center center !important;
-    height: calc(100svh - 90px);
+    height: calc(100vh - 90px);
     cursor: none;
     border-radius: 20px;
     width:100%;
@@ -251,9 +251,10 @@
     width: 100% !important;
 }
 .large-section{
-    margin-top: 1.2svw;
+    margin-top: 1.2vw;
     position: relative;
     height: max-content;
+    aspect-ratio: 16 / 9;
 }
 .large-section, .large-section img{
     width: 100%;
@@ -283,13 +284,13 @@
 
 .details-section-wrap{
 
-    width: calc(49.2% - 4svw);
+    width: calc(49.2% - 4vw);
 
 }
 
 .gallery-page{
-    width: 92svw;
-    margin-inline: 4svw;
+    width: 92vw;
+    margin-inline: 4vw;
 }
 .video_container {
     display: flex;
@@ -300,7 +301,7 @@
     
  }
 .player__wrapper{
-    height: calc(100svh - 2.4svw);
+    height: calc(100vh - 2.4vw);
     overflow: hidden;
     border-radius: 24px;
     display: flex;
@@ -320,7 +321,7 @@
  .player div{
     pointer-events: none;
 
-    height: calc(100svh - 2.4svw);
+    height: calc(100vh - 2.4vw);
  }            
  .progress-bar{
     display: flex;

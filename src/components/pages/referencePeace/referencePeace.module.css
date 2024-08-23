@@ -214,7 +214,7 @@ width: max-content;
     justify-content: center;
     width: 22vw;
     object-fit: cover;
-    aspect-ratio: 1;
+    /* aspect-ratio: 1; */
     border-radius:10px;
     transition: all 500ms ease;
    
@@ -242,6 +242,29 @@ width: max-content;
 
     cursor: none !important;
 }
+.pdf-page-numbers{
+    color: white;
+    width: 100%;
+}
+.pdf-page-switchers{
+    display: flex;
+    min-width: 22vw;
+    justify-content: space-between;
+}
+.pdf-page-switchers > button{
+    cursor: pointer;
+    aspect-ratio: 1;
+    width: 6vw;
+    background-color: transparent;
+    border: none;
+    color: transparent;
+    background-image: url(/public/Arrow/White-Arrow-Large.svg);
+    background-size:cover;
+    background-repeat: no-repeat;
+}
+.pdf-page-next{
+    transform: rotate(90deg);
+}
 .parallax-image-wrap:hover{
     transform: scale(0.99);
 }
@@ -250,8 +273,8 @@ div:has(> .rp-title){
     min-width: 50%;
 }
 div:has(> .rp-description){
-    width: 16%;
-    padding-right: 8%;
+    width: 36% !important;
+    padding-right: 7%;
 }
 .main-section-image-wrap{
     position: relative;
@@ -262,7 +285,7 @@ div:has(> .rp-description){
     align-items: end;
 
     width:100%;
-    margin-top:4svw;
+    margin-top:4vw;
 
 
 }
@@ -290,7 +313,7 @@ div:has(> .rp-description){
     display: flex;
     width: 61%;
     margin-left:35%;
-    height: calc(100% - 4svw);
+    height: calc(100% - 4vw);
     bottom:0;
     z-index: 100;
     display: flex;

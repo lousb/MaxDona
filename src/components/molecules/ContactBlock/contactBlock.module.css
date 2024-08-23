@@ -1,5 +1,6 @@
 .about-page-section-3{
     height: auto !important;
+    clip-path: polygon(0 0, 100% 0, 100% 100%, 0% 100%);
 }
 .about-last-cta-wrap-heading img{
     transform: scale(2.8) rotate(-5deg);

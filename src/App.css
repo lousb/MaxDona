@@ -13,7 +13,9 @@ justify-content: center;
     max-width: 3000px;
     width: 100vw;
 } */
-
+html{
+    scrollbar-color: var(--secondary-dark) transparent;
+}
 body:not(:has(.loading-wrap.is-loading)){
     background-color: white !important;
 }
@@ -109,7 +111,7 @@ transition: transform 500ms ease, max-height 500ms ease, max-width 500ms ease, m
 .header-logo{
     cursor: pointer !important;
 }
-body:has(.header-menu-subtext-links:hover) .large-arrow-cursor, body:has(.header-hamburger:hover) .large-arrow-cursor,  body:has(.header-logo:hover) .large-arrow-cursor{
+body:has(.header-menu-subtext-links:hover) .large-arrow-cursor, body:has(.header-toggled-global .header-inner-content:hover) .large-arrow-cursor, body:has(.header-hamburger:hover) .large-arrow-cursor,  body:has(.header-logo:hover) .large-arrow-cursor{
     max-height: 0px !important;
     max-width: 0px !important;
 }
@@ -304,7 +306,7 @@ body:has(header .header-menu-link:nth-child(5):hover) .large-arrow-cursor{
 .text-reveal-container{
     width: 100%  !important;
 }
-body:has(.masonry-section:hover) .large-arrow-cursor, body:has(.random-masonry-image-view:hover) .large-arrow-cursor{
+body:not(.page-transitioning):has( .masonry-section:hover) .large-arrow-cursor, body:not(.page-transitioning):has(.random-masonry-image-view:hover) .large-arrow-cursor{
 
     transform:translate(-50%, -50%) scale(0.6) !important;
   

@@ -138,7 +138,19 @@ body:has(.view-project-link:hover) .projects-hover-desc > p  > span{
 .projects-hover-desc p{
     margin:0 !important;
 }
-body:has( .reference-peace-single) .header-inner-content, body:has(.reference-peace-single) footer{
+body:not(:has( .header-toggled-global)):not(.page-transitioning):has( .reference-peace-single) .large-arrow-cursor{
+    max-height: 0 !important;
+    max-width: 0 !important;
+}
+.arrow-hover{
+    cursor: none;
+}
+body:has( .reference-peace-single .arrow-hover:hover) .large-arrow-cursor{
+    max-height: 84px !important;
+    max-width: 84px !important;
+
+}
+body:has( .reference-peace-single):not(:has( .header-toggled-global)) .header-inner-content, body:has(.reference-peace-single) footer{
     filter:invert(1);
 }
 .pdf-section{
