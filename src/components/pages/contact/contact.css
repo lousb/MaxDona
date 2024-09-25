@@ -4,15 +4,8 @@
 .contact-page{
     width:92%;
     margin-inline: 4%;
+    pointer-events: none;
 
-}
-.contact-page .mask-image{
-    transform: translateY(-100%);
-    transform-origin: center center !important;
-    object-position: center top;
-}
-.contact-page .mask-image:hover{
-    transform: translateY(-95%);
 }
 .contact-heading-wrap .heading{
     margin-left:122px;
@@ -190,9 +183,8 @@ a{
     width: 17%;
 }
 .contact-image-wrap .mask-mouse-area{
-    align-items: start;
-    height: fit-content;
-    padding-bottom: 5rem;
+    align-items: end;
+    height: calc(90vh - 180px);
 }
 .contact-image-wrap .mask-image-wrap{
     transition: cubic-bezier(0.76, 0, 0.24, 1) all 700ms, height 0ms;

@@ -16,21 +16,18 @@ function Hamburger({ isActive }) {
         d="M2 2H31"
         stroke={"black"}
         strokeWidth="5"
-        strokeLinecap="round"
       />
       <path
         className="line-2"
         d="M2 13H31"
         stroke={"black"}
         strokeWidth="5"
-        strokeLinecap="round"
       />
       <path
         className="line-3"
         d="M2 24H31"
         stroke={"black"}
         strokeWidth="5"
-        strokeLinecap="round"
       />
     </svg>
   );

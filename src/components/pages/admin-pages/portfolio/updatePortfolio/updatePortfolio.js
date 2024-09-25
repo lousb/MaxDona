@@ -141,7 +141,19 @@ const UpdatePortfolio = () => {
       <form onSubmit={handleUpdate}>
         {/* Main Section */}
         <div className="section-title">Main Section</div>
-
+        {projectInputs.map((input) => (
+          <div className="formInput" key={input.id}>
+            <label>{input.label}</label>
+            <input
+              type={input.type || "text"}
+              id={input.id}
+              value={projectData[input.id] || ''}
+              placeholder={input.label}
+              onChange={handleInputChange}
+              required
+            />
+          </div>
+        ))}
 
         {/* Image Sections */}
         {Object.keys(imageSectionData).map((key, index) => (

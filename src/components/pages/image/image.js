@@ -9,15 +9,6 @@ const SingleImageView = () => {
   const [projectData, setProjectData] = useState(null);
   const [selectedImageIndex, setSelectedImageIndex] = useState(parseInt(imageIndex, 10));
 
-
-
-  useEffect(() => {
-    return () => {
-      window.scrollTo(0, 0);
-    };
-  }, []); 
-
-  
   useEffect(() => {
     const fetchProjectData = async () => {
       try {
@@ -48,21 +39,20 @@ const SingleImageView = () => {
     return 0;
   };
 
-const getImageUrlByIndex = (projectData, index) => {
-  if (projectData && projectData.imageUrls) {
-    let currentIndex = 0;
-    for (let key in projectData.imageUrls) {
-      const images = projectData.imageUrls[key];
-      if (index < currentIndex + images.length) {
-        const image = images[index - currentIndex];
-        return image.url; // Return the URL of the image at the specified index
+  const getImageUrlByIndex = (projectData, index) => {
+    if (projectData) {
+      const image1Count = projectData.imageUrls.image1 ? projectData.imageUrls.image1.length : 0;
+      const image2Count = projectData.imageUrls.image2 ? projectData.imageUrls.image2.length : 0;
+      if (index < image1Count) {
+        return projectData.imageUrls.image1[index];
+      } else if (index < image1Count + image2Count) {
+        return projectData.imageUrls.image2[index - image1Count];
+      } else {
+        return projectData.imageUrls.image3[index - (image1Count + image2Count)];
       }
-      currentIndex += images.length;
     }
-  }
-  return null;
-};
-  
+    return null;
+  };
 
   const handleImageClick = (index) => {
     setSelectedImageIndex(index);
@@ -80,14 +70,15 @@ const getImageUrlByIndex = (projectData, index) => {
       return newIndex;
     });
   };
+  
 
   return (
     <section className={`single-image-page ${styles['projectPageSection1']}`}>
-      {/* Display project details */}
-      <div className={styles.mainSectionTopDetails}>
-        <h1 className={`title ${styles['project-title']}`}>{projectData && projectData.displayName}</h1>
-        <h2 className={`body ${styles['directed-subtext']}`}>{projectData && 'Directed by Max Dona'}</h2>
-      </div>
+        {/* Display project details */}
+        <div className={styles.mainSectionTopDetails}>
+          <h1 className={`title ${styles['project-title']}`}>{projectData && projectData.displayName}</h1>
+          <h2 className={`body ${styles['directed-subtext']}`}>{projectData && 'Directed by Max Dona'}</h2>
+        </div>
 
       <div className={styles.imageWrap}>
         {projectData && (
@@ -98,51 +89,63 @@ const getImageUrlByIndex = (projectData, index) => {
           />
         )}
       </div>
-
       <div className={styles.thumbnailWrap}>
         {projectData &&
-          Object.keys(projectData.imageUrls).map((key) =>
-            projectData.imageUrls[key].map((image, index) => (
-              <img
-                key={index}
-                src={image.url} // Use image.url for the thumbnail source
-                alt={`Thumbnail ${index}`}
-                className={`${styles.thumbnail} ${
-                  selectedImageIndex === index + getTotalImageCount(projectData, key) ? styles.selectedThumbnail : ''
-                }`}
-                onClick={() => handleImageClick(index + getTotalImageCount(projectData, key))}
-              />
-            ))
-          )}
+          projectData.imageUrls.image1 &&
+          projectData.imageUrls.image1.map((imageUrl, index) => (
+            <img
+              key={index}
+              src={imageUrl}
+              alt={`Thumbnail ${index}`}
+              className={`${styles.thumbnail} ${
+                selectedImageIndex === index ? styles.selectedThumbnail : ''
+              }`}
+              onClick={() => handleImageClick(index)}
+            />
+          ))}
+        {projectData &&
+          projectData.imageUrls.image2 &&
+          projectData.imageUrls.image2.map((imageUrl, index) => (
+            <img
+              key={index}
+              src={imageUrl}
+              alt={`Thumbnail ${index}`}
+              className={`${styles.thumbnail} ${
+                selectedImageIndex === index + (projectData.imageUrls.image1 ? projectData.imageUrls.image1.length : 0)
+                  ? styles.selectedThumbnail
+                  : ''
+              }`}
+              onClick={() => handleImageClick(index + (projectData.imageUrls.image1 ? projectData.imageUrls.image1.length : 0))}
+            />
+          ))}
       </div>
-
-
+     
       <div className={styles.buttonWrap}>
-        <div className={styles.buttonWrapRight}>
-          <div className={styles.buttonContainer}>
-            <button className={`primary-button ${styles['navigationButton']}`}>
-              Grid View
-            </button>
-          </div>
+      <div className={styles.buttonWrapRight}>
+      <div className={styles.buttonContainer}>
+          <button className={`primary-button ${styles['navigationButton']}`}>
+            Grid View
+          </button>
+        </div>
           <button className={`primary-button ${styles['mainSectionButtonDetails']}`}>
             Full Video
           </button>
         </div>
         <div className={styles.buttonWrapLeft}>
-          <button
-            className={`primary-button ${styles['navigationButton']}`}
-            onClick={() => handleImageNavigation(-1)}
-          >
-            Prev Image
-          </button>
-          <button
-            className={`primary-button ${styles['navigationButton']}`}
-            onClick={() => handleImageNavigation(1)}
-          >
-            Next Image
-          </button>
+        <button
+          className={`primary-button ${styles['navigationButton']}`}
+          onClick={() => handleImageNavigation(-1)}
+        >
+          Prev Image
+        </button>
+        <button
+          className={`primary-button ${styles['navigationButton']}`}
+          onClick={() => handleImageNavigation(1)}
+        >
+          Next Image
+        </button>
         </div>
-      </div>
+        </div>
     </section>
   );
 };

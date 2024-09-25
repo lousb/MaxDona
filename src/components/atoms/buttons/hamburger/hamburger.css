@@ -2,9 +2,8 @@
     cursor: pointer !important;
 
     transition: all 500ms ease;
-    overflow: visible;
-
-    margin-left:2.1vw;
+    overflow: hidden;
+    margin-inline:2.1vw;
 
 }
 
@@ -12,8 +11,8 @@
 
     transition: all 500ms ease-out;
     transition-delay: 100ms;
-    stroke: #181818 !important;
-    clip-path: polygon(0 0, 100% 0, 100% 100%, 0 100%);
+    stroke: var(--primary-color) !important;
+
 }
 
 
@@ -27,5 +26,5 @@
     transform-origin: right center;
 }
 .hamburger-button.active .line-1, .hamburger-button.active .line-3  {
-    clip-path: polygon(100% 0, 100% 0, 100% 100%, 100% 100%);
+    transform: translateX(110%);
 }

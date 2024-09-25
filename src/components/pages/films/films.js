@@ -10,8 +10,6 @@ import MouseCursor from "../../../utils/mouseCursor";
 import Reveal from "../../../utils/textElementReveal/textElementReveal";
 import { AnimatePresence , motion} from "framer-motion";
 import Masonry, {ResponsiveMasonry} from "react-responsive-masonry";
-import DelayLink from "../../../utils/delayLink";
-import useMousePosition from "../../../utils/useMousePosition";
 
 
 gsap.registerPlugin(ScrollTrigger);
@@ -21,56 +19,27 @@ function Films() {
     const [data, setData] = useState([]);
     const filmProjectItemsRef = useRef([]);
     const [scrollPosition, setScrollPosition] = useState(0);
-    const [activeView, setActiveView] = useState('slow');
+    const [activeView, setActiveView] = useState('slow'); // State to manage active view
     const [hoveredImage, setHoveredImage] = useState(null);
-    const [mainImageLoaded, setMainImageLoaded] = useState(false); // Track main image loading
-    const loadedImages = useRef(new Set()); // Cache to store loaded images
 
-
-    const handleHoveredImageChange = ({ url, blurhash }) => {
-        setHoveredImage({ url, blurhash });
-
-        // Check if the image was already loaded before
-        if (loadedImages.current.has(url)) {
-            setMainImageLoaded(true);
-        } else {
-            setMainImageLoaded(false); // Reset loading state only if it's a new image
-        }
+    const handleHoveredImageChange = (imageUrl) => {
+        setHoveredImage(imageUrl)
     };
 
-    const handleImageLoad = (url) => {
-        loadedImages.current.add(url); // Add the URL to the loaded images cache
-        setMainImageLoaded(true);
-    };
-
-
-
+    // Function to toggle between views
     const handleViewChange = (view) => {
         setActiveView(view);
-        setTimeout(() => {
-            ScrollTrigger.refresh(true);  // Force refresh to recalculate pinned elements
-        }, 800); // Add a slight delay to ensure DOM updates are complete before refresh
-    };
-    
-
-    const handleDelayStart = (color) => {
-        gsap.to(".film-page-title-wrap", { opacity: 0, duration: 0.2, ease:[0.76, 0, 0.24, 1] });
-        setActiveView(null);
-        if (color) {
-            document.documentElement.style.setProperty('--secondary-dark', color);
-        }
     };
 
     useEffect(() => {
+        // Update the footer state when the component is mounted
         dispatch({ type: "Small" });
+
+        // Clean up the state when the component is unmounted
         return () => {
             dispatch({ type: "Default" });
         };
     }, [dispatch]);
-
-    useEffect(() => {
-        ScrollTrigger.refresh();
-    }, [data]);
 
     useEffect(() => {
         const unsub = onSnapshot(collection(db, "projects"), (snapShot) => {
@@ -80,56 +49,17 @@ function Films() {
             });
             setData(list);
         }, (error) => {
-            console.error(error);
+            console.log(error);
         });
 
-        document.documentElement.style.setProperty('--primary-color', '#181818');
-        document.documentElement.style.setProperty('--secondary-dark', 'rgb(10, 10, 10)');
-
-        return () => unsub();
+        return () => {
+            unsub();
+        };
     }, []);
 
     useEffect(() => {
-        window.scrollTo({ top: 0, behavior: 'auto' });
-        ScrollTrigger.refresh(true);
-        applyScrollAnimations();
-
-        const updateScrollTrigger = () => {
-            setTimeout(() => {
-                ScrollTrigger.refresh(true);
-            }, 800); // Allow for DOM and layout updates
-        };
-
-        updateScrollTrigger();
-
-        // Cleanup on unmount
-        return () => {
-            ScrollTrigger.getAll().forEach((trigger) => trigger.kill());
-        };
-    }, [activeView, data]);
-
-    
-
-    useEffect(() => {
-        const handleScroll = () => {
-            setScrollPosition(window.pageYOffset || document.documentElement.scrollTop);
-        };
-
-        const handleScrollDebounced = debounce(handleScroll, 800);
-
-        window.addEventListener('scroll', handleScroll);
-        window.addEventListener('scroll', handleScrollDebounced);
-
-        return () => {
-            window.removeEventListener('scroll', handleScroll);
-            window.removeEventListener('scroll', handleScrollDebounced);
-            ScrollTrigger.getAll().forEach((trigger) => trigger.kill());
-        };
-    }, [data, activeView]);
-
-    useEffect(() => {
-        gsap.fromTo(".project-scroll-height", { height: '0px' }, { height: '100%', duration: 1, ease: [0.76, 0, 0.24, 1], delay: 1 });
-    }, [useLocation()]);
+        window.scrollTo(0, scrollPosition);
+    }, [activeView]);
 
     const debounce = (func, delay) => {
         let timer;
@@ -139,295 +69,182 @@ function Films() {
         };
     };
 
-   const applyScrollAnimations = () => {
-       // Clean up any existing ScrollTriggers
-       ScrollTrigger.getAll().forEach((trigger) => trigger.kill());
-       ScrollTrigger.clearScrollMemory(); // Clear cached scroll positions
 
-       if (activeView === 'slow' && data.length > 0) {
-           slowViewAnimations();
-       } else if (activeView === 'medium') {
-           mediumViewAnimations();
-       } else if (activeView === 'fast') {
-           fastViewAnimations();
-       }
+    let location = useLocation();
 
-       setTimeout(() => {
-           ScrollTrigger.refresh(true);  // Ensure ScrollTrigger is refreshed
-       }, 800);
-   };
-    
-   const slowViewAnimations = () => {
+    useEffect(() => {
+        gsap.fromTo(".project-scroll-height", { height:'0px' }, { height: '100%', duration: 1, ease:[0.76, 0, 0.24, 1], delay:1});
+        
+    }, [location]);
+
+    const slowViewAnimations = (handleScroll, handleScrollDebounced) => {
+        window.addEventListener('scroll', handleScroll);
+        window.addEventListener('scroll', handleScrollDebounced);
+
         const filmProjectItems = document.querySelectorAll('.film-project-item');
-        const itemHeight = window.innerHeight * 0.8 - 90;
-        const totalHeight = (data.length - 1) * itemHeight;
-        const maxTranslateY = (data.length - 1) * 100 - 20.8;
 
-        ScrollTrigger.create({
-            trigger: '.film-page-wrap',
+        if (data.length > 0) {
+            const itemHeight = window.innerHeight * 0.8 - 90;
+            const totalHeight = (data.length - 1) * itemHeight; // Total distance to cover
+            const maxTranslateY = (data.length - 1) * 100 - 20.8; // Maximum translateY needed
+
+            
+
+            ScrollTrigger.create({
+                trigger: '.film-page-wrap',
+                start: 'top top',
+                pin: '.film-page-wrap',
+                end: () => `+=${totalHeight}`,
+                onUpdate: (self) => {
+                    const progress = self.progress * maxTranslateY;
+
+                    filmProjectItems.forEach((item) => {
+                        gsap.to(item, { y: `-${progress}%`, ease: 'none' });
+                    });
+                },
+
+                
+            });
+        }
+
+       
+        
+        gsap.fromTo('.film-project-scroll-container',{
+            height: 'calc(70svh - 90px)',
+        },{
+    
+          height: 'calc(100svh - 4vw - 90px)',
+          scrollTrigger: {
+            trigger:'.page-content', 
             start: 'top top',
-            pin: '.film-page-wrap',
-            end: () => `+=${totalHeight}`,
-            onUpdate: (self) => {
-                const progress = self.progress * maxTranslateY;
-                filmProjectItems.forEach((item) => {
-                    gsap.to(item, { y: `-${progress}%`, ease: 'none' });
-                });
-            },
+            end: '600',
+            scrub: true,
+            id: "scrub",
+          },
         });
 
-        gsap.fromTo('.film-project-scroll-container', {
-            height: 'calc(70vh - 90px)',
-        }, {
-            height: 'calc(100vh - 4vw - 90px)',
+        gsap.fromTo('.film-project-item',{
+          height: 'calc(70svh - 90px)'
+        },{
+    
+            height: 'calc(80svh - 90px)',
+          scrollTrigger: {
+            trigger:'.page-content', 
+            start: 'top top',
+            end: '200',
+            scrub: true,
+            id: "scrub",
+          },
+        });
+
+        gsap.to('.film-page-title-wrap',{
+      
+              y: '-500px',
+           
+             
             scrollTrigger: {
-                trigger: '.page-content',
-                start: 'top top',
-                end: '600',
-                scrub: true,
-                id: "scrub",
+              trigger:document.body, 
+              start: 'top top',
+              end: '500px top',
+              scrub: true,
+              id: "scrub",
             },
-        });
+          });
 
-        gsap.fromTo('.film-project-item', {
-            height: 'calc(70vh - 90px)'
-        }, {
-            height: 'calc(80vh - 90px)',
-            scrollTrigger: {
-                trigger: '.page-content',
-                start: 'top top',
-                end: '200',
-                scrub: true,
-                id: "scrub",
-            },
-        });
-
-        gsap.to('.film-page-title-wrap', {
-            y: '-300px',
-            scrollTrigger: {
-                trigger: document.body,
-                start: 'top top',
-                end: '500px top',
-                scrub: true,
-                id: "scrub",
-            },
-        });
-
-        //    filmProjectItems.forEach((item) => {
-        //        const detailsElement = item.querySelector('.project-item-details');
-        //        console.log("Creating ScrollTrigger for:", detailsElement);
-
-        //        if (detailsElement) {
-        //            const itemRect = item.getBoundingClientRect();
-        //            const start = itemRect.top + window.scrollY;
-        //            const end = start + item.offsetHeight;
-
-        //            ScrollTrigger.create({
-        //                trigger: item,
-        //                start: `-=${window.innerHeight + (window.innerWidth * 0.04) - detailsElement.offsetHeight} top`, // Adjusted start to match the filmProjectItem's top
-        //                end: () => `+=${item.offsetHeight}`, // End is the height of the item to match its end
-        //                scrub: 1,
-        //                markers: true, // Use markers to debug and adjust
-        //                onUpdate: (self) => {
-        //                    // Calculate the Y translation based on scroll progress
-        //                    gsap.to(detailsElement, {
-        //                        y: self.progress * (item.offsetHeight - detailsElement.offsetHeight),
-        //                        duration: 0,
-        //                        overwrite: 'auto',
-        //                    });
-        //                }
-        //            });
-        //        }
-        //    });
     };
 
-
-
     const mediumViewAnimations = () => {
-        gsap.fromTo('.random-masonry-image-view', {
+        gsap.fromTo('.random-masonry-image-view',{
             marginTop: '10vw'
-        }, {
+        },{
             marginTop: '0px',
             scrollTrigger: {
-                trigger: '.film-page-wrap',
+                trigger:'.film-page-wrap', 
                 start: 'top top',
                 end: '1000',
                 scrub: true,
                 id: "scrub",
             },
         });
-        gsap.to('.film-page-title-wrap', {
-            y: '-30vh',
-            scrollTrigger: {
-                trigger: document.body,
-                start: 'top top',
-                end: '500px top',
-                scrub: true,
-                id: "scrub",
-            },
-        });
+
     };
 
     const fastViewAnimations = () => {
-        gsap.fromTo('.infinite-scroll-map-wrap', {
+
+
+    
+
+   
+
+        gsap.fromTo('.infinite-scroll-map-wrap',{
             marginTop: '10vw'
-        }, {
+        },{
             marginTop: '0px',
             scrollTrigger: {
-                trigger: '.film-page-wrap',
+                trigger:'.film-page-wrap', 
                 start: 'top top',
                 end: '1000',
                 scrub: true,
                 id: "scrub",
             },
         });
-        gsap.to('.film-page-title-wrap', {
-            y: '-30vh',
-            scrollTrigger: {
-                trigger: document.body,
-                start: 'top top',
-                end: '500px top',
-                scrub: true,
-                id: "scrub",
-            },
-        });
+
     };
 
-    useEffect(() => {
-        const filmPageWrap = document.querySelector('.film-page-wrap');
-        if (filmPageWrap) {
-            if (activeView === 'slow') {
-                const itemHeight = window.innerHeight * 0.8 - 90;
-                filmPageWrap.style.height = `${data.length * itemHeight}px`;
-            } else {
-                filmPageWrap.style.height = 'auto';
-            }
-        }
-
-        // Ensure ScrollTrigger is refreshed
-        setTimeout(() => {
-            ScrollTrigger.refresh(true);
-        }, 800); // Allow time for layout recalculations
-    }, [activeView, data]);
-    
-
-
-
-
-
-
-
-    const hoverDescRef = useRef(null);
-    const { x, y } = useMousePosition(".App");
-    const [hoverDescHeight, setHoverDescHeight] = useState(0);
-    const [prevX, setPrevX] = useState(0);
-    const [prevY, setPrevY] = useState(0);
-    const [velocity, setVelocity] = useState({ vx: 0, vy: 0 });
-    const [currentProject, setCurrentProject] = useState(''); // Initialize with first item's focusGenre
-    const [wobble, setWobble] = useState({ translateY: 0, rotate: 0 }); // State for wobble effect
-    const wobbleTimeoutRef = useRef(null); // Ref to store the timeout
-    const [projectColour, setProjectColour] = useState(0);
-    const [prevHover, setPrevHover] = useState([data[0]]);
-    const [lastHoveredIndex, setLastHoveredIndex] = useState(null);
-    const [currentHoveredIndex, setCurrentHoveredIndex] = useState(null);
-
-    const infiniteScrollData = data.length < 5 ? [...data, ...data.slice(0, 5 - data.length)] : data;
-
-    const handleMouseLeave = () => {
-        setCurrentHoveredIndex(null);
-        gsap.to('.fast-hover-desc .link-desc > span', {
-            y: '100%',
-            duration: 0.2,
-        });
-    };
 
     useEffect(() => {
-        if (currentHoveredIndex !== null && currentHoveredIndex !== lastHoveredIndex) {
-            setLastHoveredIndex(currentHoveredIndex);
-        }
-    }, [currentHoveredIndex, lastHoveredIndex]);
-
-    const handleMouseEnter = (item) => {
-        setProjectColour(item.projectColor);
-        gsap.to('.fast-hover-desc .link-desc > span', {
-            y: '100%',
-            duration: 0.3,
-            onComplete: () => {
-                setCurrentProject(item.focusGenre);
-                gsap.to('.fast-hover-desc .link-desc > span', {
-                    y: '100%',
-                    color: item.projectColor,
-                    opacity: 0,
-                    duration: 0,
-                    onComplete: () => {
-                        gsap.to('.fast-hover-desc .link-desc > span', {
-                            y: '0%',
-                            opacity: 1,
-                            duration: 0.3,
-                            delay: 0.3,
-                        });
-                    },
-                });
-            },
-        });
-    };
-
-    useEffect(() => {
-        const calculateVelocity = () => {
-            const vx = x - prevX;
-            const vy = y - prevY;
-            setVelocity({ vx, vy });
-            setPrevX(x);
-            setPrevY(y);
+        const handleScroll = () => {
+            setScrollPosition(window.pageYOffset || document.documentElement.scrollTop);
         };
 
-        calculateVelocity();
-    }, [x, y]);
+        const handleScrollDebounced = debounce(() => {
+            setScrollPosition(window.pageYOffset || document.documentElement.scrollTop);
+        }, 100); // Adjust the delay as needed
 
-    const clamp = (value, min, max) => Math.max(min, Math.min(max, value));
+        switch (activeView) {
+            case 'slow':
+                slowViewAnimations();
+                break;
+            case 'medium':
+                mediumViewAnimations();
+                break;
+            case 'fast':
+                fastViewAnimations();
+                break;
+            default:
+                // Handle default view animations
+                break;
+        }
 
-    const maxTranslation = 3;
-    const maxRotation = 1.5;
-
-    useEffect(() => {
-        const wobbleEffect = {
-            translateY: clamp(velocity.vy * 1.5, -maxTranslation, maxTranslation),
-            rotate: clamp(velocity.vx * 1.5, -maxRotation, maxRotation),
+        return () => {
+            window.removeEventListener('scroll', handleScroll);
+            window.removeEventListener('scroll', handleScrollDebounced);
+            ScrollTrigger.getAll().forEach((trigger) => trigger.kill());
         };
-        setWobble(wobbleEffect);
-
-        if (wobbleTimeoutRef.current) {
-            clearTimeout(wobbleTimeoutRef.current);
-        }
-
-        wobbleTimeoutRef.current = setTimeout(() => {
-            setWobble({ translateY: 0, rotate: 0 }); // Reset to baseline
-        }, 100); // Reset after 100ms of inactivity
-
-        return () => clearTimeout(wobbleTimeoutRef.current);
-    }, [velocity]);
-
-    useEffect(() => {
-        const spanElement = document.querySelector('.fast-hover-desc .link-desc > span');
-
-        if (activeView === 'fast') {
-            gsap.to('.fast-hover-desc', {
-                width: spanElement.clientWidth,
-                duration: 0,
-            });
-            gsap.to('.fast-hover-desc', {
-                height: spanElement.clientHeight,
-                duration: 1,
-            });
-        }
-    }, [currentProject, activeView]);
-    
-    
+    }, [data, activeView]);
 
     return (
    
-        <div className={`${styles['film-page']}`}>
-            <div className={`${styles['view-switcher-wrap']} view-switcher-wrap`}>
+    
+        <div className={`${styles['film-page-wrap']} film-page-wrap ${activeView === 'fast' && 'fast-active'}`}>
+                
+            <AnimatePresence>
+                {activeView === 'fast'&&
+                    <motion.div
+                        initial={{ opacity: 0,}}
+                        animate={{ opacity: 1, transition:{ delay:1, duration: 0.8, ease:[0.76, 0, 0.24, 1] }}}
+                        exit={{ opacity: 0}}
+                        transition={{ duration: 0.8, ease:[0.76, 0, 0.24, 1] }}
+                    
+                    className={`${styles['floating-project-thumb-wrap']} floating-project-thumb-wrap`}>
+                        <div>
+                            <ParallaxImage imageUrl={hoveredImage || '/Max-Headshot.png'} className={`${styles['floating-project-image']} floating-project-image`}/>
+                            <div className={`body ${styles['floating-project-name']} floating-project-name`}></div>
+                        </div>
+                    </motion.div>
+                }
+            </AnimatePresence>
+             <div className={`${styles['view-switcher-wrap']} view-switcher-wrap`}>
                 <div className={`${styles['view-bracket-wrap']} view-bracket-wrap`}>
                     <div className={`${styles['view-bracket']} body`}>
                         (
@@ -441,39 +258,6 @@ function Films() {
                 <button className={`body ${styles['fast-toggle']} ${activeView === 'fast' ? styles['view-toggle-active']:''}`} onClick={() => handleViewChange('fast')}>List</button>
                 <button className={`body ${styles['medium-toggle']} ${activeView === 'medium' ? styles['view-toggle-active']:''}`} onClick={() => handleViewChange('medium')}>Grid</button>
             </div>
- 
-        <div className={`${styles['film-page-wrap']} film-page-wrap ${activeView === 'fast' && 'fast-active'}`}>
-                
-        <AnimatePresence>
-            {activeView === 'fast' && hoveredImage && (
-                <motion.div
-                    initial={{ opacity: 0 }}
-                    animate={{ opacity: 1, transition: { delay: 1, duration: 0.8, ease: [0.76, 0, 0.24, 1] } }}
-                    exit={{ opacity: 0 }}
-                    transition={{ duration: 0.8, ease: [0.76, 0, 0.24, 1] }}
-                    className={`${styles['floating-project-thumb-wrap']} floating-project-thumb-wrap`}
-                >
-                    <div>
-                        <ParallaxImage
-                            imageUrl={!mainImageLoaded ? hoveredImage?.blurhash : hoveredImage?.url}
-                            className={`${styles['floating-project-image']} floating-project-image`}
-                        />
-
-                        {/* Invisible main image for loading */}
-                        <img
-                            src={hoveredImage.url}
-                            alt="Main featured"
-                            style={{ display: 'none' }}
-                            onLoad={() => handleImageLoad(hoveredImage.url)}
-                        />
-
-                        <div className={`body ${styles['floating-project-name']} floating-project-name`}></div>
-                    </div>
-                </motion.div>
-            )}
-        </AnimatePresence>
-
-             
     
             <div className={`${styles['film-page-title-wrap']} film-page-title-wrap high-z-index-layer`}>
                 <Reveal elementClass={'title'} element={'h2'} textContent={'ARCHIVE:'}/>
@@ -499,46 +283,23 @@ function Films() {
                         exit={{ opacity: 0, y:'50%' }}
                         transition={{ duration: 0.8, ease:[0.76, 0, 0.24, 1] }}
                     >
-                        <SlowView data={data} filmProjectItemsRef={filmProjectItemsRef} handleDelayStart={handleDelayStart}/>
+                        <SlowView data={data} filmProjectItemsRef={filmProjectItemsRef} />
                     </motion.div>
                 )}
                
-               {activeView === 'fast' && (
-                <>
-                <div
-                  className={`fast-hover-desc`}
-                  ref={hoverDescRef}
-                  style={{
-                    position: "fixed",
-                    left: `${x - 14}px`,
-                    top: `${y - hoverDescHeight / 2}px`,
-                    transform: `translateY(${wobble.translateY}px) rotate(${wobble.rotate}deg)`,
-                  }}
-                >
-                  <div className={`fast-hover-svg-wrap`}>
-                    <svg width="17" height="25" viewBox="0 0 17 25" fill="none" xmlns="http://www.w3.org/2000/svg" className={`fast-hover-arrow`}>
-                    <path style={{ fill: `${projectColour}` }} fill-rule="evenodd" clip-rule="evenodd" d="M2.0078 4.99998H0.29C0.193334 4.99998 0 4.95453 0 4.77271V0.22727C0 0 0.348 0 0.580001 0H1.74023H6.38H6.38086H8.12023H11.2382H12.1809H16.2405V4.63965V6.37983V10.4395V10.4473H16.2435V16.2471C16.2435 16.4791 16.2435 16.8271 16.0053 16.8271H11.2411C11.0506 16.8271 11.0029 16.6338 11.0029 16.5371V10.7739C11.0009 10.7578 11 10.7427 11 10.7295V8.99603L6.39529 13.6006L6.39552 13.6008L3.92365 16.0726C3.82477 16.1715 3.67646 16.3198 3.50954 16.1529L0.171188 12.8146C0.037654 12.6811 0.0866662 12.5653 0.127864 12.5241L1.48753 11.1645L1.4873 11.1642L7.65128 5.00047H2.03023C2.02257 5.00047 2.01509 5.0003 2.0078 4.99998Z" fill="#181818"/>
-                    </svg>
-                  </div>
-
-                  <p className={`body link-desc`}>
-                    <span dangerouslySetInnerHTML={{ __html: currentProject }}></span>
-                  </p>
-                </div>
-                <motion.div
-                       className={`${styles['project-wrap']} high-z-index-layer project-wrap`}
-                       key="fast"
-                       initial={{ opacity: 0, y: '20%' }}
-                       animate={{ opacity: 1, y: '0%', transition: { duration: 1, delay: 0.4, ease: [0.76, 0, 0.24, 1] } }}
-                       exit={{ opacity: 0, y: '20%' }}
-                       transition={{ duration: 0.8, ease: [0.76, 0, 0.24, 1] }}
-                   >
-                       <FastView data={data} filmProjectItemsRef={filmProjectItemsRef} onHoverImage={handleHoveredImageChange} handleDelayStart={handleDelayStart} onMouseEnter={handleMouseEnter} onMouseLeave={handleMouseLeave} setCurrentHoveredIndex={setCurrentHoveredIndex}
-                       />
-                   </motion.div>
-                </>
-                   
-               )}
+                {activeView === 'fast' && (
+                    <motion.div
+                        className={`${styles['project-wrap']} project-wrap`}
+                        key="fast"
+                        initial={{ opacity: 0, y:'20%' }}
+                        animate={{ opacity: 1, y:'0%', transition: { duration: 1, delay: 0.4, ease:[0.76, 0, 0.24, 1] } }}
+                        exit={{ opacity: 0, y:'20%' }}
+                        transition={{ duration: 0.8, ease:[0.76, 0, 0.24, 1] }}
+                        
+                    >
+                        <FastView data={data} filmProjectItemsRef={filmProjectItemsRef}  onHoverImage={handleHoveredImageChange}/>
+                    </motion.div>
+                )}
                  {activeView === 'medium' && (
                     <motion.div
                         className={`${styles['project-wrap']} project-wrap`}
@@ -548,115 +309,116 @@ function Films() {
                         exit={{ opacity: 0, y:'20%' }}
                         transition={{ duration: 0.8, ease:[0.76, 0, 0.24, 1] }}
                     >
-                        <MediumView data={data} filmProjectItemsRef={filmProjectItemsRef} handleDelayStart={handleDelayStart}/>
+                        <MediumView data={data} filmProjectItemsRef={filmProjectItemsRef}/>
                     </motion.div>
                 )}
             </AnimatePresence>
         </div>
         </div>
-        </div>
     );
 }
 
-const SlowView = ({ data, filmProjectItemsRef, handleDelayStart }) => {
-    const [mainImageLoaded, setMainImageLoaded] = useState(false);
+const SlowView = ({ data, filmProjectItemsRef }) => {
 
     return (
         <div className={`slow-view ${styles['film-project-scroll-wrap']}`}>
-            <div className={`body film-project-scroll-container ${styles['film-project-scroll-container']}`}>
-                <div className={`project-scroll-height ${styles['project-scroll-height']}`}>
-                    {data.map((project, index) => (
-                        <DelayLink 
-                            onDelayStart={() => handleDelayStart(project.projectColor)}  
-                            delay={1500}  
-                            to={`/projects/${project.id}`} 
-                            className={`view-list-item-link ${styles['view-list-item-link']}`} 
-                            key={`slow-${project.id}-${index}`} // Ensure unique key
-                        >
-                            <div
-                                style={{ backgroundImage: `url(${project?.mainFeaturedImage?.blurhash}`}}
-                                ref={(el) => (filmProjectItemsRef.current[index] = el)}
-                                className={`${styles['film-project-item']} film-project-item`}
-                            >
-                                <img
-                                  src={project?.mainFeaturedImage?.url}
-                                  alt="main featured"
-                                  onLoad={() => setMainImageLoaded(true)}
-                                />
-                                {index === 0 ? (
-                                    <div>
-                                        <h2 className={`header-reduced ${styles['film-project-title']} ${styles['film-project-desc-item']}`}>
-                                            {project.displayName}
-                                        </h2>
-                                        <h3 className={`body ${styles['film-project-director']} ${styles['film-project-desc-item']}`} >
-                                            Directed by Max Dona
-                                        </h3>
-                                        <div className={`body ${styles['film-project-video-name']} ${styles['film-project-desc-item']}`} >
-                                            {project.videoName} ({new Date(project.releaseDate).getFullYear()})
-                                        </div>
-                                        <p className={`primary-button ${styles['film-project-cta']} ${styles['film-project-desc-item']}`}>FULL PROJECT</p>
-                                    </div>
-                                ) : (
-                                    <div className="project-item-details">
-                                        <h2 className={`header-reduced ${styles['film-project-title']} ${styles['film-project-desc-item']}`} style={{paddingBottom:'14px'}}>
-                                            <Reveal custom={0} textContent={project.displayName} element={"span"} elementClass={`heading`} />
-                                        </h2>
-                                        <h3 className={`body ${styles['film-project-director']} ${styles['film-project-desc-item']}`} >
-                                            <Reveal custom={1} textContent={"Directed by Max Dona"} element={'p'} elementClass={"body"} />
-                                        </h3>
-                                        <div className={`body ${styles['film-project-video-name']} ${styles['film-project-desc-item']}`} >
-                                            <Reveal custom={2} textContent={`${project.videoName} (${new Date(project.releaseDate).getFullYear()})`} element={'p'} elementClass={"body"} />
-                                        </div>
-                                        <div className={` ${styles['film-project-cta']} ${styles['film-project-desc-item']}`} >
-                                            <Reveal custom={3} textContent={`FULL PROJECT`} element={'p'} elementClass={`primary-button ${styles['film-project-cta']} ${styles['film-project-desc-item']}`} />
-                                        </div>
-                                    </div>
-                                )}
+        <div className={`body film-project-scroll-container ${styles['film-project-scroll-container']}`}>
+            <div className={`project-scroll-height ${styles['project-scroll-height']}`}>
+            {data.map((project, index) => (
+                <Link to={`/projects/${project.id}`} className={`view-list-item-link ${styles['view-list-item-link']}` }key={project.id}>
+                    <div
+                        style={{backgroundImage : `url(${project.mainFeaturedImage})`}}
+                        ref={(el) => (filmProjectItemsRef.current[index] = el)}
+                        className={`${styles['film-project-item']} film-project-item`
+                      
+                    }
+                    >
+                        {index === 0?
+                         <>
+                         <h2 className={`header-reduced ${styles['film-project-title']} ${styles['film-project-desc-item']}`}>
+                            {project.displayName}
+                         </h2>
+                         <h3 className={`body ${styles['film-project-director']} ${styles['film-project-desc-item']}`} >
+                             Directed by Max Dona
+                         </h3>
+                         <div className={`body ${styles['film-project-video-name']} ${styles['film-project-desc-item']}`} >
+                             {project.videoName} ({new Date(project.releaseDate).getFullYear()})
+                         </div>
+                         <p className={`primary-button ${styles['film-project-cta']} ${styles['film-project-desc-item']}`}>FULL PROJECT</p>
+                        </>
+                        :
+
+                        <>
+                            <h2 className={`header-reduced ${styles['film-project-title']} ${styles['film-project-desc-item']}`}>
+                            <Reveal custom={0} textContent={project.displayName} element={"span"} elementClass={`heading`}/>
+                            </h2>
+                            <h3 className={`body ${styles['film-project-director']} ${styles['film-project-desc-item']}`} >
+                                <Reveal custom={1} textContent={"Directed by Max Dona"} element={'p'} elementClass={"body"}/>
+                            </h3>
+                            <div className={`body ${styles['film-project-video-name']} ${styles['film-project-desc-item']}`} >
+                                <Reveal custom={2} textContent={`${project.videoName} (${new Date(project.releaseDate).getFullYear()})`} element={'p'} elementClass={"body"}/>
                             </div>
-                        </DelayLink>
-                    ))}
-                </div>
+                            <div className={`primary-button ${styles['film-project-cta']} ${styles['film-project-desc-item']}`} >
+                                <Reveal custom={3} textContent={`FULL PROJECT HERE`} element={'p'} elementClass={`primary-button ${styles['film-project-cta']} ${styles['film-project-desc-item']}`}/>
+
+                            </div>
+                        </>
+                        
+                        }
+                        
+                        
+                    </div>
+                </Link>
+            ))}
             </div>
+        </div>
         </div>
     );
 };
 
 
-
-const MediumView = ({ data, handleDelayStart }) => {
+const MediumView = ({ data }) => {
     const [randomImagesWithInfo, setRandomImagesWithInfo] = useState([]);
 
     useEffect(() => {
-        fetchRandomImages();
-    }, []);
+        const fetchRandomImages = async () => {
+            const allImageUrls = new Set();
 
-    const fetchRandomImages = async () => {
-        const allImages = [];
-
-        data.forEach((project) => {
-            for (let i = 1; i <= 3; i++) {
-                const imageUrls = project.imageUrls[`image${i}`];
-                if (imageUrls && Array.isArray(imageUrls)) {
-                    imageUrls.forEach((image, indexWithinProject) => {
-                        const imageUrl = image.url;
-                        const blurhash = image.blurhash;
-                        if (imageUrl && blurhash) {
-                            allImages.push({ imageUrl, blurhash, project, indexWithinProject });
-                        }
-                    });
+            // Extract all image URLs from different folders (image1, image2, etc.)
+            data.forEach((project) => {
+                for (let i = 1; i <= 3; i++) {
+                    const imageUrls = project.imageUrls[`image${i}`];
+                    if (imageUrls && Array.isArray(imageUrls)) {
+                        imageUrls.forEach((url) => allImageUrls.add(url));
+                    }
                 }
-            }
-        });
+            });
 
-        const shuffledImages = shuffleArray(allImages);
-        const randomImages = shuffledImages.slice(0, 25);
+            const uniqueImageUrls = Array.from(allImageUrls);
 
-        const imagesWithInfo = randomImages.map(({ imageUrl, blurhash, project, indexWithinProject }) => {
-            return { imageUrl, blurhash, project, indexWithinProject };
-        });
+            // Shuffle the array to randomize the images
+            const shuffledImages = shuffleArray(uniqueImageUrls);
 
-        setRandomImagesWithInfo(imagesWithInfo);
-    };
+            // Get the first 20 (or desired number) images for display
+            const randomImageUrls = shuffledImages.slice(0, 25);
+
+            const imagesWithInfo = randomImageUrls.map((imageUrl) => {
+                const project = data.find((project) =>
+                    Object.values(project.imageUrls).flat().includes(imageUrl)
+                );
+
+                const indexWithinProject = Object.values(project.imageUrls)
+                    .map((images) => images.indexOf(imageUrl))
+                    .find((index) => index !== -1);
+
+                return { imageUrl, project, indexWithinProject };
+            });
+
+            setRandomImagesWithInfo(imagesWithInfo);
+        };
+
+        fetchRandomImages();
+    }, [data]);
 
     const shuffleArray = (array) => {
         const shuffled = [...array];
@@ -667,83 +429,80 @@ const MediumView = ({ data, handleDelayStart }) => {
         return shuffled;
     };
 
-    useEffect(() => {
-        setTimeout(() => {
-            const masonrySection = document.querySelector(`.${styles['random-masonry-image-view']} > div > div`);
-
-            if (masonrySection) {
-                const childCount = masonrySection.childElementCount;
-
-                for (let i = 0; i < childCount; i++) {
-                    const child = masonrySection.children[i];
-                    child.classList.add(`column-${i + 1}`);
-                    child.classList.add(`masonry-column`);
-                }
-
-                const calculateTallestColumnHeight = () => {
-                    let tallestHeight = 0;
-                    const columns = document.querySelectorAll(`.${styles['random-masonry-image-view']} .masonry-column`);
-                    columns.forEach((column) => {
-                        const height = column.offsetHeight;
-                        if (height > tallestHeight) {
-                            tallestHeight = height;
-                        }
-                    });
-                    return tallestHeight;
-                };
-
-                const tallestColumnHeight = calculateTallestColumnHeight();
-                const columns = document.querySelectorAll(`.${styles['random-masonry-image-view']} .masonry-column`);
-
-                columns.forEach((column) => {
-                    const columnHeight = column.offsetHeight;
-                    const difference = tallestColumnHeight - columnHeight;
-
-                    gsap.to(column, {
-                        marginTop: difference,
-                        scrollTrigger: {
-                            trigger: `.${styles['random-masonry-image-view']}`,
-                            start: `-90px top`,
-                            end: () => `+=${tallestColumnHeight - (window.innerHeight / 2.5)}`,
-                            scrub: true,
-                        },
-                    });
-                });
-            } else {
-                console.log('No masonry section found.');
+    
+useEffect(() => {
+    setTimeout(() => {
+      const masonrySection = document.querySelector(`.${styles['random-masonry-image-view']} > div > div`);
+  
+      if (masonrySection) {
+        const childCount = masonrySection.childElementCount;
+  
+        for (let i = 0; i < childCount; i++) {
+          const child = masonrySection.children[i];
+          child.classList.add(`column-${i + 1}`);
+          child.classList.add(`masonry-column`);
+        }
+  
+        const calculateTallestColumnHeight = () => {
+          let tallestHeight = 0;
+          const columns = document.querySelectorAll(`.${styles['random-masonry-image-view']} .masonry-column`);
+      
+          columns.forEach((column) => {
+            const height = column.offsetHeight;
+            if (height > tallestHeight) {
+              tallestHeight = height;
             }
-        }, 1000);
-    }, [randomImagesWithInfo]);
+          });
+      
+          return tallestHeight;
+        };
+      
+        const tallestColumnHeight = calculateTallestColumnHeight();
+        const columns = document.querySelectorAll(`.${styles['random-masonry-image-view']} .masonry-column`);
+  
+        columns.forEach((column) => {
+          const columnHeight = column.offsetHeight;
+          const difference = tallestColumnHeight - columnHeight;
+  
+          gsap.to(column, {
+            marginTop: difference,
+            scrollTrigger: {
+              trigger: `.${styles['random-masonry-image-view']}`,
+              start: `-90px top`,
+              end: ()=>`+=${tallestColumnHeight - (window.innerHeight/2.5)}`,
+              markers: true,
+              scrub: true,
+            },
+          });
+        });
+      } else {
+        console.log('No masonry section found.');
+      }
+    }, 1000); // Adjust the delay as needed
+  }, [randomImagesWithInfo]); 
 
     return (
         <div className={`${styles['random-masonry-image-view']} random-masonry-image-view`}>
+       
+
             <ResponsiveMasonry columnsCountBreakPoints={{ 300: 1, 500: 2, 700: 3, 900: 4 }}>
-                <Masonry columnsCount={4} gutter="1.4vw">
+                 <Masonry columnsCount={4} gutter="1.4vw">
                     {randomImagesWithInfo.map((imageInfo, index) => (
-                        
-                        <DelayLink 
-                            delay={1500} 
-                            onDelayStart={() => handleDelayStart(imageInfo.projectColor)}  
-                            to={`/projects/${imageInfo.project.id}/${imageInfo.indexWithinProject}`} 
-                            key={`medium-${imageInfo.project.id}-${index}`} // Ensure unique key
-                        >
-                            <ParallaxImage 
-                                key={`medium-image-${index}`} 
-                                imageUrl={imageInfo.imageUrl} 
-                                blurhash={imageInfo.blurhash} 
-                                className={`${styles['random-masonry-image']}`} 
-                            />
-                        </DelayLink>
-                    ))}
-                </Masonry>
+                 
+                 <Link to={`/projects/${imageInfo.project.id}/${imageInfo.indexWithinProject}`} key={index}>
+                    <ParallaxImage key={index} imageUrl={imageInfo.imageUrl} className={`${styles['random-masonry-image']}`} />
+                </Link>
+              
+            ))}
+              </Masonry>
             </ResponsiveMasonry>
+            
         </div>
     );
 };
 
 
-
-const ParallaxImage = ({ imageUrl, blurhash, handleDelayStart }) => {
+const ParallaxImage = ({ imageUrl }) => {
     const [isHovered, setIsHovered] = useState(false);
     const [maskPosition, setMaskPosition] = useState({ x: 0, y: 0 });
     const imageRef = useRef(null);
@@ -813,25 +572,23 @@ const ParallaxImage = ({ imageUrl, blurhash, handleDelayStart }) => {
     );
   };
 
-  const FastView = ({ data, filmProjectItemsRef, onHoverImage, handleDelayStart, onMouseEnter, onMouseLeave }) => {
-    const [lastHoveredIndex, setLastHoveredIndex] = useState(0);
-    const [currentHoveredIndex, setCurrentHoveredIndex] = useState(null);
-    
+  const FastView = ({ data, filmProjectItemsRef, onHoverImage }) => {
+    const infiniteScrollData = [...data];
 
-    const infiniteScrollData = data.length < 5 ? [...data, ...data.slice(0, 5 - data.length)] : data;
+    if (infiniteScrollData.length < 5) {
+        infiniteScrollData.push(...data.slice(0, 5 - infiniteScrollData.length));
+    }
 
-    const handleHoverImage = (url, blurhash, index, project) => {
-        onHoverImage({ url, blurhash });
-        setCurrentHoveredIndex(index);
+    const [lastHoveredIndex, setLastHoveredIndex] = useState(null); // Store the last hovered index
+    const [currentHoveredIndex, setCurrentHoveredIndex] = useState(0); // Store the currently hovered index
 
-        onMouseEnter(project);
+    const handleHoverImage = (imageUrl, index) => {
+        onHoverImage(imageUrl);
+        setCurrentHoveredIndex(index); // Update the currently hovered index
     };
 
     const handleMouseLeave = () => {
         setCurrentHoveredIndex(null);
-
-
-        onMouseLeave();
     };
 
     useEffect(() => {
@@ -840,44 +597,39 @@ const ParallaxImage = ({ imageUrl, blurhash, handleDelayStart }) => {
         }
     }, [currentHoveredIndex, lastHoveredIndex]);
 
-
-
-
-   
-
-
-      return (
-          <div className={`infinite-scroll-map-wrap  ${styles['infinite-scroll-map-wrap']}`}>
-            
-              {infiniteScrollData.map((project, index) => (
-                <div className={`${styles['fast-project-wrap']} ${(lastHoveredIndex === index || currentHoveredIndex === index) ? `hovered-fast-project-wrap` : ''}`}>
-                    <div className={`project-color`} style={{ backgroundColor: project.projectColor }}></div>
-                    <DelayLink
-                        delay={1500}
-                        to={`/projects/${project.id}`}
-                        onDelayStart={() => handleDelayStart(project.projectColor)}
-                        className={`view-list-item-link view-list-item-link `}
-                        key={`fast-link-${project.id}-${index}`}
+    return (
+        <div className={`${styles['infinite-scroll-map-wrap']} infinite-scroll-map-wrap`}>
+            {infiniteScrollData.map((project, index) => (
+                <Link to={`/projects/${project.id}`} className={`${styles['view-list-item-link']} view-list-item-link`} key={project.id}>
+                    <div
+                        key={index}
+                        onMouseEnter={() => handleHoverImage(project.mainFeaturedImage, index)}
+                        onMouseLeave={handleMouseLeave}
+                        className={`${styles['infinite-film-project-item']} film-project-item infinite-film-project-item ${(lastHoveredIndex === index || currentHoveredIndex === index) ? 'hovered-project' : ''}`}
                     >
-                        <div
-                            onMouseEnter={() => handleHoverImage(project?.mainFeaturedImage?.url, project?.mainFeaturedImage?.blurhash, index, project)}
-                            onMouseLeave={handleMouseLeave}
-                            className={`infinite-film-project-item  film-project-item ${styles['infinite-film-project-item']} ${(lastHoveredIndex === index || currentHoveredIndex === index) ? 'hovered-project' : ''}`}
-                            key={`fast-item-${project.id}-${index}`}
-                        >
-                            <h2 className={`title infinite-film-title`}>
-                                {project.displayName}
-                            </h2>
-                        </div>
-                    </DelayLink>
-                </div>
-                
-              ))}
-          </div>
-      );
-  };
-
-
+                        <h2 className={`title ${styles['infinite-film-title']}`}>
+                            {project.displayName}
+                        </h2>
+                    </div>
+                </Link>
+            ))}
+            {infiniteScrollData.map((project, index) => (
+                <Link to={`/projects/${project.id}`} className={`${styles['view-list-item-link']} view-list-item-link`} key={project.id}>
+                    <div
+                        key={index}
+                        onMouseEnter={() => handleHoverImage(project.mainFeaturedImage, index)}
+                        onMouseLeave={handleMouseLeave}
+                        className={`${styles['infinite-film-project-item']} film-project-item infinite-film-project-item ${(lastHoveredIndex === index || currentHoveredIndex === index) ? 'hovered-project' : ''}`}
+                    >
+                        <h2 className={`title ${styles['infinite-film-title']}`}>
+                            {project.displayName}
+                        </h2>
+                    </div>
+                </Link>
+            ))}
+        </div>
+    );
+};
 
 
 export default Films;

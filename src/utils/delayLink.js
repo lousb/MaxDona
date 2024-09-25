@@ -3,14 +3,8 @@ import PropTypes from "prop-types";
 import { Link, useNavigate, useLocation } from "react-router-dom";
 
 // Functional link component which delays page navigation
-export const DelayLink = ({
-  delay = 0,
-  onDelayStart = () => {},
-  onDelayEnd = () => {},
-  replace = false,
-  to,
-  ...rest
-}) => {
+export const DelayLink = props => {
+  const { delay, onDelayStart, onDelayEnd, replace, to, ...rest } = props;
   let timeout = null;
   let navigate = useNavigate();
   let location = useLocation();
@@ -47,9 +41,6 @@ export const DelayLink = ({
 
       // Remove the class when the delay ends
       document.body.classList.remove("page-transitioning");
-
-      // Dispatch the custom event after the navigation
-      window.dispatchEvent(new Event('routeChange'));
     }, delay);
   };
 
@@ -67,6 +58,13 @@ DelayLink.propTypes = {
   replace: PropTypes.bool,
   // Link to go to
   to: PropTypes.string.isRequired
+};
+
+DelayLink.defaultProps = {
+  replace: false,
+  delay: 0,
+  onDelayStart: () => {},
+  onDelayEnd: () => {}
 };
 
 export default DelayLink;

@@ -5,9 +5,6 @@
     
 
 }
-.project-page *{
-    color:var(--primary-color);
-}
 .project-page section{
     width:92%;
 
@@ -25,21 +22,21 @@
     margin-bottom: calc(150vh);
 }
 .main-section-details{
-    margin-bottom: 4vw;
+    margin-bottom: 4svw;
 }
 .main-section-image-wrap{
     position: absolute;
     top: 0;
-    height: calc(100vh - 8vw);
+    height: calc(100svh - 8svw);
     display: flex;
     pointer-events: none;
     justify-content: end;
     align-items: end;
 
     width:92%;
-    margin-inline: 4vw;
-    margin-top:4vw;
-    margin-bottom:4vw;
+    margin-inline: 4svw;
+    margin-top:4svw;
+    margin-bottom:4svw;
 
 }
 .main-section-image{
@@ -47,14 +44,14 @@
     width: 49%;
     border-radius: 20px;
     overflow: hidden;
-    height: calc(100vh - 8vw);
+    height: calc(100svh - 8svw);
     position: relative;
 }
 .main-section-image-overlay{
     width: 100%;
     opacity: 1;
     height: 100%;
-    background: #EEEEEE;
+    background-image: url(/public/imagery/Films/Domengo\ Hero\ Image.png);
     background-size: cover;
     position: absolute;
     background-position: center;
@@ -80,15 +77,12 @@
 
 
 }
-
 .main-description-wrap-left{
-    width: 29.7vw !important;
-    gap: 1.3vw;
-
+    width: 184px !important;
+    gap:1em;
     display: flex;
-    flex-direction: row;
+    flex-direction: column;
 }
-
 .main-description-wrap-right{
     width:15vw !important;
     display: flex;
@@ -105,8 +99,7 @@
 }
 .main-description-wrap-left>span{
 
-    width: 14.2vw !important;
-
+    width: 184px !important;
 }
 .main-description-right-wrap{
     display: flex;
@@ -125,7 +118,7 @@
     display: flex;
     width: 61%;
     margin-left:35%;
-    height: calc(100% - 4vw);
+    height: calc(100% - 4svw);
     top:0;
     z-index: 100;
     display: flex;
@@ -144,16 +137,10 @@
 .scroll-notification:hover{
     opacity: 1;
 }
-.details-section-image-wrap{
-    border-radius: 20px;
-    width: 49.2%;
-    height: calc(100vh - 90px);
-    overflow: hidden;
-}
+
 
 .directed-subtext{
-    margin-bottom: 10vh;
-    margin-top: 0 !important;
+    margin-bottom: 48px;
 }
 .masonry-image{
     cursor: none;
@@ -191,17 +178,10 @@
     pointer-events: all !important;
     z-index: 20;
     position: relative;
-    display: flex;
-    flex-direction: column;
-  
 }
 .details-title{
     width: 100%;
     margin-bottom: 20px !important;
-    word-break: break-all;
-    -moz-hyphens: manual;
-    -ms-hyphens: manual;
-    hyphens: manual;
 }
 
 
@@ -209,31 +189,25 @@
 
 
 .details-section{
-    min-height: calc(100vh - 90px);
+    min-height: calc(100svh - 90px);
 
-    margin-top: 1.2vw;
-    margin-bottom: 1.2vw;
+    margin-top: 1.2svw;
+    margin-bottom: 1.2svw;
     display: flex;
     justify-content: space-between;
     align-items: end;
 }
 .details-section-image{
-    background-size: cover !important;
-    background-position: center center !important;
-    height: calc(100vh - 90px);
-    cursor: none;
+    background-size: cover;
+    background-position: center;
+    height: calc(100svh - 90px);
+
     border-radius: 20px;
-    width:100%;
-    background: #EEEEEE;
-}
-.details-section-image > img{
-    width: 100%;
-    height: 100%;
-    object-fit: cover;
-    object-position: center center;
+    width:49%;
+    background-image: url(/public/imagery/Films/Domengo\ Hero\ Image.png);
 }
 .details-description{
-    width: 14.2vw !important;
+    width: 100%;
     margin:0;
 }
 .details-title{
@@ -241,56 +215,21 @@
 }
 .details-description span{
     display: flex;
-    width: 100%;
-}
-.text-section{
-    min-height: 0px;
-    margin-block:4vw;
-}
-.text-section .details-description{
-    width: 100% !important;
-}
-.large-section{
-    margin-top: 1.2vw;
-    position: relative;
-    height: max-content;
-    aspect-ratio: 16 / 9;
-}
-.large-section, .large-section img{
-    width: 100%;
-    border-radius: 20px;
-}
-.large-section img{
-    cursor:none;
-}
-.title-section{
-    margin-top:4vw;
-    display: flex;
-    justify-content: center;
-}
-.title-section-wrap{
-    width: 80%;
-    text-align: center;
-}
-.title-section-wrap>h3{
-    width: 100% !important;
+    width: 164px;
 }
 .details-description-wrap{
     display: flex;
-    gap: 2.8%;
+    gap: 1%;
     width: 100%;
     margin-bottom:4vw;
 }
 
 .details-section-wrap{
-
-    width: calc(49.2% - 4vw);
-
+    width: 50%;
 }
-
 .gallery-page{
-    width: 92vw;
-    margin-inline: 4vw;
+    width: 92svw;
+    margin-inline: 4svw;
 }
 .video_container {
     display: flex;
@@ -301,7 +240,7 @@
     
  }
 .player__wrapper{
-    height: calc(100vh - 2.4vw);
+    height: calc(100svh - 2.4svw);
     overflow: hidden;
     border-radius: 24px;
     display: flex;
@@ -321,7 +260,7 @@
  .player div{
     pointer-events: none;
 
-    height: calc(100vh - 2.4vw);
+    height: calc(100svh - 2.4svw);
  }            
  .progress-bar{
     display: flex;

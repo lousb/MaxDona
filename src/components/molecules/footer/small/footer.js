@@ -39,7 +39,7 @@ function FooterSmall() {
 
 
   return (
-    <footer className={`${styles["footer"]} ${isVisible ? "visible" : ""}`} ref={footerRef}>
+    <footer className={`${styles["footer"]} ${isVisible ? "visible" : ""}`} ref={footerRef} ref={footerRef}>
         <div className={styles["footer-wrap"]}>
             <div className={styles["footer-col-1"]}>
                 <div className={styles["header-logo"]}>
@@ -47,20 +47,19 @@ function FooterSmall() {
                 </div>
             </div>
             <div className={styles["footer-col-2"]}>
-                <a href="/#/">Home</a>
-                <a href="/#/about">About</a>
+                <a>Home</a>
+                <a>About</a>
             </div>
             <div className={styles["footer-col-3"]}>
-                <a href="/#/archive">Archive</a>
-                <a href="/#/contact">Contact</a>
+                <a>Gallery</a>
+                <a>Contact</a>
   
 
      
             </div>
             <div className={styles["footer-col-4"]}>
-                
-                <a href="/#/reference-peace">Reference Peace</a>
-                <a>Max Dona © {currentYear}</a>
+                <a>Site Name © {currentYear}</a>
+                <a>A Wyeth Site</a>
             </div>
         
         </div>

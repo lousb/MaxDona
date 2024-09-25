@@ -1,9 +1,10 @@
 import React from "react";
-import { useState, useEffect } from "react";
 import useMousePosition from "./useMousePosition";
 
 const MouseCursor = () => {
-  const { x, y, isOutside } = useMousePosition(".App");
+  const { x, y } = useMousePosition("body");
+
+  
 
   return (
     <div
@@ -12,17 +13,15 @@ const MouseCursor = () => {
         position: "fixed",
         left: x + 40,
         top: y + 40,
-        transform: `translate(-50%, -50%) scale(${isOutside ? 0 : 1})`,
-        maxHeight:`${isOutside ? 0 : '84px'}`,
-        maxWidth:`${isOutside ? 0 : '84px'}`,
+        transform: "translate(-50%, -50%)",
       }}
     >
-      <div className="arrow-cursor-image"></div>
+      <div
+      className="arrow-cursor-image"
+      
+    ></div>
     </div>
   );
 };
-
-
-
 
 export default MouseCursor;
