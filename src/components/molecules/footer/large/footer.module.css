@@ -7,10 +7,11 @@
 
     bottom: 0;
 }
+
 .footer-wrap, .bottom-footer-area{
-    width:92%;
+    width:92vw;
     margin:auto;
-    margin-inline: 4%;
+    margin-inline: 4vw;
     display: flex;
     justify-content: space-between;
     gap:1.3%;
@@ -41,12 +42,6 @@ a{
     font-size: 20px;
     letter-spacing: -1.5px;
 }
-.footer-col-3 > div, .footer-col-4 > div{
-    position: absolute;
-    bottom: 0;
-    transform: translateY(2em);
-
-}
 
 .footer-wrap > div > div{
     display: grid;
@@ -58,16 +53,29 @@ a{
     opacity: 0;
     pointer-events: none;
 }
-.footer-archive-div, .footer-title, .acknowledgement-of-country{
+.footer-column a{
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    max-width: calc(100% - 38px);
+    width: calc(100% - 38px);
+}
+.footer-col-1 a{
+    width: calc(100% - 38px);
+}
+.footer-archive-div, .footer-title, .acknowledgement-of-country, .acknowledgement-of-country > a{
     font-family: var(--body-family);
     font-family: 'Inter', sans-serif !important;
-
-
+    text-transform: initial;
+    letter-spacing: 0em;
+    color: black;
     opacity: 50%;
     font-size: 12px;
 
 }
-.country-wrap{
+.acknowledgement-of-country > a{
+    opacity: 100%;
+}
+.find-me-wrap{
     padding-top:32px;
 }
 .flag-wrap{
@@ -130,8 +138,8 @@ a{
 
 @media only screen and (max-width:850px){
     .footer-wrap{
-        width: 86%;
-        margin-inline:6.5%;
+        width: 84%;
+        margin-inline:8%;
 
 
         display: grid;
@@ -166,5 +174,9 @@ a{
     }
     .footer-clock-wrap{
         width: 130px;
+    }
+    .bottom-footer-area{
+        width: 84%;
+        margin-inline: 8vw;
     }
 }

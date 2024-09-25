@@ -1,0 +1,217 @@
+
+.reference-peace-page:has( .reference-peace-title-wrap p:hover) .trail-image{
+    clip-path: inset(0 0 0 0 round 20px) !important;
+    scale: 1;
+
+}
+.scrolled .subtext-description-wrap > p > p{
+    transform: rotate(360deg);
+    transition: 1500ms ease-out all;
+}
+
+.reference-peace-title-wrap .text-reveal-container{
+    width: min-content !important;
+}
+.projects-hover-desc, .pdf-hover-desc-left, .pdf-hover-desc-right{
+    height:fit-content;
+    min-height: 1em;
+    
+    
+    transform-origin: top left;
+    transition: transform 500ms ease, clip-path 500ms ease, max-height 500ms ease, max-width 500ms ease, padding 500ms ease, width 500ms ease !important;
+    z-index: 20;
+    scale:1;
+
+    padding:12px 14px 12px 42px;
+
+    pointer-events: none !important;
+
+    clip-path: polygon(0 0, 0 0, 0 100%, 0 100%);
+    border-radius: 4px;
+    overflow: hidden;
+    pointer-events: none;
+}
+.pdf-hover-desc-right{
+    padding:12px 42px 12px 14px;
+    transform: translateX(calc(-100% + 24px)) !important;
+}
+.pdf-hover-desc-right .projects-hover-svg-wrap{
+    left: auto;
+    right: 16px;
+    transform: scaleX(-1);
+}
+
+.projects-hover-svg-wrap{
+    aspect-ratio: 1;
+    overflow: hidden;
+    position: absolute;
+    left:16px;
+    top:17px;
+}
+.projects-hover-svg-wrap > svg{
+    
+    transform: scaleX(-1);
+}
+.projects-hover-svg-wrap > svg > path{
+    transform: translateY(100%);
+    transition: 500ms ease;
+}
+
+.pdf-canvas-hover-desc-wrap{
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+
+
+    pointer-events: none;
+ 
+    display: flex;
+    justify-content: space-between;
+}
+.pdf-canvas-hover-desc-wrap > .canvas-hover-desc-wrap-left, .pdf-canvas-hover-desc-wrap > .canvas-hover-desc-wrap-right{
+    width: 24%;
+    border-radius: 20px;
+    /* background-color: red; */
+    height: 100%;
+    pointer-events: all;
+    cursor: none;
+}
+
+body:has(.view-project-link:hover) .projects-hover-svg-wrap > svg > path, body:has(.canvas-hover-desc-wrap-left:hover) .pdf-hover-desc-left .projects-hover-svg-wrap > svg > path, body:has(.canvas-hover-desc-wrap-right:hover) .pdf-hover-desc-right .projects-hover-svg-wrap > svg > path{
+    transform: translateY(0%);
+}
+.pdf-hover-desc-left, .pdf-hover-desc-right{
+    filter: invert(1);
+}
+body:has(.view-project-link:hover) .projects-hover-desc, body:has(.canvas-hover-desc-wrap-left:hover) .pdf-hover-desc-left, body:has(.canvas-hover-desc-wrap-right:hover) .pdf-hover-desc-right{
+    clip-path: polygon(0 0, 100% 0, 100% 100%, 0% 100%);
+}
+body:not(:has(.view-project-link:hover)) .projects-hover-desc, body:not(:has(.canvas-hover-desc-wrap-left:hover))  .pdf-hover-desc-left, body:not(:has(.canvas-hover-desc-wrap-right:hover))  .pdf-hover-desc-right{
+    transition: 0s 0.7s, opacity 0.6s 0.1s, clip-path 0.5s 0.1s !important;
+    opacity: 0;
+    clip-path: polygon(0 0, 0 0, 0 100%, 0 100%);
+
+
+}
+.projects-hover-desc > .link-desc span>span, .pdf-hover-desc-left > .link-desc span>span,  .pdf-hover-desc-right > .link-desc span>span{
+    font-size: 0.6em !important;
+    vertical-align: text-top;
+    transform: translateY(0.1em);
+    display: inline-block;
+}
+.images-wrap{
+    height: 100vh;
+    width: 100%;
+    overflow: hidden;
+    clip-path: polygon(0 0, 100% 0, 100% 100%, 0% 100%);
+    position: absolute;
+    top:0;
+    pointer-events: none;
+}
+.projects-hover-desc > .link-desc, .pdf-hover-desc-left > .link-desc, .pdf-hover-desc-right > .link-desc{
+    margin:0 !important;
+    clip-path: polygon(0 0, 100% 0, 100% 100%, 0% 100%);
+    position: relative;
+    display: flex;
+    min-height: auto;
+    margin-top:-2px !important;
+    transition: clip-path 500ms ease-out 0s, color 500ms ease 0ms, width 500ms ease !important;
+    pointer-events: none !important;
+}
+.projects-hover-desc::before, .pdf-hover-desc-left::before, .pdf-hover-desc-right::before{
+
+
+    content: '';
+    width: 100%;
+    height: 100%;
+    background-color: white;
+    position: absolute;
+    top:0;
+    left:0;
+    display: block;
+    transition: 700ms ease-out all, clip-path 200ms ease-out !important;
+}
+
+.projects-hover-desc > .link-desc > span, .pdf-hover-desc-left > .link-desc > span, .pdf-hover-desc-right > .link-desc > span{
+    min-width: max-content;
+
+    text-align: left;
+  
+    font-size: 1.30em;
+    min-height: 1em;
+    line-height: 1em;
+
+    pointer-events: none !important;
+    position: relative;
+  
+    clip-path: polygon(0 0, 0 0, 0 100%, 0 100%);
+    pointer-events: none;
+    transition-delay: 0.2s;
+   transform: translateY(100%);
+   color: white;
+   margin-top:0;
+
+}
+.pdf-hover-desc-left.hide-hover-desc, body:has(.canvas-hover-desc-wrap-left:hover) .pdf-hover-desc-left.hide-hover-desc{
+    clip-path: polygon(0 0, 0 0, 0 100%, 0% 100%) !important;
+}
+.pdf-canvas-hover-desc-wrap:has(.pdf-hover-desc-left.hide-hover-desc) .canvas-hover-desc-wrap-left{
+    cursor: default;
+}
+body:not(:has(.view-project-link:hover)) .projects-hover-desc  .link-desc > span, body:not(:has(.canvas-hover-desc-wrap-left:hover)) .pdf-hover-desc-left  .link-desc > span, body:not(:has(.canvas-hover-desc-wrap-right:hover)) .pdf-hover-desc-right  .link-desc > span{
+    transition: 500ms ease all !important;
+    transform: translateY(100%) !important;
+    color: white !important;
+}
+body:has(.view-project-link:hover) .projects-hover-desc, body:has(.canvas-hover-desc-wrap-left:hover) .pdf-hover-desc-left, body:has(.canvas-hover-desc-wrap-right:hover) .pdf-hover-desc-right{
+    transition: transform 500ms ease 0s, width 500ms ease 0s, max-height 500ms ease 0s, max-width 500ms ease 0s, padding 500ms ease 0.5s, clip-path 500ms ease 0s !important;
+    clip-path: polygon(100% 0, 0 0, 0 100%, 100% 100%) !important;
+}
+body:has(.view-project-link:hover) .projects-hover-desc > p  > span, body:has(.canvas-hover-desc-wrap-left:hover) .pdf-hover-desc-left > p  > span, body:has(.canvas-hover-desc-wrap-right:hover) .pdf-hover-desc-right > p  > span{
+    transition: clip-path 500ms ease-out 0s, filter 500ms ease 0ms !important;
+    clip-path: polygon(0 0, 100% 0, 100% 100%, 0% 100%) !important;
+}
+.projects-hover-desc p, .projects-hover-desc p{
+    margin:0 !important;
+}
+body:not(:has( .header-toggled-global)):not(.page-transitioning):has( .reference-peace-single) .large-arrow-cursor{
+    max-height: 0 !important;
+    max-width: 0 !important;
+}
+.arrow-hover{
+    cursor: none;
+}
+body:has( .reference-peace-single .arrow-hover:hover) .large-arrow-cursor{
+    max-height: 84px !important;
+    max-width: 84px !important;
+
+}
+body:has( .reference-peace-single):not(:has( .header-toggled-global)) .header-inner-content, body:has(.reference-peace-single) footer{
+    filter:invert(1);
+}
+.pdf-section{
+    position: relative;
+    overflow: hidden;
+}
+.pdf-section canvas{
+    border-radius: 20px;
+}
+.reference-peace-contact-block{
+    width: 92%;
+    margin-inline:4%;
+    margin-top:6rem;
+}
+.reference-peace-contact-block .body:not(.link-desc){
+    padding-bottom: 1em;
+}
+@media only screen and (max-width: 830px) {
+    .projects-hover-desc{
+        display: none;
+    }
+    .reference-peace-contact-block{
+        width: 84vw;
+        margin-inline: 8vw;
+    }
+}

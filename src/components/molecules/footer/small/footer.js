@@ -39,27 +39,51 @@ function FooterSmall() {
 
 
   return (
-    <footer className={`${styles["footer"]} ${isVisible ? "visible" : ""}`} ref={footerRef} ref={footerRef}>
+    <footer className={`${styles["footer"]} ${isVisible ? "visible" : ""}`} ref={footerRef}>
         <div className={styles["footer-wrap"]}>
             <div className={styles["footer-col-1"]}>
                 <div className={styles["header-logo"]}>
-                    <img src="/LOGO-DESKTOP.svg" alt="Logo"></img>
+                  <a href="/">
+                  <img src="/LOGO-DESKTOP.svg" alt="Logo"></img>
+                  </a>
+                    
                 </div>
+                {
+                  window.innerWidth > 830 &&
+                  <div className={styles["country-wrap"]}>
+                      <div className={styles["flag-wrap"]}>
+                          <img className={styles["flag"]} src='/icons/Minimal-Aus.svg' alt="Australian Flag" />
+                          <img className={styles["flag"]} src='/icons/Minimal-Indigenous.svg' alt="Indigenous Flag" />
+                      </div>
+                  </div>
+                }
+                
             </div>
-            <div className={styles["footer-col-2"]}>
-                <a>Home</a>
-                <a>About</a>
+            <div className={`${styles["footer-col-2"]} body`}>
+                <a href="/">Home</a>
+                <a href="/#/about">About</a>
             </div>
-            <div className={styles["footer-col-3"]}>
-                <a>Gallery</a>
-                <a>Contact</a>
+            <div className={`${styles["footer-col-3"]} body`}>
+                <a href="/#/archive">Archive</a>
+                <a href="/#/contact">Contact</a>
   
 
      
             </div>
-            <div className={styles["footer-col-4"]}>
-                <a>Site Name © {currentYear}</a>
-                <a>A Wyeth Site</a>
+            <div className={`${styles["footer-col-4"]} body`}>
+                
+                <a href="/#/reference-peace">Reference Peace</a>
+                <a>Max Dona © {currentYear}</a>
+
+                {
+                  window.innerWidth <= 830 &&
+                  <div className={styles["country-wrap"]}>
+                      <div className={styles["flag-wrap"]}>
+                          <img className={styles["flag"]} src='/icons/Minimal-Aus.svg' alt="Australian Flag" />
+                          <img className={styles["flag"]} src='/icons/Minimal-Indigenous.svg' alt="Indigenous Flag" />
+                      </div>
+                  </div>
+                }
             </div>
         
         </div>

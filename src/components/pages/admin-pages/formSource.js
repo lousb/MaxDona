@@ -1,23 +1,54 @@
 // formSource.js
 
-export const projectInputs = [
+export const referenceMainSection = [
   {
-    id: 'displayName',
-    label: 'Project Name',
-    type: 'text',
-    placeholder: 'domengo',
-  },
-  // ... Other common fields
+  id: 'releaseDate',
+  label: 'Release Date',
+  type: 'date',
 
+},
+{
+  id: 'mainDescription1',
+  label: 'Main Description 1',
+  type: 'text',
+  maxLength: 65,
+  placeholder: '...',
+},
+{
+  id: 'mainDescription2',
+  label: 'Main Description 2',
+  type: 'text',
+  maxLength: 65,
+  placeholder: '...',
+},  
+]
+
+export const pdfSectionSource = [
   {
-    id: 'projectColour',
-    label: 'Project Color',
-    type: 'color',
-  },
-];
+    id: 'pdfName',
+  label: 'PDF Name',
+  type: 'text',
+  placeholder: '...',
+}
+]
+
+export const videoSectionSource = [
+{
+  id: 'videoLink',
+  label: 'Video Link',
+  type: 'text',
+  placeholder: 'https://youtube.com',
+},
+{
+  id: 'videoName',
+label: 'Video Name',
+type: 'text',
+placeholder: '...',
+}
+]
+
 
 export const projectMainSection = [
-  ...projectInputs,
   {
     id: 'releaseDate',
     label: 'Release Date',
@@ -29,6 +60,12 @@ export const projectMainSection = [
     label: 'Video Link',
     type: 'text',
     placeholder: 'https://youtube.com',
+  },
+  {
+    id: 'focusGenre',
+    label: 'Genre',
+    type: 'text',
+    placeholder: 'eg: Art Direction',
   },
   {
   id: 'videoName',
@@ -72,10 +109,46 @@ export const projectDetailSection = [
   },
 ];
 
-export const imageSection = [
-  {
-    id: 'imageUpload',
-    label: 'Image Upload',
-    type: 'file', // Change this to 'file' for image upload
-  },
+
+
+export const textSectionSource = [
+{
+  id: 'textFirstDescription',
+  label: 'First Description',
+  type: 'text',
+
+},
+{
+  id: 'textSecondDescription',
+  label: 'Second Description',
+  type: 'text',
+},
 ];
+
+export const titleSectionSource = [
+{
+  id: 'titleTitle',
+  label: 'Section Title',
+  type: 'text',
+},
+]
+
+export const largeImageSection = [
+{
+  id: 'detailsTitle',
+  label: 'Details Title',
+  type: 'text',
+},
+{
+  id: 'detailsFirstDescription',
+  label: 'Details First Description',
+  type: 'text',
+  maxLength: 65,
+},
+{
+  id: 'detailsSecondDescription',
+  label: 'Details Second Section',
+  type: 'text',
+  maxLength: 65,
+},
+]

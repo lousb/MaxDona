@@ -4,8 +4,15 @@
 .contact-page{
     width:92%;
     margin-inline: 4%;
-    pointer-events: none;
 
+}
+.contact-page .mask-image{
+    transform: translateY(-100%);
+    transform-origin: center center !important;
+    object-position: center top;
+}
+.contact-page .mask-image:hover{
+    transform: translateY(-95%);
 }
 .contact-heading-wrap .heading{
     margin-left:122px;
@@ -183,8 +190,9 @@ a{
     width: 17%;
 }
 .contact-image-wrap .mask-mouse-area{
-    align-items: end;
-    height: calc(90vh - 180px);
+    align-items: start;
+    height: fit-content;
+    padding-bottom: 5rem;
 }
 .contact-image-wrap .mask-image-wrap{
     transition: cubic-bezier(0.76, 0, 0.24, 1) all 700ms, height 0ms;
@@ -218,12 +226,24 @@ a{
         width:84vw;
         margin-inline:8vw;
     }
-    .contact-page .contact-max-title{
-        margin-left: 70px !important;
-        transform:  translateY(25px) !important;
+    .contact-heading-wrap{
+        padding-top: calc(4vw + 28px) !important;
+        transform: translateY(-140px);
     }
-    .contact-heading-wrap .heading{
-        font-size: 3em !important;
+    
+    .contact-subtitle > div{
+        width: 100% !important;
+        font-size: 10.5vw !important;
+    }
+    .contact-page .contact-max-title{
+
+        font-size: 10.3vw !important;
+        transform: translateY(2px);
+        margin-left: 13.4vw;
+    }
+    body:not(.scrolled):has(.contact-page) .header-inner-content {
+        height: 10.3vw;
+        padding-top: calc(4vw + 40px);
     }
     .contact-bottom--wrap{
         width: 86%;

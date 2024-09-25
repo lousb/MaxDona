@@ -5,8 +5,11 @@
     
 
 }
+.project-page *{
+    color:var(--primary-color);
+}
 .project-page section{
-    width:92%;
+    width:92vw;
 
 
 
@@ -22,21 +25,21 @@
     margin-bottom: calc(150vh);
 }
 .main-section-details{
-    margin-bottom: 4svw;
+    margin-bottom: 4vw;
 }
 .main-section-image-wrap{
     position: absolute;
     top: 0;
-    height: calc(100svh - 8svw);
+    height: calc(100vh - 8vw);
     display: flex;
     pointer-events: none;
     justify-content: end;
     align-items: end;
 
-    width:92%;
-    margin-inline: 4svw;
-    margin-top:4svw;
-    margin-bottom:4svw;
+    width:92vw;
+    margin-inline: 4vw;
+    margin-top:4vw;
+    margin-bottom:4vw;
 
 }
 .main-section-image{
@@ -44,14 +47,14 @@
     width: 49%;
     border-radius: 20px;
     overflow: hidden;
-    height: calc(100svh - 8svw);
+    height: calc(100vh - 8vw);
     position: relative;
 }
 .main-section-image-overlay{
     width: 100%;
     opacity: 1;
     height: 100%;
-    background-image: url(/public/imagery/Films/Domengo\ Hero\ Image.png);
+    background: #EEEEEE;
     background-size: cover;
     position: absolute;
     background-position: center;
@@ -77,12 +80,15 @@
 
 
 }
+
 .main-description-wrap-left{
-    width: 184px !important;
-    gap:1em;
+    width: 29.7vw !important;
+    gap: 1.3vw;
+
     display: flex;
-    flex-direction: column;
+    flex-direction: row;
 }
+
 .main-description-wrap-right{
     width:15vw !important;
     display: flex;
@@ -99,14 +105,13 @@
 }
 .main-description-wrap-left>span{
 
-    width: 184px !important;
+    width: 14.2vw !important;
+
 }
 .main-description-right-wrap{
     display: flex;
     flex-direction: column;
     cursor: pointer;
-    transition: 1000ms ease all !important;
-    transition-delay: 150ms !important;
     
 }
 
@@ -118,7 +123,7 @@
     display: flex;
     width: 61%;
     margin-left:35%;
-    height: calc(100% - 4svw);
+    height: calc(100% - 4vw);
     top:0;
     z-index: 100;
     display: flex;
@@ -137,10 +142,16 @@
 .scroll-notification:hover{
     opacity: 1;
 }
-
+.details-section-image-wrap{
+    border-radius: 20px;
+    width: 49.2%;
+    height: calc(100vh - 90px);
+    overflow: hidden;
+}
 
 .directed-subtext{
-    margin-bottom: 48px;
+    margin-bottom: 10vh;
+    margin-top: 0 !important;
 }
 .masonry-image{
     cursor: none;
@@ -169,6 +180,10 @@
     display: flex;
     justify-content: center;
     transition: all 500ms ease;
+    position: relative;
+}
+.masonry-image.masonry-main-image{
+    position: absolute;
 }
 .parallax-image-wrap:hover{
     transform: scale(0.99);
@@ -178,10 +193,17 @@
     pointer-events: all !important;
     z-index: 20;
     position: relative;
+    display: flex;
+    flex-direction: column;
+  
 }
 .details-title{
     width: 100%;
     margin-bottom: 20px !important;
+    word-break: break-all;
+    -moz-hyphens: manual;
+    -ms-hyphens: manual;
+    hyphens: manual;
 }
 
 
@@ -189,25 +211,31 @@
 
 
 .details-section{
-    min-height: calc(100svh - 90px);
+    min-height: calc(100vh - 90px);
 
-    margin-top: 1.2svw;
-    margin-bottom: 1.2svw;
+    margin-top: 1.2vw;
+    margin-bottom: 1.2vw;
     display: flex;
     justify-content: space-between;
     align-items: end;
 }
 .details-section-image{
-    background-size: cover;
-    background-position: center;
-    height: calc(100svh - 90px);
-
+    background-size: cover !important;
+    background-position: center center !important;
+    height: calc(100vh - 90px);
+    cursor: none;
     border-radius: 20px;
-    width:49%;
-    background-image: url(/public/imagery/Films/Domengo\ Hero\ Image.png);
+    width:100%;
+    background: #EEEEEE;
+}
+.details-section-image > img{
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    object-position: center center;
 }
 .details-description{
-    width: 100%;
+    width: 14.2vw !important;
     margin:0;
 }
 .details-title{
@@ -215,21 +243,56 @@
 }
 .details-description span{
     display: flex;
-    width: 164px;
+    width: 100%;
+}
+.text-section{
+    min-height: 0px;
+    margin-block:4vw;
+}
+.text-section .details-description{
+    width: 100% !important;
+}
+.large-section{
+    margin-top: 1.2vw;
+    position: relative;
+    height: max-content;
+    aspect-ratio: 16 / 9;
+}
+.large-section, .large-section img{
+    width: 100%;
+    border-radius: 20px;
+}
+.large-section img{
+    cursor:none;
+}
+.title-section{
+    margin-top:4vw;
+    display: flex;
+    justify-content: center;
+}
+.title-section-wrap{
+    width: 80%;
+    text-align: center;
+}
+.title-section-wrap>h3{
+    width: 100% !important;
 }
 .details-description-wrap{
     display: flex;
-    gap: 1%;
+    gap: 2.8%;
     width: 100%;
     margin-bottom:4vw;
 }
 
 .details-section-wrap{
-    width: 50%;
+
+    width: calc(49.2% - 4vw);
+
 }
+
 .gallery-page{
-    width: 92svw;
-    margin-inline: 4svw;
+    width: 92vw;
+    margin-inline: 4vw;
 }
 .video_container {
     display: flex;
@@ -240,7 +303,7 @@
     
  }
 .player__wrapper{
-    height: calc(100svh - 2.4svw);
+    height: calc(100vh - 2.4vw);
     overflow: hidden;
     border-radius: 24px;
     display: flex;
@@ -260,7 +323,7 @@
  .player div{
     pointer-events: none;
 
-    height: calc(100svh - 2.4svw);
+    height: calc(100vh - 2.4vw);
  }            
  .progress-bar{
     display: flex;
@@ -287,4 +350,109 @@
  }
  .details-section-wrap-reversed{
     flex-direction: row;
+}
+.navigation-section{
+    display: flex;
+    width: 92vw;
+    padding-inline: 4vw;
+    margin-top: 2em;
+    
+}
+
+.navigation-section > div{
+    flex-grow: 1;
+}
+.nav-button.prev a::before{
+    content:'';
+    background-color: var(--primary-color);
+    aspect-ratio: 1;
+    mask-image: url('/public/Arrow/White-Arrow-Large.svg');
+    mask-size: cover;
+    display: inline-block;
+    height: 87%;
+    margin-right: 0.2em;
+
+}
+.nav-button.next a::after{
+    content:'';
+    background-color: var(--primary-color);
+    aspect-ratio: 1;
+    mask-image: url('/public/Arrow/White-Arrow-Large.svg');
+    mask-size: cover;
+    display: inline-block;
+    height: 87%;
+    transform: scaleX(-1);
+    margin-left: 0.2em;
+
+}
+.nav-button{
+    display: flex;
+  
+}
+.nav-button.next{
+    justify-content: end;
+}
+.project-nav-indicator{
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+@media only screen and (max-width: 830px){
+.large-section{
+    margin-bottom: 3.2vw;
+    margin-top:4vw;
+}
+.project-page-section-1{
+    margin-bottom:0vw;
+}
+.main-section-image{
+    width: 100% !important;
+    height: 50% !important;
+}
+.project-page-section-1 > div{
+    width: 100%;
+}
+.main-description-wrap-left{
+    width: 100% !important;
+}
+.main-description-wrap-left > span{
+    width: 50% !important;
+}
+.details-section{
+    flex-direction: column;
+    gap: 4vw;
+}
+.details-section-wrap{
+    width: 100%;
+}
+.title-section-wrap{
+    width: 100%;
+    word-break: break-all;
+    hyphens: manual;
+}
+.nav-button > a{
+    font-size: 0 !important;
+}
+.nav-button > a::after, .nav-button > a::before{
+    height: 8vw !important;
+}
+.navigation-section{
+    width: 84vw;
+    padding-inline: 8vw;
+}
+.details-section{
+    margin-block: 4vw;
+}
+.details-section-image-wrap, .details-section-image-wrap > div{
+    width: 100% !important;
+    aspect-ratio: 1;
+    height: auto !important;
+}
+.details-section-image-wrap img{
+    aspect-ratio: 1;
+    height: auto !important;
+}
+.details-description-wrap > div{
+width: 50% !important;
+}
 }

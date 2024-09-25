@@ -5,8 +5,9 @@ import { ScrollTrigger } from "gsap/ScrollTrigger";
 import MouseCursor from "../../../utils/mouseCursor";
 import Reveal from "../../../utils/textElementReveal/textElementReveal";
 import { useLocation } from "react-router-dom";
+import ContactBlock from "../../molecules/ContactBlock/contactBlock";
 
-
+gsap.registerPlugin(ScrollTrigger);
 
 function About(){
 
@@ -16,96 +17,167 @@ function About(){
     const slider2 = useRef(null);
     const processWrap = useRef(null);
     const aboutProcess = useRef(null);
-    let xPercent = 0;
-    let direction = -1;
+    const [xPercent, setXPercent] = useState(0);
+    const [direction, setDirection] = useState(-1);
     const [windowWidth, setWindowWidth] = useState(window.innerWidth);
-
-    gsap.registerPlugin(ScrollTrigger);
-
-    useLayoutEffect(() => {
-        const ctx = gsap.context(() => {
-        ScrollTrigger.create({
-            trigger: aboutProcess.current,
-            start: "-80px top",
-            pin: processWrap.current,
-            end: 'bottom bottom',
-        });
-    }, processWrap);
-
-    gsap.to('.about-process-index span', {
-  
-        scrollTrigger: {
-            trigger: aboutProcess.current,
-            scrub: 0.5,
-            start: '100px top',
-            end: 'bottom bottom',
-        },
-        y:'-200%'
-        
-    })
-
-    gsap.to(`.about-process-slides`, {
-  
-        scrollTrigger: {
-            trigger: aboutProcess.current,
-            scrub: 0.5,
-            start: 'bottom bottom',
-            end: 'bottom 300px',
-
-        },
-        y:'-190px',
-        opacity:'0',
-        
-    })
-
-    gsap.to('.about-process-inner-image-wrap', {
-  
-        scrollTrigger: {
-            trigger: aboutProcess.current,
-            scrub: 0.8,
-            start: '100px top',
-            end: 'bottom bottom',
-        },
-        y:'-70%'
-        
-    })
-    
+    const [isHovered, setIsHovered] = useState(false);
 
 
-    gsap.to(slider1.current, {
-        scrollTrigger: {
-            trigger: document.body,
-            scrub: 1,
-            start: 0,
-            end: 'bottom bottom',
+   useLayoutEffect(() => {
+       // Initialize GSAP context
+       const ctx = gsap.context(() => {
+           // Create ScrollTrigger instance
+           ScrollTrigger.create({
+               trigger: aboutProcess.current,
+               start: "-80px top",
+               pin: processWrap.current,
+               end: 'bottom bottom',
+               pinSpacing: false, // Set to false if you don't want extra space
+           });
 
-            onUpdate: e => direction = e.direction * -1
-        },
-        x: "-2000px",
-        })
+           // Additional animations or configurations if needed
+       }, [processWrap, aboutProcess]);
 
-        // Animation for the second slide
-        gsap.to(slider2.current, {
-            scrollTrigger: {
-                trigger: document.body,
-                scrub: 1,
-                start: 0,
-                end: 'bottom bottom',
-                onUpdate: (e) => {
-                    direction = e.direction * -1;
-                },
-            },
-            x: "-2000px",
-        });
+       // Cleanup function
+       return () => {
+           ctx.revert();
+       };
+   }, []);
 
-        requestAnimationFrame(animation);
-        return () => ctx.revert();
+
+   // GSAP ScrollTrigger Animations
+      useLayoutEffect(() => {
+       const ctx = gsap.context(() => {
+           gsap.to('.about-process-index span', {
+               scrollTrigger: {
+                   trigger: aboutProcess.current,
+                   scrub: 0.5,
+                   start: '100px top',
+                   end: 'bottom bottom',
+               },
+               y: '-200%',
+           });
+
+           gsap.to('.about-process-slides', {
+               scrollTrigger: {
+                   trigger: aboutProcess.current,
+                   scrub: 0.5,
+                   start: 'bottom bottom',
+                   end: 'bottom 300px',
+               },
+               y: '-190px',
+               opacity: '0',
+           });
+
+           gsap.to('.about-process-inner-image-wrap', {
+               scrollTrigger: {
+                   trigger: aboutProcess.current,
+                   scrub: 0.8,
+                   start: '100px top',
+                   end: 'bottom bottom',
+               },
+               y: '-70%',
+           });
+
+           gsap.to(slider1.current, {
+               scrollTrigger: {
+                   trigger: slider1.current,
+                   scrub: 1,
+                   start: `-=${window.innerHeight * 1.5} top`,
+                   end: `+=${window.innerHeight * 2}`, // Extend end point by 50vh (1.5 times the viewport height)
+                   onUpdate: e => setDirection(e.direction * -1), // Update direction
+               },
+               x: () => `-${slider1.current.scrollWidth / 6}px`, // Use dynamic value
+               ease: "none", // Smooth transition
+               markers:true,
+           });
+
+           // Slider 2 Animation
+           gsap.to(slider2.current, {
+               scrollTrigger: {
+                   trigger: slider2.current,
+                   scrub: 1,
+                   start: `-=${window.innerHeight * 1.5} top`,
+                   end: `+=${window.innerHeight * 2}`, // Extend end point by 50vh (1.5 times the viewport height)
+                   onUpdate: e => setDirection(e.direction * -1), // Update direction
+               },
+               x: () => `-${slider2.current.scrollWidth / 6}px`, // Use dynamic value
+               ease: "none", // Smooth transition
+            
+           });
+
+
+       }, [processWrap, aboutProcess, slider1, slider2]);
+
+       return () => ctx.revert();
+   }, []);
+
+   // Custom Animation
+   useLayoutEffect(() => {
+     let animationFrameId;
+
+     const animation = () => {
+       setXPercent(prevXPercent => {
+        let newXPercent = prevXPercent + 0.04 * direction;
+
+         // Loop back based on direction
+         if (direction === -1) {
+           if (newXPercent <= -100) {
+             newXPercent = 0; // Reset to start
+           }
+         } else if (direction === 1) {
+           if (newXPercent >= 0) {
+             newXPercent = -100; // Loop back to start
+           }
+         }
+
+         return newXPercent;
+       });
+
+       animationFrameId = requestAnimationFrame(animation);
+     };
+
+     animationFrameId = requestAnimationFrame(animation);
+
+     // Cleanup function
+     return () => {
+       cancelAnimationFrame(animationFrameId);
+     };
+   }, [direction]);
+
+   // Update GSAP with the latest xPercent
+   useLayoutEffect(() => {
+     if (imagesWrap1.current && imagesWrap2.current) {
+       gsap.to(imagesWrap1.current, { xPercent, duration: 0 }); // Adjust duration as needed
+       gsap.to(imagesWrap2.current, { xPercent, duration: 0 }); // Adjust duration as needed
+     }
+   }, [xPercent]);
+
+   useLayoutEffect(() => {
+        const handleHover = (event) => {
+            if (event.type === 'mouseenter') {
+                console.log('Slider2 is hovered');
+                setIsHovered(true);
+            } else if (event.type === 'mouseleave') {
+                console.log('Slider2 is not hovered');
+                setIsHovered(false);
+            }
+        };
+
+        const element = slider2.current;
+        element.addEventListener('mouseenter', handleHover);
+        element.addEventListener('mouseleave', handleHover);
+
+        return () => {
+            element.removeEventListener('mouseenter', handleHover);
+            element.removeEventListener('mouseleave', handleHover);
+        };
     }, []);
 
     let location = useLocation();
 
     useEffect(() => {
-        gsap.fromTo(".section-1-image", { height:'0px' }, { height: 'calc(100vh - 80px - 14vw', duration: 1, ease:[0.76, 0, 0.24, 1], delay:0.2});
+        gsap.fromTo(".section-1-image", { height:'0px' }, { height: 'calc(100vh - 80px - 18vw', duration: 1, ease:[0.76, 0, 0.24, 1], delay:0.2});
         
     }, [location]);
 
@@ -114,6 +186,10 @@ function About(){
         function handleResize() {
           setWindowWidth(window.innerWidth);
         }
+        document.title = `About Max Dona`;
+
+        document.documentElement.style.setProperty('--primary-color', '#181818');
+        document.documentElement.style.setProperty('--secondary-dark', 'rgb(10, 10, 10)');
     
         // Add event listener for window resize
         window.addEventListener("resize", handleResize);
@@ -125,18 +201,13 @@ function About(){
       }, []);
 
 
-    const animation = () =>{
-        if(xPercent <= -100){
-            xPercent = 0
-        }
-        if(xPercent > 0){
-            xPercent = -100;
-        }
-        gsap.set(imagesWrap1.current, {xPercent: xPercent})
-        gsap.set(imagesWrap2.current, {xPercent: xPercent})
-        xPercent += 0.06 * direction;
-        requestAnimationFrame(animation);
-    }
+      const serviceImage = [
+        `${process.env.PUBLIC_URL}/static_webp/aboutservice1.webp`,
+        `${process.env.PUBLIC_URL}/static_webp/aboutservice2.webp`,
+        `${process.env.PUBLIC_URL}/static_webp/aboutservice3.webp`,
+      ];
+
+    
     
     return(
         <main className={`${styles['about-page']}`}>
@@ -144,18 +215,60 @@ function About(){
             <section className={`${styles['about-page-section-1']}`}>
                 <div className={`${styles['section-1-content']} `}  >
                     <div className={`${styles['section-1-heading']} high-z-index-layer`}>
-                        <Reveal elementClass={'title'} element={'h2'} textContent={'TELLING STORIES WORTH'}/>
-                        <Reveal elementClass={'title'} element={'h2'} textContent={'TOLD'}/>
+                        <Reveal custom={20} elementClass={'title'} element={'h2'} textContent={'TELLING STORIES WORTH'}/>
+                        <Reveal custom={20} elementClass={'title'} element={'h2'} textContent={'Being'}/>
+                        <Reveal custom={20} elementClass={'title'} element={'h2'} textContent={'told.'}/>
                     </div>
                     <div className={`${styles['section-1-image']} section-1-image`}>
                     
                     </div>
-                    <div className={`high-z-index-layer`}>
+                    <div className={`high-z-index-layer ${styles['section-1-text-wrap']}`}>
                         <div className={`${styles['section-1-text']}`}>
-                            <Reveal elementClass={'body'} textContent={'MY WORK AIMS TO STANDOUT FROM THE NOISE; THIS IS DONE BY HIGHLIGHTING THE AUTHENTICITY OF MY CLIENTS.'} element={'p'}/>
+                            <Reveal custom={20} elementClass={'body'} textContent={'MY WORK AIMS TO STANDOUT FROM THE NOISE; THIS IS DONE BY HIGHLIGHTING THE AUTHENTICITY OF MY CLIENTS.'} element={'p'}/>
                         </div>
-                        <div className={`${styles['section-1-text']}`}>
-                            <Reveal elementClass={'body'} textContent={'I STRIVE TO CURATE IDENTITY AND PERSONALITY THROUGH VISUAL EXPERIENCES.'} element={'p'}/>
+                        <div className={`body scroll-notification ${styles['scroll-notification']}`}>
+                            <p>
+                            (<span>SCROLL</span>)
+                            </p>
+                        </div>
+
+                    </div>
+                </div>
+
+            </section>
+            <section className={`${styles['about-page-section-2']}`}>
+                <div className={`${styles['section-2-content']} `}  >
+                    <div className={`${styles['section-2-heading']} high-z-index-layer`}>
+                   
+                        <div className={`${styles['section-2-heading-bottom']} high-z-index-layer`}>
+                            <div className={`${styles['section-2-heading-subtitle']}`}>
+                                <div className={`${styles['section-2-text']}`}>
+                                    <Reveal custom={20} elementClass={'body'} textContent={'I STRIVE TO CURATE IDENTITY AND PERSONALITY THROUGH VISUAL EXPERIENCES.'} element={'p'}/>
+                                    <Reveal custom={20} elementClass={'body'} textContent={'This is only done by caring about your project as much as you do.'} element={'p'}/>
+                                </div>
+                                {windowWidth > 830 &&
+                                    <>
+                                    <button className="primary-button button-gradient">Instagram</button>
+                                    <button className="primary-button button-gradient">Get in Touch</button>
+                                    </>
+                                }
+                                
+                            </div>
+                            <div className={`${styles['section-2-heading-title']}`}>
+                                <Reveal elementClass={'title'} element={'h2'} textContent={'YOUR'}/>
+                                <Reveal elementClass={'title'} element={'h2'} textContent={'PASSION,'}/>
+                                <Reveal elementClass={'title'} element={'h2'} textContent={'MY CRAFT,'}/>
+                                <Reveal elementClass={'title'} element={'h2'} textContent={'PERFECTLY'}/>
+                                <Reveal elementClass={'title'} element={'h2'} textContent={'SYNCED.'}/>
+                                {windowWidth <= 830 &&
+                                    <div className={`${styles['section-2-button-wrap']}`}>
+                                    <button className="primary-button button-gradient">Instagram</button>
+                                    <button className="primary-button button-gradient">Get in Touch</button>
+                                    </div>
+                                }
+                            </div>
+                           
+                            
                         </div>
                     </div>
                 </div>
@@ -178,7 +291,7 @@ function About(){
                     </div>
                     <div className={`${styles["portfolio-slide-subtext-right"]}`}>
                         <p className="body">
-                            ( Click project to expand )
+                            ( Click project to view )
                         </p>
                         <button className="primary-button">
                             Full Archive
@@ -186,18 +299,18 @@ function About(){
                     </div>
                 </div>
 
-            <section className={`${styles['about-page-section-2']} ${styles['about-process']} about-process`} ref={aboutProcess}>
+            <section className={`${styles['about-page-section-3']} ${styles['about-process']} about-process`} ref={aboutProcess}>
                     
-                    <div className={`${styles['about-process-wrap']} `} ref={processWrap}>
-                        <div className="high-z-index-layer">
-                            <h2 className={` ${styles['my-process-title']} heading `}>My Process:</h2>
+                    <div className={`${styles['about-process-wrap']} about-process-wrap `} ref={processWrap}>
+                        <div className="">
+                            <h2 className={` ${styles['my-process-title']} heading high-z-index-layer`}>My Process:</h2>
                         </div>
                        
                         <div className={`${styles['about-process-image-wrap']} about-process-image-wrap`}>
                             <div className={`${styles['about-process-inner-image-wrap']} about-process-inner-image-wrap`}>
-                                <img src='/max-about.png' alt="max-image"></img>
-                                <img src='/Max-Headshot.png' alt="max-image"></img>
-                                <img src='/Franco.png' alt="max-image"></img>
+                                <img src={serviceImage[0]} alt="max-image"></img>
+                                <img src={serviceImage[1]} alt="max-image"></img>
+                                <img src={serviceImage[2]} alt="max-image"></img>
                             </div>
                             <div className={`${styles['about-process-image-wrap']} about-process-image-wrap`}>
                             <p className={`${styles['about-process-count']} heading`}>
@@ -217,35 +330,39 @@ function About(){
                 <div className={`${styles['about-process-slides']} about-process-slides high-z-index-layer`}>
                     <div className={`${styles['about-process-slide-1']} ${styles['about-process-slide']}`}>
                         <div className={`${styles['mobile-process-image-wrap']} mobile-process-image-wrap`}>
-                            <img src='/max-about.png' alt="max-image"></img>
+                            <img src={serviceImage[0]} alt="max-image"></img>
                             <p className={`${styles['about-process-count']} heading`}>
                                 01
                             </p>
                         </div>
                         <div className={`${styles['about-process-slide-title']} heading high-z-index-layer`}>Discover:</div>
-                        <div className={`${styles['about-process-slide-text']} body `}>STARTING with a thorough BRANDING examination BY peering into the core of your identity, decoding the competitive landscape & paving a WAY through YOUR SPECIFIC industry.<br/><br/> MY mission is to help your brand carve its own path, resonate with your audience, and establish an identity that's exclusively yours.</div>
+                        <Reveal custom={-1} elementClass={`${styles['about-process-slide-text']} body`} element={'div'} textContent={`STARTING with a thorough BRANDING examination BY peering into the core of your identity, decoding the competitive landscape & paving a WAY through YOUR SPECIFIC industry.`}/>
+                        <Reveal custom={-1} elementClass={`${styles['about-process-slide-text']} body`} element={'div'} textContent={`My mission is to help your brand carve its own path, resonate with your audience, and establish an identity that's exclusively yours.`}/>
                     </div>
 
                     <div className={`${styles['about-process-slide-2']} ${styles['about-process-slide']}`}>
                         <div className={`${styles['mobile-process-image-wrap']} mobile-process-image-wrap`}>
-                            <img src='/Max-Headshot.png' alt="max-image"></img>
+                            <img src={serviceImage[1]} alt="max-image"></img>
                             <p className={`${styles['about-process-count']} heading`}>
                                 01
                             </p>
                         </div>
                         <div className={`${styles['about-process-slide-title']} heading`}>Design:</div>
-                        <div className={`${styles['about-process-slide-text']} body`}>STARTING with a thorough BRANDING examination BY peering into the core of your identity, decoding the competitive landscape & paving a WAY through YOUR SPECIFIC industry.<br/><br/> MY mission is to help your brand carve its own path, resonate with your audience, and establish an identity that's exclusively yours.</div>
-                    </div>
+                            <Reveal custom={-1}  elementClass={`${styles['about-process-slide-text']} body`} element={'div'} textContent={`A well-defined design system provides the structure needed for creativity to thrive, aligning every element with the overarching vision. Through this I’m able to iterate closely and define a strong conceptual blueprint.`}/>
+                            <Reveal custom={-1} elementClass={`${styles['about-process-slide-text']} body`} element={'div'} textContent={`By exploring your initial intentions, what you can see and what you want to see — We’re able to push boundaries & maximise outcomes. This allows me to identify & act on the weight of your ideas, lightening your workload.`}/>
+                        </div>
 
                     <div className={`${styles['about-process-slide-3']} ${styles['about-process-slide']}`}>
                         <div className={`${styles['mobile-process-image-wrap']} mobile-process-image-wrap`}>
-                            <img src='/Franco.png' alt="max-image"></img>
+                            <img src={serviceImage[2]} alt="max-image"></img>
                             <p className={`${styles['about-process-count']} heading`}>
                                 01
                             </p>
                         </div>
                         <div className={`${styles['about-process-slide-title']} heading`}>Define:</div>
-                        <div className={`${styles['about-process-slide-text']} body`}>STARTING with a thorough BRANDING examination BY peering into the core of your identity, decoding the competitive landscape & paving a WAY through YOUR SPECIFIC industry.<br/><br/> MY mission is to help your brand carve its own path, resonate with your audience, and establish an identity that's exclusively yours.</div>
+                            <Reveal custom={-1} elementClass={`${styles['about-process-slide-text']} body`} element={'div'} textContent={`Using bold solutions via shot selection, and scene by scene intuition— I actively reference the outlined objectives—Guiding my techniques during the shoot. `}/>
+                            <Reveal custom={-1} elementClass={`${styles['about-process-slide-text']} body`} element={'div'} textContent={`At the intersection of ideation & implementation we balance on-site serendipity with a structured narrative, ensuring every shot is relevant and our pre-defined goals come to fruition.`}/>
+                            <Reveal custom={-1} elementClass={`${styles['about-process-slide-text']} body`} element={'div'} textContent={`This production process enhances efficiency, and ultimately elevates the experience, leaving lasting visuals that resonate & reflect our intentions. Seamlessly integrating with post-production and amplifying the final result.`}/>
                     </div>
                 </div>
                         
@@ -277,22 +394,13 @@ function About(){
 
             <div className={`${styles["testimonials-slide"]} ${styles["about-page-slide"]}`} ref={slider2}>
                 <div  className={`${styles["slide-projects-wrap"]}`} ref={imagesWrap2}>
-                    {portfolioImages(1)}
-                    {portfolioImages(2)}
+                    {testimonialImages(1)}
+                    {testimonialImages(2)}
                 </div>
             </div>
-            
-            <section className={`${styles["about-page-section-3"]} high-z-index-layer`}>
-                <p className="heading">Keen to start a <br/>project?</p>
-                <div className={`${styles["about-last-cta-wrap"]}`}>
-                    <p className={`body ${styles["body"]}`}>Click my email<br/>
-                        To get in touch!
-                    </p>
-                    <p className={`heading ${styles["about-last-cta-wrap-heading"]}`}>
-                        Maxdona@gmail.com
-                    </p>
-                </div>
-            </section>
+            <div className={`${styles["about-contact-block"]} ${styles["about-contact-block"]}`}>
+                <ContactBlock/>
+            </div>
         </main>
     )
 }
@@ -303,7 +411,11 @@ const portfolioImages = (i) => {
 
     return(
         <div className={`${styles["slide-projects"]} ${i !== 1 ? 'second-' :''}slide-projects`} >
+            
             <div className={`${styles["slide-project"]}-${i} ${styles["slide-project"]}`}>
+                <div className={`${styles["slide-project-image"]}`}>
+
+                </div>
                 <div className={`${styles['slide-project-details']}`}>
                     <p className="body" ><span>Franco</span></p>
                     <p className="body"><span>Old Ways</span></p>
@@ -311,6 +423,9 @@ const portfolioImages = (i) => {
                 </div>
             </div>
             <div className={`${styles["slide-project"]}${i} ${styles["slide-project"]}`}>
+                <div className={`${styles["slide-project-image"]}`}>
+
+                </div>
                 <div className={`${styles['slide-project-details']}`}>
                     <p className="body" ><span>Domengo</span></p>
                     <p className="body"><span>Old Ways</span></p>
@@ -318,6 +433,9 @@ const portfolioImages = (i) => {
                 </div>
             </div>
             <div className={`${styles["slide-project"]}${i} ${styles["slide-project"]}`}>
+                <div className={`${styles["slide-project-image"]}`}>
+
+                </div>
                 <div className={`${styles['slide-project-details']}`}>
                     <p className="body" ><span>Cormac</span></p>
                     <p className="body"><span>Old Ways</span></p>
@@ -325,6 +443,9 @@ const portfolioImages = (i) => {
                 </div>
             </div>
             <div className={`${styles["slide-project"]}${i} ${styles["slide-project"]}`}>
+                <div className={`${styles["slide-project-image"]}`}>
+
+                </div>
                 <div className={`${styles['slide-project-details']}`}>
                     <p className="body" ><span>Teji</span></p>
                     <p className="body"><span>Old Ways</span></p>
@@ -334,6 +455,9 @@ const portfolioImages = (i) => {
 
             {i===2?<>
                 <div className={`${styles["slide-project"]}-${i} ${styles["slide-project"]}`}>
+                <div className={`${styles["slide-project-image"]}`}>
+
+                </div>
                 <div className={`${styles['slide-project-details']}`}>
                     <p className="body" ><span>Franco</span></p>
                     <p className="body"><span>Old Ways</span></p>
@@ -343,6 +467,71 @@ const portfolioImages = (i) => {
             </>:<>
                 
             </>}
+        </div>
+    )
+    
+}
+
+
+const testimonialImages = (i) => {
+
+    return(
+        <div className={`${styles["slide-projects"]} ${i !== 1 ? 'second-' :''}slide-projects`} >
+           <div className={`${styles["slide-project"]}-${i} ${styles["slide-project"]}`}>
+               <div className={`${styles["slide-project-image"]}`}>
+
+               </div>
+               <div className={`${styles['slide-project-details']}`}>
+                   <p className="body" ><span>Franco</span></p>
+                   <p className="body"><span>Old Ways</span></p>
+                   <p className="body"><span>( 2022 )</span></p>
+               </div>
+           </div>
+           <div className={`${styles["slide-project"]}${i} ${styles["slide-project"]}`}>
+               <div className={`${styles["slide-project-image"]}`}>
+
+               </div>
+               <div className={`${styles['slide-project-details']}`}>
+                   <p className="body" ><span>Domengo</span></p>
+                   <p className="body"><span>Old Ways</span></p>
+                   <p className="body"><span>( 2022 )</span></p>
+               </div>
+           </div>
+           <div className={`${styles["slide-project"]}${i} ${styles["slide-project"]}`}>
+               <div className={`${styles["slide-project-image"]}`}>
+
+               </div>
+               <div className={`${styles['slide-project-details']}`}>
+                   <p className="body" ><span>Cormac</span></p>
+                   <p className="body"><span>Old Ways</span></p>
+                   <p className="body"><span>( 2022 )</span></p>
+               </div>
+           </div>
+           <div className={`${styles["slide-project"]}${i} ${styles["slide-project"]}`}>
+               <div className={`${styles["slide-project-image"]}`}>
+
+               </div>
+               <div className={`${styles['slide-project-details']}`}>
+                   <p className="body" ><span>Teji</span></p>
+                   <p className="body"><span>Old Ways</span></p>
+                   <p className="body"><span>( 2022 )</span></p>
+               </div>
+           </div>
+
+           {i===2?<>
+               <div className={`${styles["slide-project"]}-${i} ${styles["slide-project"]}`}>
+               <div className={`${styles["slide-project-image"]}`}>
+
+               </div>
+               <div className={`${styles['slide-project-details']}`}>
+                   <p className="body" ><span>Franco</span></p>
+                   <p className="body"><span>Old Ways</span></p>
+                   <p className="body"><span>( 2022 )</span></p>
+               </div>
+           </div>
+           </>:<>
+
+           </>}
         </div>
     )
     

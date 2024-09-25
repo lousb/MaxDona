@@ -1,6 +1,6 @@
 .about-page{
     padding-top:80px;
-    width: 100svw;
+    width: 100vw;
     overflow: hidden;
 }
 .about-page section{
@@ -10,8 +10,14 @@
     height:calc(100vh - 80px - 4vw);
     position: relative;
 }
+
 .section-1-heading{
+    pointer-events: none;
     margin: 0;
+}
+.section-1-heading > div{
+    width: max-content !important;
+    pointer-events: all;
 }
 .section-1-content{
     height: 100%;
@@ -19,16 +25,33 @@
     flex-direction: column;
     justify-content: space-between;
 }
+.my-process-title{
+    position: relative;
+}
 .section-1-content > div{
     width: 22%;
+}
+.scroll-notification{
+    color:black;
+    opacity: 1 !important;
+    right:0;
+    bottom:0;
+    margin:0 !important;
+    width: 14.5vw !important;
+    pointer-events: all;
+    padding-bottom: 18px;
+    transition-delay: 0ms !important;
+    display: flex;
+    justify-content: start;
+    position: relative;
 }
 .section-1-content > .section-1-image{
     position: absolute;
     bottom: 0;
     right:0;
-    width:74.5%;
+    width:66.5%;
     border-radius: 20px;
-    height: calc(100vh - 80px - 14vw); 
+    height: calc(100vh - 80px - 18vw); 
     background-color: lightgray;
 }
 
@@ -51,20 +74,30 @@
     width: min-content;
 }
 .slide-project{
-    background-image: url(/public/domengo.png);
-    background-position: center center;
-    background-size: cover;
+    
     min-width: 45.2vw;
     width: 45.2vw;
     max-width: 45.2vw;
     overflow: hidden;
     height: 100%;
     border-radius: 20px;
-    margin-left: 4vw;
+    padding-inline: 2vw;
+    margin-inline: -1px;
+   
+}
+.slide-project-image{
+    background-image: url(/public/domengo.png);
+    background-position: center center;
+    background-size: cover;
+    width: 100%;
+    height: 100%;
+    border-radius: 20px;
     cursor: none;
 }
+
 .slide-project{
     position: relative;
+    transition: 500ms ease scale;
 
 }
 .slide-project-details{
@@ -73,7 +106,7 @@
     filter: invert(1);
     position: absolute;
     bottom:0;
-    left:0;
+    left:2vw;
     text-shadow: 0 0 5px #ffffff;
 }
 .slide-project-details p{
@@ -100,9 +133,10 @@
     transform: translateY(0%);
 }
 .portfolio-slide-subtext{
-    width: 92svw ;
-    margin-inline: 4svw;
+    width: 92vw ;
+    margin-inline: 4vw;
     margin-top: 2em;
+    margin-bottom: 15rem;
     display: flex;
 
     justify-content: space-between;
@@ -112,7 +146,7 @@
     height:50px;
 }
 .portfolio-slide-subtext-left > p{
-    width: 22svw;
+    width: 22vw;
     margin-block:0px;
 }
 .portfolio-slide-subtext-right{
@@ -128,11 +162,16 @@
 }
 .about-process{
     margin-top: calc(10rem);
-    height:260vh !important;
+    height:fit-content !important;
+    padding-bottom: 5rem;
 }
 .about-process-wrap{
     position: absolute;
-
+    height:calc(100vh - 8vw - 80px);
+    min-height:calc(100vh - 4vw - 80px);
+    display: flex;
+    justify-content: space-between;
+    flex-direction: column;
     top:0;
     left: 0;
 }
@@ -167,6 +206,10 @@
     margin: 40px;
     pointer-events: none;
     display: inline-block;
+    overflow: hidden;
+    height: 1em;
+    padding-top:0px;
+
 
 }
 .about-process-image-wrap .about-process-index{
@@ -175,11 +218,19 @@
     display: inline-flex;
     flex-direction: column;
     max-height: 7.2vw;
+    line-height: 1em;
+    margin-top: -1vw;
    
     overflow: hidden;
 }
 
-
+.about-last-cta-wrap-heading img{
+    transform: scale(2.8) rotate(-5deg);
+    position: absolute;
+    top:36%;
+    left:0.2%;
+    filter: drop-shadow(1.5px 1.5px 0 white) drop-shadow(-1px -0px 0 white);
+}
 .about-process-slides{
     margin-left: 54.4vw;
     height:240vh;
@@ -188,10 +239,10 @@
     justify-content: space-between;
 }
 .about-process-slide-1 .about-process-slide-title{
-    margin-top: 180px;
+    margin-top: 8rem;
 }
 .about-process-slide-2 .about-process-slide-title{
-    margin-top: 90px;
+    margin-top: 2rem;
 }
 .about-process-slide{
     display: flex;
@@ -201,7 +252,6 @@
 .about-process-slide-text{
     margin-top:2em;
     width:22vw;
-    margin-left: 15.5vw;
 }
 .testimonial-slide-subtext{
     width: 92vw;
@@ -230,8 +280,9 @@
     cursor: none;
 }
 .section-1-text, .section-1-text > p{
-    width: 100%;
+    width: 14.5vw;
 }
+
 .section-1-heading{
     width: 100% !important;
 }
@@ -254,43 +305,103 @@
     display: flex;
     align-items: end;
 }
-.about-last-cta-wrap-heading::after{
-    content: '';
-    height:6px;
-    width: 100%;
-    background-color: black;
-    position: absolute;
-    bottom:0;
-    left:0;
-}
 .mobile-process-image-wrap{
     display: none;
 }
+.about-page-section-3{
+    height: fit-content !important;
+    padding-top:2em;
+}
+.about-page-section-2{
+    height: fit-content !important;
+    padding-top:2em;
+}
+.about-page-section-2 h2{
+    margin:0;
+}
+.section-2-heading > div{
+    display: flex;
+    justify-content: space-between;
+}
+.section-2-heading-title{
+    width: 50%;
+}
+.section-2-heading-subtitle{
+    display: flex;
+    flex-direction: column;
+    justify-content: end;
+    gap:2em;
+    width: 15vw;
+}
+.about-contact-block{
+    margin-block:5rem;
+}
+.slide-projects-wrap:has(.slide-project:hover) .slide-project{
+    scale: 0.98;
+}
+.slide-project:hover{
+    scale: 1 !important;
+}
+
+
 
 
 @media only screen and (max-width:830px){
+    .about-page *{
+        cursor: default;
+    }
     .about-page section, .portfolio-slide-subtext, .testimonial-slide-subtext{
         width:84vw;
         margin-inline:8vw;
+        height: auto;
+    }
+    .section-2-heading > div{
+        flex-direction: column;
+        gap: 8vw;
     }
     .portfolio-slide-subtext{
+        flex-direction: column;
+        margin-bottom: 8vw;
+    }
+    .section-2-button-wrap{
+        padding-top:16vw;
+        gap: 4vw;
+        display: flex;
         flex-direction: column;
     }
     .portfolio-slide-subtext > div,   .portfolio-slide-subtext p{
         width: 100% !important;
     }
-    .section-1-content > div{
-        width: 100%;
-        display: flex;
-        justify-content: space-between;
+    .section-1-heading{
+
+        order:2;
+    }
+    .section-1-heading > div{
+        width: 100% !important;
+  
+    }
+    .section-1-content{
+        height: calc(100% - 8vw - 80px);
+        gap: 8vw;
     }
     .section-1-content > div > p{
         width:49%;
     }
+    .scroll-notification{
+        display: none;
+    }
     .section-1-content > .section-1-image{
-        margin-top:1em;
+        height: auto !important;
         position: relative;
-        height:calc(100vh - 152px - 210px);
+        aspect-ratio: 16 / 9;
+        width: 100%;
+    }
+    .section-1-text-wrap{
+        order:3;
+        width: 100% !important;
+    }
+    .section-1-text{
+        padding-top:8vw;
         width: 100%;
     }
     .slide-project{
@@ -347,10 +458,13 @@
     }
     .about-process-slide{
         height:fit-content;
-
+        gap:4vw;
     }
     .about-process-slide .about-process-slide-title{
-        margin-top:40px;
+        margin-top:0px;
+    }
+    .testimonial-subtext-col-2 > p{
+        font-size: 11.2vw !important;
     }
     .about-process-slide-text{
         margin-left:14vw;
@@ -360,6 +474,20 @@
         margin-block:0px;
         display: flex;
         flex-direction: column;
+    }
+    .section-2-heading-title{
+        width: 100%;
+    }
+    .section-2-heading-subtitle{
+        width: 100%;
+        gap: 4vw;
+        padding-bottom:8vw;
+    }
+    .portfolio-slide-subtext-right{
+        padding-top:8vw;
+    }
+    .portfolio-slide-subtext-right p{
+        display: none;
     }
     .about-page-section-3{
         height: fit-content !important;
@@ -373,13 +501,16 @@
     }
     .mobile-process-image-wrap{
         width:84vw;
-        height:60vw;
+        height:fit-content;
         display: block;
+    }
+    .about-page-section-2{
+        padding-top:0;
     }
     .mobile-process-image-wrap > img{
         border-radius: 20px;
         width: 100%;
-        height: 100%;
+        aspect-ratio: 1;
         object-fit: cover;
     }
 }

@@ -13,6 +13,7 @@ import Footer from './components/molecules/footer/large/footer.js';
 import './fonts/TuskerGrotesk-6700Bold.ttf'
 import MouseCursor from "./utils/mouseCursor";
 import { HeaderProvider } from "./utils/headerContext.js";
+import { LoadingProvider } from "./utils/LoadingContext.js";
 
 
 
@@ -25,8 +26,11 @@ function App() {
       <div className="App">
         {/* <div className='grid-overlay'></div> */}
           <Header/>
-          <PageContent/> 
-          {window.innerWidth > 830 && <MouseCursor/>}
+          <LoadingProvider>
+            <PageContent/> 
+          </LoadingProvider>
+          <MouseCursor/>
+   
 
 
         

@@ -4,6 +4,7 @@ import MouseCursor from "../../../utils/mouseCursor";
 import gsap from "gsap";
 import { useLocation } from "react-router-dom";
 import Reveal from "../../../utils/textElementReveal/textElementReveal";
+import ContactBlock from "../../molecules/ContactBlock/contactBlock";
 
 function Contact(){
 
@@ -15,6 +16,13 @@ function Contact(){
         gsap.fromTo(".contact-image-wrap .mask-image-wrap", { height:'0px' }, { height: '32vw', duration: 1, ease:[0.76, 0, 0.24, 1], delay:0.2});
         
     }, [location]);
+
+    useEffect(()=>{
+      document.title = `Contact Max Dona`;
+
+      document.documentElement.style.setProperty('--primary-color', '#181818');
+      document.documentElement.style.setProperty('--secondary-dark', 'rgb(10, 10, 10)');
+    }, [])
 
     const DynamicVideoPlayer = ({ image, isSection3Visible, windowWidth }) => {
         const maskRef = useRef(null);
@@ -123,60 +131,13 @@ function Contact(){
                     </div>
                 </div>
                 <div className="contact-image-wrap">
-                    <DynamicVideoPlayer image={'./Imagery/DP.webp'}/>
+                    <DynamicVideoPlayer image={'./maxPortrait.jpg'}/>
                   
 
                 </div>
             </div>
-            <div className="contact-bottom high-z-index-layer">
-            <div className="contact-bottom--wrap">
-                <div className="contact-bottom--col-1">
-                    <div className="find-me-wrap">
-                        <div className="contact-bottom--title">
-                            Contact 
-                        </div>
-                        <a className="primary-button">Instagram</a>
-                        <a className="primary-button">Youtube</a>
-                        <a className="primary-button">Email</a>
-                    </div>
-                   
-                </div>
-                <div className="contact-bottom--col-2">
-                </div>
-                <div className="contact-bottom--col-3">
-                    <div className="contact-bottom--archive-div">
-                        Awards
-                    </div>
-                    <a className="primary-button">Link Example</a>
-                    <a className="primary-button">Link Example</a>
-                    <a className="primary-button">Link Example</a>
-                    <a className="primary-button">Link Example</a>
-                    <a className="primary-button">Link Example</a>
-                    <a className="primary-button">Link Example</a>
-                    <a className="primary-button">Link Example</a>
-                    <a className="primary-button">Link Example</a>
-                    <a className="primary-button">Link Example</a>
-                </div>
-                <div className="contact-bottom--col-4">
-                <div className="contact-bottom--archive-div">
-                        Articles
-                    </div>
-                    <a className="primary-button">Link Example</a>
-                    <a className="primary-button">Link Example</a>
-                    <a className="primary-button">Link Example</a>
-                    <a className="primary-button">Link Example</a>
-                    <a className="primary-button">Link Example</a>
-                    <a className="primary-button">Link Example</a>
-                    <a className="primary-button">Link Example</a>
-                    <a className="primary-button">Link Example</a>
-                    <a className="primary-button">Link Example</a>
-
-        
-                </div>
-            
-            
-            </div>
-            </div>
+            <ContactBlock/>
+          
 
 
         </div>

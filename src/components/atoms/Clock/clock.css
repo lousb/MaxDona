@@ -66,11 +66,13 @@
 .menu-time-func{
   margin-bottom:-8px;
   text-transform: uppercase;
+  cursor: default !important;
 
 }
 .colon{
   transition: all 200ms ease;
   display: inline !important;
+  cursor: default !important;
 }
 /* Define keyframe animation */
 @keyframes infiniteEaseLoop {
