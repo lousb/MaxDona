@@ -520,7 +520,7 @@ useLayoutEffect(() => {
                             ref={imageRef}
                             className={`image-trail-${index} ${styles['trail-image']} trail-image`}
                             key={index}
-                            src={`/imagery/referencePeace/${index}.webp`}
+                            src={`/imagery/referencepeace/${index}.webp`}
                         />
                     );
                 })}
