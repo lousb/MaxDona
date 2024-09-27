@@ -773,15 +773,24 @@ const CustomYouTubePlayer = ({ setVideoProgress, setVideoCurrentTime, setIsPlayi
 
   const onReady = (event) => {
     event.target.addEventListener('onStateChange', (e) => {
-      if (e.data === window.YT.PlayerState.PLAYING) {
-        setIsPlaying(true);
-        setIsBuffering(false);
-        startProgressTracking(event.target);
-      } else if (e.data === window.YT.PlayerState.BUFFERING) {
-        setIsBuffering(true);
-      } else {
-        setIsPlaying(false);
-        setIsBuffering(false);
+      switch (e.data) {
+        case window.YT.PlayerState.PLAYING:
+          setIsPlaying(true);
+          setIsBuffering(false);
+          startProgressTracking(event.target);
+          break;
+        case window.YT.PlayerState.BUFFERING:
+          setIsBuffering(true);
+          break;
+        case window.YT.PlayerState.PAUSED:
+        case window.YT.PlayerState.ENDED: // Handle the end of the video
+          setIsPlaying(false);
+          setIsBuffering(false);
+          setIsPlayingProp(false); // Ensure the external prop is updated as well
+          break;
+        default:
+          setIsPlaying(false);
+          setIsBuffering(false);
       }
     });
   };
