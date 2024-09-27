@@ -1383,7 +1383,7 @@ transform:translateY(-30px)
         width: fit-content !important;
     }
    .header-logo{
-       width: 9vw;
+       width: 9vw !important;
      
    }
    .page-four-dynamic-wrap{

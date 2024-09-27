@@ -21,7 +21,7 @@ html{
     overflow-x: hidden;
 }
 .header-toggled-global svg > path{
-    transition: stroke 500ms ease 0.2s !important;
+    transition: stroke 500ms ease 0.2s, clip-path 500ms ease !important;
     stroke: black !important;
 }
 .header-toggled-global div.header-logo{
@@ -252,7 +252,9 @@ body:has(.home) .header-logo-link{
  
 
 }
-
+.page-transitioning .header-logo-link{
+    transform: scale(1) translate(0) rotate(0) !important;
+}
 
 body:has(.contact-page) .header-logo-link{
 
@@ -355,7 +357,7 @@ body:has(.mask-image:hover) .header-hamburger{
     transition: filter 500ms ease 1s !important;
 }
 .header-hamburger path{
-    transition: stroke 500ms ease 1s !important;
+    transition: stroke 500ms ease 1s, clip-path 500ms ease !important;
 }
 .header-toggled-global .header-hamburger{
     transition: filter 500ms ease 0.2s !important;

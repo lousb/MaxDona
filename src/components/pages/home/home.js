@@ -1380,7 +1380,7 @@ const Section4 = ({windowWidth}) => {
 
   const serviceImage = [
     `${process.env.PUBLIC_URL}/animated-cormac.webp`,
-    `${process.env.PUBLIC_URL}/franco.png`,
+    `${process.env.PUBLIC_URL}/Franco.png`,
     `${process.env.PUBLIC_URL}/animated-cormac.webp`,
   ];
   

@@ -78,7 +78,7 @@ body:has(.player__wrapper:hover)  .scroll-notification-single p span{
 .scroll-notification-single p span{
     transition: all 1000ms;
     text-align: right;
-    width: 70px;
+    width: 3.6em;
 }
 .scroll-notification-single p span::after{
     width: 100%;
@@ -86,13 +86,13 @@ body:has(.player__wrapper:hover)  .scroll-notification-single p span{
 }
 .scrolled .scroll-notification-single p span{
     transition: all 1000ms;
-    width: 240px;
+    width: 12.5em;
     height: 0;
     animation: none;
 
 }
 .scrolled .scroll-notification-single:has(.play-text-toggle) p div span{
-    width: 250px;
+    width: 13em;
 }
 .stop-progress-toggle{
     transition-delay: 0ms;
@@ -118,7 +118,14 @@ body:has(.player__wrapper:hover)  .scroll-notification-single p span{
     transition: 500ms ease all;
     min-height: 20px;
 }
+.scrolled .project-page .scroll-notification{
+    margin-bottom: 46px;
+}
+.main-video-controls-overlay:not(:has(.stop-progress-toggle)) .main-description-time-wrap{
+    opacity: 1;
+}
 .play-text-toggle p{
+    transition: 500ms ease all 300ms;
     transform: translateY(-20px);
  
 }

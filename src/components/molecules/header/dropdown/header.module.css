@@ -337,10 +337,11 @@ header > div{
 .header-logo div{
     
     background-color: var(--primary-color);
-    height: 43px;
     width: 45px;
+    aspect-ratio: 1;
     mask-image: url(/public/LOGO-DESKTOP.svg);
     mask-repeat: no-repeat;
+    mask-size: contain;
     transition: ease all 100ms 400ms, width 750ms ease;
 
  

@@ -278,6 +278,7 @@ useEffect(() => {
   
   
   const [videoProgress, setVideoProgress] = useState(0);
+  const [videoCurrentTime, setVideoCurrentTime] = useState('00:00');
   const [isPlayingProp, setIsPlayingProp] = useState(false);
 
 
@@ -340,6 +341,9 @@ const renderSection = (section, index) => {
       {windowWidth > 830 &&
         
             <div className={`main-video-controls-overlay ${styles['main-video-controls-overlay']}`}>
+              <div className={`body main-description-time-wrap ${styles['main-description-time-wrap']}`} onClick={()=>   windowWidth > 830 && scrollToPercentageOfViewportHeight(140)}>
+                ({videoCurrentTime})
+              </div>
 
             <div className={`body main-description-right-wrap ${styles['main-description-right-wrap']}`} onClick={()=>   windowWidth > 830 && scrollToPercentageOfViewportHeight(140)}>
               <span>{projectData ? projectData.videoName : ''} {projectData ?`( ${ new Date(projectData.releaseDate).getFullYear()} )`  : ''}</span>
@@ -419,7 +423,7 @@ const renderSection = (section, index) => {
                 </div>
                   <div className={styles['video-container']}>
                     <div className={`player__wrapper ${styles['player__wrapper']}`}>
-                      <CustomYouTubePlayer setVideoProgress={setVideoProgress} setIsPlayingProp={setIsPlayingProp} videoUrl={projectData?.videoLink} windowWidth={windowWidth}/>
+                      <CustomYouTubePlayer setVideoProgress={setVideoProgress} setVideoCurrentTime={setVideoCurrentTime} setIsPlayingProp={setIsPlayingProp} videoUrl={projectData?.videoLink} windowWidth={windowWidth}/>
 
                     </div>
                   </div> 
@@ -739,7 +743,7 @@ const DetailsSection = ({ sectionKey, value, index }) => {
 
 
 
-const CustomYouTubePlayer = ({ setVideoProgress, setIsPlayingProp, videoUrl, windowWidth }) => {
+const CustomYouTubePlayer = ({ setVideoProgress, setVideoCurrentTime, setIsPlayingProp, videoUrl, windowWidth }) => {
   const [isPlaying, setIsPlaying] = useState(false);
   const [isBuffering, setIsBuffering] = useState(false);
   const [progress, setProgress] = useState(0); // New state for progress
@@ -784,11 +788,19 @@ const CustomYouTubePlayer = ({ setVideoProgress, setIsPlayingProp, videoUrl, win
 
   const startProgressTracking = (player) => {
     const interval = 500;
+
     const updateProgress = () => {
       const currentTime = player.getCurrentTime();
       const duration = player.getDuration();
       const newProgress = (currentTime / duration) * 100;
-      setVideoProgress(newProgress); // Update the progress in the Single component
+
+      // Convert currentTime to mm:ss format
+      const minutes = Math.floor(currentTime / 60);
+      const seconds = Math.floor(currentTime % 60);
+      const formattedTime = `${minutes.toString().padStart(2, '0')}:${seconds.toString().padStart(2, '0')}`;
+
+      setVideoProgress(newProgress); // Update the progress in the component
+      setVideoCurrentTime(formattedTime); // Update the current time display in mm:ss format
     };
 
     const progressTracker = setInterval(updateProgress, interval);

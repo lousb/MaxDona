@@ -17,6 +17,10 @@
 
     background-color: white;
 }
+.main-video-controls-overlay .scroll-notification{
+    transition-delay: 0ms !important;
+    opacity: 1 !important;
+}
 
 .project-page-section-1{
     display: flex;
@@ -121,8 +125,9 @@
 .main-video-controls-overlay{
     position: absolute;
     display: flex;
-    width: 61%;
-    margin-left:35%;
+    width: 92vw;
+    margin-inline: 4vw;
+
     height: calc(100% - 4vw);
     top:0;
     z-index: 100;
@@ -130,6 +135,15 @@
     align-items: end;
     pointer-events: none;
 }
+.main-description-time-wrap{
+    opacity: 0;
+    margin-bottom: 46px;
+    color: white;
+    margin-left: 64px;
+    width: calc(34% - 64px);
+    transition: 500ms ease all 0ms;
+}
+
 .main-video-controls-overlay > div{
     pointer-events: all;
 }
@@ -331,7 +345,7 @@
     position:absolute;
     bottom: 0;
     right: 0;
-    margin-bottom: 64px;
+    margin-bottom: 80px;
     margin-right: 70px;
 
     transition: 500ms ease all;

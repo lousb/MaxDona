@@ -185,11 +185,15 @@ useEffect(() => {
         className={`header-inner-content ${styles["header-inner-content"]}`} // Set class name for inner content
       >
         {/* Header logo */}
-        <div className={styles["header-logo"]}>
+        <div className={styles["header-logo"]} 
+        onClick={()=>{
+          document.documentElement.style.setProperty('--secondary-dark', 'rgb(10, 10, 10)');
+        }}>
         <DelayLink
             className='header-logo-link '
             to={`/`} // Specify the destination link here
             delay={2000} // Set the delay in milliseconds (e.g., 1000ms = 1 second)
+           
           >
             <img className="header-logo" src="/LOGO-DESKTOP.svg" alt="Logo" ></img>
             <div className="header-logo" ></div>
