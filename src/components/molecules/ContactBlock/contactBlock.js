@@ -44,6 +44,17 @@ const ContactBlock = ({ referencePeace = false }) => {
 
     const [prevHover, setPrevHover] = useState([data[0]]);
 
+    useEffect(()=>{
+      gsap.to('.contact-hover-desc', {
+      width:document.querySelector('.contact-hover-desc .link-desc > span').clientWidth,
+      duration:0,
+      });
+      gsap.to('.contact-hover-desc', {
+      height:document.querySelector('.contact-hover-desc .link-desc > span').clientHeight,
+      duration:1,
+      });
+    }, [copyLinkDesc]);
+
 const handleProjectItemMouseEnter = () => {
     setIsHovered(true);
     setCopyLinkDesc('Click to Copy');

@@ -1139,7 +1139,6 @@ const Section3 = ({ onHoverChange, featuredProjects, prevHover, setPrevHover, pr
   const [isVisible, setIsVisible] = useState(false);
 
   const { x, y, isOutside } = useMousePosition(".App");
-  const [hoverDescHeight, setHoverDescHeight] = useState(0);
   const [prevX, setPrevX] = useState(0);
   const [prevY, setPrevY] = useState(0);
   const [velocity, setVelocity] = useState({ vx: 0, vy: 0 });

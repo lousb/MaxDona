@@ -14,6 +14,7 @@ import { ScrollTrigger } from "gsap/ScrollTrigger";
 import { Link } from 'react-router-dom';
 import './single.css'
 import DelayLink from '../../../utils/delayLink';
+import useMousePosition from '../../../utils/useMousePosition';
 
 
 gsap.registerPlugin(ScrollTrigger);
@@ -30,6 +31,84 @@ const Single = () => {
 const [windowWidth, setWindowWidth] = useState(window.innerWidth);
 
   const [mainImageLoaded, setMainImageLoaded] = useState(false);
+
+  const [prevX, setPrevX] = useState(0);
+  const [prevY, setPrevY] = useState(0);
+  const [velocity, setVelocity] = useState({ vx: 0, vy: 0 });
+  const [currentProject, setCurrentProject] = useState(''); // Initialize with first item's focusGenre
+  const [wobble, setWobble] = useState({ translateY: 0, rotate: 0 }); // State for wobble effect
+  const hoverDescRef = useRef(null);
+  const [isHovered, setIsHovered] = useState(false);
+  const [copyLinkDesc, setCopyLinkDesc] = useState('Play Video');
+
+  const wobbleTimeoutRef = useRef(null); // Ref to store the timeout
+
+
+  let {x, y} = useMousePosition('.App');
+
+
+  const handleProjectItemMouseEnter = () => {
+    setIsHovered(true);
+
+    gsap.to('.video-hover-desc .link-desc > span', {
+      y: '0%',
+      opacity: 1,
+      duration: 0.3,
+      delay: 0.3,
+    });
+  };
+
+  const handleMouseLeave = () => {
+    setIsHovered(false);
+  };
+
+
+    useEffect(() => {
+      if (!isHovered) return;
+
+
+        const calculateVelocity = () => {
+          const vx = x - prevX;
+          const vy = y - prevY;
+          setVelocity({ vx, vy });
+          setPrevX(x);
+          setPrevY(y);
+        };
+
+        calculateVelocity();
+
+
+
+
+    }, [x, y, isHovered]);
+
+    const clamp = (value, min, max) => Math.max(min, Math.min(max, value));
+
+    const maxTranslation = 3; 
+    const maxRotation = 1.5; 
+
+
+    useEffect(() => {
+      if (!isHovered) return;
+
+    const wobbleEffect = {
+      translateY: clamp(velocity.vy * 1.5, -maxTranslation, maxTranslation),
+      rotate: clamp(velocity.vx * 1.5, -maxRotation, maxRotation),
+    };
+    setWobble(wobbleEffect);
+
+    if (wobbleTimeoutRef.current) {
+      clearTimeout(wobbleTimeoutRef.current);
+    }
+
+    wobbleTimeoutRef.current = setTimeout(() => {
+      setWobble({ translateY: 0, rotate: 0 }); // Reset to baseline
+    }, 100); // Reset after 100ms of inactivity
+
+    return () => clearTimeout(wobbleTimeoutRef.current);
+
+
+    }, [velocity, isHovered]);
 
 
 
@@ -274,7 +353,13 @@ useEffect(() => {
   
   };
   
-  
+  useEffect(()=>{
+    gsap.to('.video-hover-desc', {
+    width:document.querySelector('.video-hover-desc .link-desc > span').clientWidth,
+    duration:0,
+    });
+
+  }, [copyLinkDesc]);
   
   
   const [videoProgress, setVideoProgress] = useState(0);
@@ -337,10 +422,28 @@ const renderSection = (section, index) => {
 
   return (
     <div className={`${styles['project-page']} project-page`}>
+      <div
+        className={`video-hover-desc`}
+        ref={hoverDescRef}
+        style={{
+          position: "fixed",
+          left: `${x - 14}px`,
+          top: `${y - 22}px`,
+          transform: `translateY(${wobble.translateY}px) rotate(${wobble.rotate}deg)`,
+        }}
+
+      >
+
+        <p className={`body link-desc`}>
+
+          <span>{copyLinkDesc}</span>
+        </p>
+      </div>
 
       {windowWidth > 830 &&
         
             <div className={`main-video-controls-overlay ${styles['main-video-controls-overlay']}`}>
+             
               <div className={`body main-description-time-wrap ${styles['main-description-time-wrap']}`} onClick={()=>   windowWidth > 830 && scrollToPercentageOfViewportHeight(140)}>
                 ({videoCurrentTime})
               </div>
@@ -364,7 +467,7 @@ const renderSection = (section, index) => {
             </p>
 
           </div>
-          <div className={`${styles['progress-bar']} ${ isPlayingProp ? '':'stop-progress-toggle'}`}>
+          <div className={`${styles['progress-bar']} ${ isPlayingProp ? '':'stop-progress-toggle'} progress-bar`}>
               <div className={`${styles['progress']}  `} style={{ width: `${videoProgress}%` }}></div>
           </div>
         </div>
@@ -399,7 +502,8 @@ const renderSection = (section, index) => {
               </div>
               
             </section>
-            <div className={`${styles['main-section-image-wrap']} main-section-image-wrap`}>
+            <div className={`${styles['main-section-image-wrap']} main-section-image-wrap`} onMouseEnter={handleProjectItemMouseEnter}
+            onMouseLeave={handleMouseLeave}>
                 <div className={`${styles['main-section-image']} main-section-image`}>
                 <div
                   className={`${styles['main-section-image-overlay']} main-section-image-overlay`}
@@ -423,7 +527,7 @@ const renderSection = (section, index) => {
                 </div>
                   <div className={styles['video-container']}>
                     <div className={`player__wrapper ${styles['player__wrapper']}`}>
-                      <CustomYouTubePlayer setVideoProgress={setVideoProgress} setVideoCurrentTime={setVideoCurrentTime} setIsPlayingProp={setIsPlayingProp} videoUrl={projectData?.videoLink} windowWidth={windowWidth}/>
+                      <CustomYouTubePlayer setVideoProgress={setVideoProgress} setVideoCurrentTime={setVideoCurrentTime} setCopyLinkDesc={setCopyLinkDesc} setIsPlayingProp={setIsPlayingProp} videoUrl={projectData?.videoLink} windowWidth={windowWidth}/>
 
                     </div>
                   </div> 
@@ -743,7 +847,7 @@ const DetailsSection = ({ sectionKey, value, index }) => {
 
 
 
-const CustomYouTubePlayer = ({ setVideoProgress, setVideoCurrentTime, setIsPlayingProp, videoUrl, windowWidth }) => {
+const CustomYouTubePlayer = ({ setVideoProgress, setVideoCurrentTime, setCopyLinkDesc, setIsPlayingProp, videoUrl, windowWidth }) => {
   const [isPlaying, setIsPlaying] = useState(false);
   const [isBuffering, setIsBuffering] = useState(false);
   const [progress, setProgress] = useState(0); // New state for progress
@@ -815,6 +919,7 @@ const CustomYouTubePlayer = ({ setVideoProgress, setVideoCurrentTime, setIsPlayi
   };
 
 
+  
 
 
   const togglePlayPause = () => {
@@ -822,11 +927,39 @@ const CustomYouTubePlayer = ({ setVideoProgress, setVideoCurrentTime, setIsPlayi
       playerRef.current.internalPlayer.pauseVideo();
       setIsPlayingProp(false);
       setIsPlaying(false);
+
+      gsap.to('.video-hover-desc .link-desc > span', {
+        y: '100%',
+        duration: 0.3,
+        delay: 0,
+        onComplete:()=>{
+          setCopyLinkDesc('Play Video');
+          gsap.to('.video-hover-desc .link-desc > span', {
+            y: '0%',
+            duration: 0.3,
+            delay: 0,
+          });
+        }
+      });
     } else {
       playerRef.current.internalPlayer.playVideo();
       windowWidth > 830 && scrollToPercentageOfViewportHeight(140);
       setIsPlayingProp(true);
       setIsPlaying(true);
+      
+      gsap.to('.video-hover-desc .link-desc > span', {
+        y: '100%',
+        duration: 0.3,
+        delay: 0,
+        onComplete:()=>{
+          setCopyLinkDesc('Pause Video');
+          gsap.to('.video-hover-desc .link-desc > span', {
+            y: '0%',
+            duration: 0.3,
+            delay: 0,
+          });
+        }
+      });
     }
   };
 
@@ -839,10 +972,7 @@ const CustomYouTubePlayer = ({ setVideoProgress, setVideoCurrentTime, setIsPlayi
         ref={playerRef}
         
       />
-      <div className={styles['progress-bar']}>
-        <div className={styles['progress']} style={{ width: `${progress}%` }}></div>
-        <p onClick={togglePlayPause}>{isPlaying ? 'Pause' : 'Play'}</p>
-      </div>
+     
    
     </div>
   );

@@ -136,8 +136,10 @@ body:has(.header-menu-subtext-links:hover) .large-arrow-cursor, body:has(.header
     content: '';
     height:calc(84px * 200);
     width:85px;
-    background-image: url(/public/Arrow/White-Arrow-Large.svg);
-    background-size: contain;
+    background: white;
+    mask-repeat: repeat-y;
+    mask-image: url(/public/Arrow/White-Arrow-Large.svg);
+    mask-size: contain;
     z-index: 10;
     pointer-events: none;
     transition: all 0s ease-out;
