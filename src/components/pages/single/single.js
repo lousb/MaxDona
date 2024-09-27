@@ -21,7 +21,6 @@ gsap.registerPlugin(ScrollTrigger);
 const Single = () => {
   const { projectId } = useParams();
   const [projectData, setProjectData] = useState(null);
-  const [viewToggle, setViewToggle] = useState(false);
   const [selectedImageIndex, setSelectedImageIndex] = useState(0);
   const scrollPositionRef = useRef(0);
   const sectionRef = useRef(null);
@@ -171,11 +170,8 @@ const [windowWidth, setWindowWidth] = useState(window.innerWidth);
 
  
 
-
-     if (!viewToggle) {
-       pinVideoSection();
-       pinVideoControls();
-     }
+     pinVideoSection();
+     pinVideoControls();
    };
    setupAnimations();
   });
@@ -185,7 +181,7 @@ const [windowWidth, setWindowWidth] = useState(window.innerWidth);
    return () => {
      ScrollTrigger.getAll().forEach((trigger) => trigger.kill());
    };
- }, [sectionRef, viewToggle]);
+ }, [sectionRef]);
   
  useEffect(() => {
     const handleScroll = () => {
@@ -274,7 +270,6 @@ useEffect(() => {
     scrollPositionRef.current = window.scrollY;
   
     setSelectedImageIndex(clickedIndex);
-    setViewToggle(true);
 
   
   };
@@ -372,16 +367,6 @@ const renderSection = (section, index) => {
       }
      
       <div>
-        {/* {viewToggle ? (
-          <SingleImageView
-            projectData={projectData}
-            selectedImageIndex={selectedImageIndex}
-            getTotalImageCount={getTotalImageCount}
-            getImageUrlByIndex={getImageUrlByIndex}
-            setSelectedImageIndex={setSelectedImageIndex}
-          />
-        ) : ( */}
-          <>
             <section className={`${styles['project-page-section-1']} project-page-section-1`} ref={sectionRef}>
               <div className={`${styles['main-section-details']} main-section-details high-z-index-layer`}>
                 {projectData ? (
@@ -444,25 +429,6 @@ const renderSection = (section, index) => {
 
             
             <section>
-            {/* {projectData && (
-              <>
-              {Object.entries(projectData.imageUrls)
-              .sort((a, b) => parseInt(a[0].replace('image', '')) - parseInt(b[0].replace('image', '')))
-              .map(([groupKey, groupImages], groupIndex) => (
-                <div key={groupKey} ref={masonrySection}>
-                  <ImageSection
-                    key={groupKey}
-                    groupKey={groupKey}
-                    groupImages={groupImages}
-                    groupIndex={groupIndex}
-                    handleImageClick={handleImageClick}
-                    projectData={projectData}
-                  />
-                </div>
-              ))}
-              </>
-      
-            )} */}
 
           {projectData && (
                   <>
@@ -470,7 +436,6 @@ const renderSection = (section, index) => {
                   </>
                 )}
             </section>
-          </>
         {projectData && (
           <NavigationSection
             currentIndex={currentIndex}

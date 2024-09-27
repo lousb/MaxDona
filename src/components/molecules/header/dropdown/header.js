@@ -192,6 +192,7 @@ useEffect(() => {
             delay={2000} // Set the delay in milliseconds (e.g., 1000ms = 1 second)
           >
             <img className="header-logo" src="/LOGO-DESKTOP.svg" alt="Logo" ></img>
+            <div className="header-logo" ></div>
           </DelayLink>
 
             

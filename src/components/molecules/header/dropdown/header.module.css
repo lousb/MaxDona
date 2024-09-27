@@ -333,16 +333,25 @@ header > div{
     transition-delay: 300ms;
     filter: invert(1);
 }
-.header-logo img{
 
+.header-logo div{
+    
+    background-color: var(--primary-color);
+    height: 43px;
+    width: 45px;
+    mask-image: url(/public/LOGO-DESKTOP.svg);
+    mask-repeat: no-repeat;
     transition: ease all 100ms 400ms, width 750ms ease;
 
  
 }
+.header-logo img{
+    position: absolute;
+}
 .header-toggled .header-logo >a{
     transform: scale(1) translate(0) rotate(0);
 }
-.header-toggled .header-logo img{
+.header-toggled .header-logo div{
     transition-delay: 200ms;
     filter: drop-shadow(0px 0px 0px white);
  }

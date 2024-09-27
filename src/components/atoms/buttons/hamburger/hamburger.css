@@ -12,7 +12,7 @@
 
     transition: all 500ms ease-out;
     transition-delay: 100ms;
-    stroke: #181818 !important;
+    stroke: var(--primary-color) !important;
     clip-path: polygon(0 0, 100% 0, 100% 100%, 0 100%);
 }
 

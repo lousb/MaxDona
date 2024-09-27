@@ -20,7 +20,17 @@ html{
     scrollbar-color: var(--secondary-dark) transparent;
     overflow-x: hidden;
 }
-
+.header-toggled-global svg > path{
+    transition: stroke 500ms ease 0.2s !important;
+    stroke: black !important;
+}
+.header-toggled-global div.header-logo{
+    transition: background-color 500ms ease 0.2s !important;
+    background-color: black !important;
+}
+div.header-logo{
+    transition: background-color 500ms ease 1.1s !important; 
+}
 body:not(:has(.loading-wrap.is-loading)){
     background-color: white !important;
 }
@@ -343,6 +353,9 @@ body:has(.mask-image:hover) .header-hamburger{
 }
 .header-hamburger{
     transition: filter 500ms ease 1s !important;
+}
+.header-hamburger path{
+    transition: stroke 500ms ease 1s !important;
 }
 .header-toggled-global .header-hamburger{
     transition: filter 500ms ease 0.2s !important;

@@ -30,7 +30,7 @@
 .main-section-image-wrap{
     position: absolute;
     top: 0;
-    height: calc(100vh - 8vw);
+    height: calc(100vh - 4vw - 84px);
     display: flex;
     pointer-events: none;
     justify-content: end;
@@ -38,7 +38,7 @@
 
     width:92vw;
     margin-inline: 4vw;
-    margin-top:4vw;
+    margin-top:84px;
     margin-bottom:4vw;
 
 }
