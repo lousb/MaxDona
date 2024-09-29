@@ -83,43 +83,55 @@ function PageContent() {
       document.querySelector('.page-content').classList.remove('press-down');
     };
 
-    // Function to check header class and update Lenis behavior
-    const updateLenisScroll = () => {
-      const header = document.querySelector('header'); // Adjust selector as needed
-      if (header && header.classList.contains('header-toggled-global')) {
-        lenis.stop(); // Stop the scroll effect
-      } else {
-        lenis.start(); // Restart the scroll effect
-      }
-    };
+   const updateLenisScroll = () => {
+     const header = document.querySelector('header'); // Adjust selector as needed
+     const playerWrapper = document.querySelector('.player__wrapper'); // Adjust selector as needed
 
-    // Initial check
-    updateLenisScroll();
+     // Stop Lenis if either the header is toggled or the player is playing a video
+     if ((header && header.classList.contains('header-toggled-global')) || 
+         (playerWrapper && playerWrapper.classList.contains('playing-video'))) {
+       lenis.stop(); // Stop the scroll effect
+     } else {
+       lenis.start(); // Restart the scroll effect
+     }
+   };
 
-    // Add event listeners
-    window.addEventListener('mousedown', handleMouseDown);
-    window.addEventListener('mouseup', handleMouseUp);
+   // Initial check
+   updateLenisScroll();
 
-    // Monitor changes to the header class
-    const observer = new MutationObserver(updateLenisScroll);
-    const headerElement = document.querySelector('header'); // Adjust selector as needed
+   // Add event listeners (if needed for specific interactions like mousedown, mouseup)
+   window.addEventListener('mousedown', handleMouseDown);
+   window.addEventListener('mouseup', handleMouseUp);
 
-    if (headerElement) {
-      observer.observe(headerElement, { attributes: true, attributeFilter: ['class'] });
-    }
+   // Monitor changes to both the header and player wrapper classes
+   const observer = new MutationObserver(updateLenisScroll);
+   const headerElement = document.querySelector('header');
+   const playerWrapperElement = document.querySelector('.player__wrapper');
 
-    // Clean up event listeners and observer
-    return () => {
-      window.removeEventListener('mousedown', handleMouseDown);
-      window.removeEventListener('mouseup', handleMouseUp);
-      if (headerElement) {
-        observer.disconnect();
-      }
+   // Observe class changes on both elements
+   if (headerElement) {
+     observer.observe(headerElement, { attributes: true, attributeFilter: ['class'] });
+   }
+   if (playerWrapperElement) {
+     observer.observe(playerWrapperElement, { attributes: true, attributeFilter: ['class'] });
+   }
 
-      // Clean up Lenis and GSAP ticker
-      gsap.ticker.remove(lenis.raf);
-      lenis.destroy();
-    };
+   // Clean up event listeners and observer
+   return () => {
+     window.removeEventListener('mousedown', handleMouseDown);
+     window.removeEventListener('mouseup', handleMouseUp);
+
+     if (headerElement) {
+       observer.disconnect();
+     }
+     if (playerWrapperElement) {
+       observer.disconnect();
+     }
+
+     // Clean up Lenis and GSAP ticker
+     gsap.ticker.remove(lenis.raf);
+     lenis.destroy();
+   };
   }, []);
   
   return (

@@ -169,14 +169,17 @@ width: max-content;
     border-radius:10px;
     margin-bottom: 20px;
 }
-.scroll-notification > p > p:after{
+.scroll-notification{
+    opacity: 1 !important;
+}
+.scroll-notification > p > div > span:after{
     content:'scroll';
     position: absolute;
     bottom:-100%;
-    color:black;
+    color:white;
     opacity: 1 !important;
 }
-.scroll-notification > p > p{
+.scroll-notification > p >  div > span{
     overflow: visible;
     animation: scrollText 3s infinite;
     animation-timing-function: cubic-bezier(0.76, 0, 0.24, 1);
@@ -290,7 +293,7 @@ div:has(> .rp-description){
     width:100%;
     margin-top:1.4vw;
 
-
+    overflow: hidden;
 }
 .pdf-section{
     margin-top:1.4vw;
@@ -317,14 +320,20 @@ div:has(> .rp-description){
 .main-video-controls-overlay{
     position: absolute;
     display: flex;
-    width: 61%;
-    margin-left:35%;
-    height: calc(100% - 4vw);
+    width: 100%;
+    height: calc(100% - 24px);
     top:0;
     z-index: 100;
     display: flex;
     align-items: end;
-    pointer-events: none;
+    pointer-events: none !important;
+}
+.main-description-time-wrap{
+   
+    color: white;
+    margin-left: 64px;
+    width: calc(34% - 64px);
+    transition: 500ms ease all 0ms;
 }
 .play-text{
     animation: none !important;

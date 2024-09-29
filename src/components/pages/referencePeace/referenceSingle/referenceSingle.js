@@ -25,8 +25,90 @@ const ReferenceSingle = () =>{
 
   const [currentPage, setCurrentPage] = useState(1);
   const [nextPageNumber, setNextPageNumber] = useState(false);
-
+  const [videoCurrentTime, setVideoCurrentTime] = useState('00:00');
   const childRef = useRef();
+
+
+  const [prevX, setPrevX] = useState(0);
+  const [prevY, setPrevY] = useState(0);
+  const [velocity, setVelocity] = useState({ vx: 0, vy: 0 });
+  const [currentProject, setCurrentProject] = useState(''); // Initialize with first item's focusGenre
+  const [wobble, setWobble] = useState({ translateY: 0, rotate: 0 }); // State for wobble effect
+  const hoverDescRef = useRef(null);
+  const [isHovered, setIsHovered] = useState(false);
+  const [copyLinkDesc, setCopyLinkDesc] = useState('Play Video');
+
+  const wobbleTimeoutRef = useRef(null); // Ref to store the timeout
+
+
+  let {x, y} = useMousePosition('.App');
+
+  const handleProjectItemMouseEnter = () => {
+    setIsHovered(true);
+
+    gsap.to('.video-rp-hover-desc .link-desc > span', {
+      y: '0%',
+      opacity: 1,
+      duration: 0.3,
+      delay: 0.3,
+    });
+  };
+
+  const handleMouseLeave = () => {
+    setIsHovered(false);
+  };
+
+
+    useEffect(() => {
+      if (!isHovered) return;
+
+
+        const calculateVelocity = () => {
+          const vx = x - prevX;
+          const vy = y - prevY;
+          setVelocity({ vx, vy });
+          setPrevX(x);
+          setPrevY(y);
+        };
+
+        calculateVelocity();
+
+
+
+
+    }, [x, y, isHovered]);
+
+    const clamp = (value, min, max) => Math.max(min, Math.min(max, value));
+
+    const maxTranslation = 3; 
+    const maxRotation = 1.5; 
+
+
+    useEffect(() => {
+      if (!isHovered) return;
+
+    const wobbleEffect = {
+      translateY: clamp(velocity.vy * 1.5, -maxTranslation, maxTranslation),
+      rotate: clamp(velocity.vx * 1.5, -maxRotation, maxRotation),
+    };
+    setWobble(wobbleEffect);
+
+    if (wobbleTimeoutRef.current) {
+      clearTimeout(wobbleTimeoutRef.current);
+    }
+
+    wobbleTimeoutRef.current = setTimeout(() => {
+      setWobble({ translateY: 0, rotate: 0 }); // Reset to baseline
+    }, 100); // Reset after 100ms of inactivity
+
+    return () => clearTimeout(wobbleTimeoutRef.current);
+
+
+    }, [velocity, isHovered]);
+
+
+
+
 
 
   useEffect(() => {
@@ -102,45 +184,76 @@ const ReferenceSingle = () =>{
     switch (section.type) {
       case 'video':
         return (
-          <div className={`${styles['main-section-video-wrap']} main-section-video-wrap`}>
+          <div className={`${styles['main-section-video-wrap']} main-section-video-wrap`} onMouseEnter={handleProjectItemMouseEnter}
+          onMouseLeave={handleMouseLeave}>
+            <div
+              className={`video-rp-hover-desc`}
+              ref={hoverDescRef}
+              style={{
+                position: "fixed",
+                left: `${x - 14}px`,
+                top: `${y - 22}px`,
+                transform: `translateY(${wobble.translateY}px) rotate(${wobble.rotate}deg)`,
+              }}
+
+            >
+              <div className="video-rp-hover-svg-wrap">
+                <svg width="17" height="25" viewBox="0 0 17 25" fill="none" xmlns="http://www.w3.org/2000/svg" className="video-rp-hover-arrow">
+                <path  fill-rule="evenodd" clip-rule="evenodd" d="M2.0078 4.99998H0.29C0.193334 4.99998 0 4.95453 0 4.77271V0.22727C0 0 0.348 0 0.580001 0H1.74023H6.38H6.38086H8.12023H11.2382H12.1809H16.2405V4.63965V6.37983V10.4395V10.4473H16.2435V16.2471C16.2435 16.4791 16.2435 16.8271 16.0053 16.8271H11.2411C11.0506 16.8271 11.0029 16.6338 11.0029 16.5371V10.7739C11.0009 10.7578 11 10.7427 11 10.7295V8.99603L6.39529 13.6006L6.39552 13.6008L3.92365 16.0726C3.82477 16.1715 3.67646 16.3198 3.50954 16.1529L0.171188 12.8146C0.037654 12.6811 0.0866662 12.5653 0.127864 12.5241L1.48753 11.1645L1.4873 11.1642L7.65128 5.00047H2.03023C2.02257 5.00047 2.01509 5.0003 2.0078 4.99998Z" fill="#181818"/>
+                </svg>
+              </div>
+
+              <p className={`body link-desc`}>
+
+                <span>{copyLinkDesc}</span>
+              </p>
+            </div>
             <div className={`${styles['main-section-image']} main-section-image arrow-hover`}>
             <div className={`${styles['main-section-image-overlay']} main-section-image-overlay`} style={{ backgroundImage: `url(${projectData?.mainFeaturedImage})` }}>
 
             </div>
               <div className={styles['video-container']}>
                 <div className={`player__wrapper ${styles['player__wrapper']}`}>
-                  <CustomYouTubePlayer setVideoProgress={setVideoProgress} setIsPlayingProp={setIsPlayingProp} videoUrl={section.videoUrl}/>
+                  <CustomYouTubePlayer setVideoProgress={setVideoProgress} setVideoCurrentTime={setVideoCurrentTime} setCopyLinkDesc={setCopyLinkDesc} setIsPlayingProp={setIsPlayingProp} videoUrl={section.videoUrl}/>
 
                 </div>
               </div> 
             </div>
             <div className={`main-video-controls-overlay ${styles['main-video-controls-overlay']}`}>
-              {projectData ? 
-                <div className={`body main-description-right-wrap ${styles['main-description-right-wrap']}`} >
-                  <span>{projectData.videoName} (2022)</span>
-                  <span className='primary-button'>
-                  Full Video
-                  </span>
-                </div>
-              :
-                <></>
-              }  
-              <div className={`body scroll-notification scroll-notification-single ${styles['scroll-notification']}`}>
-                <p>
-                  (<div><span>SCROLL</span></div>)
-                </p>
-                <p className={`body single-click-anywhere ${styles['single-click-anywhere']}`}>
-                  Click Anywhere To 
-                  <p className={`play-text ${styles['play-text']} ${ isPlayingProp ? 'play-text-toggle':''}`}>
-                    <p>play</p>
-                    <p>pause</p>
-                  </p> 
-                </p>
+            <div className={`main-video-controls-overlay ${styles['main-video-controls-overlay']}`}>
 
+                    <div className={`body main-description-time-wrap ${styles['main-description-time-wrap']}`}>
+                      ({videoCurrentTime})
+                    </div>
+
+                  {projectData ? 
+                    <div className={`body main-description-right-wrap ${styles['main-description-right-wrap']}`} >
+                      <span>{projectData.videoName} (2022)</span>
+                      <span className='primary-button'>
+                      Full Video
+                      </span>
+                    </div>
+                  :
+                    <></>
+                  }  
+                <div className={`body scroll-notification scroll-notification-single ${styles['scroll-notification']}`}>
+                  <p>
+                    (<div><span>SCROLL</span></div>)
+                  </p>
+                  <p className={`body single-click-anywhere`}>
+                    Click Anywhere To 
+                    <p className={`play-text ${ isPlayingProp ? 'play-text-toggle':''}`}>
+                      <p>play</p>
+                      <p>pause</p>
+                    </p> 
+                  </p>
+
+                </div>
+                <div className={`${styles['progress-bar']} ${ isPlayingProp ? '':'stop-progress-toggle'} progress-bar`}>
+                    <div className={`${styles['progress']}  `} style={{ width: `${videoProgress}%` }}></div>
+                </div>
               </div>
-              <div className={`${styles['progress-bar']} ${ isPlayingProp ? '':'stop-progress-toggle'}`}>
-                  <div className={`${styles['progress']}  `} style={{ width: `${videoProgress}%` }}></div>
-              </div>
+              
             </div>
 
           </div>
@@ -858,7 +971,7 @@ React.useImperativeHandle(ref, () => ({
 
 
 
-const CustomYouTubePlayer = ({ setVideoProgress, setIsPlayingProp, videoUrl }) => {
+const CustomYouTubePlayer = ({ setVideoProgress, setVideoCurrentTime, setCopyLinkDesc, setIsPlayingProp, videoUrl }) => {
   const [isPlaying, setIsPlaying] = useState(false);
   const [isBuffering, setIsBuffering] = useState(false);
   const [progress, setProgress] = useState(0); // State for progress
@@ -892,7 +1005,7 @@ const CustomYouTubePlayer = ({ setVideoProgress, setIsPlayingProp, videoUrl }) =
   // Handle player state changes
   const onReady = (event) => {
     const player = event.target;
-    player.mute();
+
     event.target.addEventListener('onStateChange', (e) => {
       if (e.data === window.YT.PlayerState.PLAYING) {
         setIsPlaying(true);
@@ -909,17 +1022,29 @@ const CustomYouTubePlayer = ({ setVideoProgress, setIsPlayingProp, videoUrl }) =
 
   // Start tracking progress
   const startProgressTracking = (player) => {
-    const interval = 500; // Interval for progress updates
+    const interval = 500;
+
     const updateProgress = () => {
       const currentTime = player.getCurrentTime();
       const duration = player.getDuration();
       const newProgress = (currentTime / duration) * 100;
-      setVideoProgress(newProgress);
-      setProgress(newProgress); // Update internal state
+
+      // Convert currentTime to mm:ss format
+      const minutes = Math.floor(currentTime / 60);
+      const seconds = Math.floor(currentTime % 60);
+      const formattedTime = `${minutes.toString().padStart(2, '0')}:${seconds.toString().padStart(2, '0')}`;
+
+      setVideoProgress(newProgress); // Update the progress in the component
+      setVideoCurrentTime(formattedTime); // Update the current time display in mm:ss format
     };
 
-    progressRef.current = setInterval(updateProgress, interval);
+    const progressTracker = setInterval(updateProgress, interval);
+
+    return () => {
+      clearInterval(progressTracker);
+    };
   };
+
 
   // Cleanup progress tracking on unmount
   useEffect(() => {
@@ -936,10 +1061,38 @@ const CustomYouTubePlayer = ({ setVideoProgress, setIsPlayingProp, videoUrl }) =
       playerRef.current.internalPlayer.pauseVideo();
       setIsPlayingProp(false);
       setIsPlaying(false);
+
+      gsap.to('.video-rp-hover-desc .link-desc > span', {
+        y: '100%',
+        duration: 0.3,
+        delay: 0,
+        onComplete:()=>{
+          setCopyLinkDesc('Play Video');
+          gsap.to('.video-rp-hover-desc .link-desc > span', {
+            y: '0%',
+            duration: 0.3,
+            delay: 0,
+          });
+        }
+      });
     } else {
       playerRef.current.internalPlayer.playVideo();
       setIsPlayingProp(true);
       setIsPlaying(true);
+
+      gsap.to('.video-rp-hover-desc .link-desc > span', {
+        y: '100%',
+        duration: 0.3,
+        delay: 0,
+        onComplete:()=>{
+          setCopyLinkDesc('Pause Video');
+          gsap.to('.video-rp-hover-desc .link-desc > span', {
+            y: '0%',
+            duration: 0.3,
+            delay: 0,
+          });
+        }
+      });
     }
   };
 

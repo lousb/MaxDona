@@ -188,7 +188,7 @@ body:has(.player__wrapper:hover)  .scroll-notification-single p span{
 
       transform-origin: top left;
       transition: transform 500ms ease, clip-path 500ms ease, max-height 500ms ease, max-width 500ms ease, padding 500ms ease, width 500ms ease !important;
-      z-index: 2;
+      z-index: 20;
       scale:1;
 
       padding:12px 14px 12px 42px;
@@ -201,6 +201,31 @@ body:has(.player__wrapper:hover)  .scroll-notification-single p span{
       pointer-events: none;
   }
 
+  .video-hover-svg-wrap{
+    aspect-ratio: 1;
+    overflow: hidden;
+    position: absolute;
+    left:16px;
+    top:14px;
+}
+.video-hover-svg-wrap > svg{
+    
+    transform: scaleX(-1);
+}
+.video-hover-svg-wrap > svg > path{
+    transform: translateY(100%);
+    transition: 500ms ease;
+    fill: var(--primary-color);
+}
+body:has(.main-section-image-wrap:hover) .video-hover-svg-wrap > svg > path{
+    transform: translateY(0%);
+}
+body:has(.project-page) .large-arrow-cursor{
+    transition: transform 500ms ease 400ms, max-height 500ms ease, max-width 500ms ease, margin 500ms ease 400ms, filter 300ms ease 0ms, scale 300ms ease;
+}
+.scrolled:has(.project-page) .large-arrow-cursor{
+    transition: transform 500ms ease 0ms, max-height 500ms ease, max-width 500ms ease, margin 500ms ease 0ms, filter 300ms ease 0ms, scale 300ms ease;
+}
   
   .scrolled:has(.main-section-image-wrap:hover) .video-hover-desc{
       clip-path: polygon(0 0, 100% 0, 100% 100%, 0% 100%);

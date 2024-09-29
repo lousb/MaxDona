@@ -206,6 +206,133 @@ body:has( .reference-peace-single):not(:has( .header-toggled-global)) .header-in
 .reference-peace-contact-block .body:not(.link-desc){
     padding-bottom: 1em;
 }
+
+.video-rp-hover-desc{
+    height:fit-content;
+    min-height: 1em;
+
+
+    transform-origin: top left;
+    transition: transform 500ms ease, clip-path 500ms ease, max-height 500ms ease, max-width 500ms ease, padding 500ms ease, width 500ms ease !important;
+    z-index: 20;
+    scale:1;
+
+    padding:12px 14px 12px 42px;
+
+    pointer-events: none !important;
+
+    clip-path: polygon(0 0, 0 0, 0 100%, 0 100%);
+    border-radius: 4px;
+    overflow: hidden;
+    pointer-events: none;
+}
+
+.video-rp-hover-svg-wrap{
+  aspect-ratio: 1;
+  overflow: hidden;
+  position: absolute;
+  left:16px;
+  top:14px;
+}
+.video-rp-hover-svg-wrap > svg{
+  
+  transform: scaleX(-1);
+}
+.video-rp-hover-svg-wrap > svg > path{
+  transform: translateY(100%);
+  transition: 500ms ease;
+  fill: white
+}
+body:has(.main-section-video-wrap:hover) .video-rp-hover-svg-wrap > svg > path{
+  transform: translateY(0%);
+}
+body:has(.project-page) .large-arrow-cursor{
+  transition: transform 500ms ease 400ms, max-height 500ms ease, max-width 500ms ease, margin 500ms ease 400ms, filter 300ms ease 0ms, scale 300ms ease;
+}
+
+
+body:has(.main-section-video-wrap:hover) .video-rp-hover-desc{
+    clip-path: polygon(0 0, 100% 0, 100% 100%, 0% 100%);
+}
+body:not(:has(.main-section-video-wrap:hover)) .video-rp-hover-desc{
+    transition: 0s 0.7s, opacity 0.6s 0.1s, clip-path 0.5s 0.1s !important;
+    opacity: 0;
+    clip-path: polygon(0 0, 0 0, 0 100%, 0 100%);
+
+
+}
+.video-rp-hover-desc > .link-desc span>span{
+    font-size: 0.6em !important;
+    vertical-align: text-top;
+    transform: translateY(0.1em);
+    display: inline-block;
+}
+.video-rp-hover-desc > .link-desc{
+    margin:0 !important;
+    clip-path: polygon(0 0, 100% 0, 100% 100%, 0% 100%);
+    position: relative;
+    display: flex;
+    min-height: auto;
+    margin-top:-2px !important;
+    transition: clip-path 500ms ease-out 0s, color 500ms ease 0ms, width 500ms ease !important;
+    pointer-events: none !important;
+}
+.video-rp-hover-desc::before{
+
+
+    content: '';
+    width: 100%;
+    height: 100%;
+    background-color: black;
+    position: absolute;
+    top:0;
+    left:0;
+    display: block;
+    transition: 700ms ease-out all, clip-path 200ms ease-out !important;
+}
+
+.video-rp-hover-desc > .link-desc > span{
+    min-width: max-content;
+
+    text-align: right;
+
+    font-size: 1.30em;
+    min-height: 1em;
+    line-height: 1em;
+
+    pointer-events: none !important;
+    position: relative;
+
+    clip-path: polygon(0 0, 0 0, 0 100%, 0 100%);
+    pointer-events: none;
+    transition-delay: 0.2s;
+   transform: translateY(0%);
+   color: white;
+   margin-top:0;
+
+}
+body:has(.main-section-video-wrap:hover) .large-arrow-cursor{
+    transform-origin: top left;
+    transform: scale(0.2) !important;
+    margin-top: -48px;
+    margin-left: -38px;
+}
+body:not(:has(.main-section-video-wrap:hover)) .video-rp-hover-desc  .link-desc > span{
+    transition: 500ms ease all !important;
+    transform: translateY(100%) !important;
+    color: black !important;
+}
+body:has(.main-section-video-wrap:hover) .video-rp-hover-desc{
+    transition: transform 500ms ease 0s, width 500ms ease 0s, max-height 500ms ease 0s, max-width 500ms ease 0s, padding 500ms ease 0.5s, clip-path 500ms ease 0s !important;
+    clip-path: polygon(100% 0, 0 0, 0 100%, 100% 100%) !important;
+}
+body:has(.main-section-video-wrap:hover) .video-rp-hover-desc > p  > span{
+    transition: clip-path 500ms ease-out 0s, filter 500ms ease 0ms !important;
+    clip-path: polygon(0 0, 100% 0, 100% 100%, 0% 100%) !important;
+}
+.video-rp-hover-desc p{
+    margin:0 !important;
+}
 @media only screen and (max-width: 830px) {
     .projects-hover-desc{
         display: none;

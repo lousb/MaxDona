@@ -433,6 +433,11 @@ const renderSection = (section, index) => {
         }}
 
       >
+        <div className="video-hover-svg-wrap">
+          <svg width="17" height="25" viewBox="0 0 17 25" fill="none" xmlns="http://www.w3.org/2000/svg" className="video-hover-arrow">
+          <path  fill-rule="evenodd" clip-rule="evenodd" d="M2.0078 4.99998H0.29C0.193334 4.99998 0 4.95453 0 4.77271V0.22727C0 0 0.348 0 0.580001 0H1.74023H6.38H6.38086H8.12023H11.2382H12.1809H16.2405V4.63965V6.37983V10.4395V10.4473H16.2435V16.2471C16.2435 16.4791 16.2435 16.8271 16.0053 16.8271H11.2411C11.0506 16.8271 11.0029 16.6338 11.0029 16.5371V10.7739C11.0009 10.7578 11 10.7427 11 10.7295V8.99603L6.39529 13.6006L6.39552 13.6008L3.92365 16.0726C3.82477 16.1715 3.67646 16.3198 3.50954 16.1529L0.171188 12.8146C0.037654 12.6811 0.0866662 12.5653 0.127864 12.5241L1.48753 11.1645L1.4873 11.1642L7.65128 5.00047H2.03023C2.02257 5.00047 2.01509 5.0003 2.0078 4.99998Z" fill="#181818"/>
+          </svg>
+        </div>
 
         <p className={`body link-desc`}>
 
@@ -526,7 +531,7 @@ const renderSection = (section, index) => {
 
                 </div>
                   <div className={styles['video-container']}>
-                    <div className={`player__wrapper ${styles['player__wrapper']}`}>
+                    <div className={`player__wrapper ${styles['player__wrapper']} ${isPlayingProp ? 'playing-video':''}`}>
                       <CustomYouTubePlayer setVideoProgress={setVideoProgress} setVideoCurrentTime={setVideoCurrentTime} setCopyLinkDesc={setCopyLinkDesc} setIsPlayingProp={setIsPlayingProp} videoUrl={projectData?.videoLink} windowWidth={windowWidth}/>
 
                     </div>
@@ -919,7 +924,43 @@ const CustomYouTubePlayer = ({ setVideoProgress, setVideoCurrentTime, setCopyLin
   };
 
 
-  
+  const handleScrollPause = () => {
+    setTimeout(()=>{
+      if (window.scrollY < 30 && isPlaying) {
+        playerRef.current.internalPlayer.pauseVideo();
+        setIsPlayingProp(false);
+        setIsPlaying(false);
+
+        gsap.to('.video-hover-desc .link-desc > span', {
+          y: '100%',
+          duration: 0.3,
+          delay: 0,
+          onComplete: () => {
+            setCopyLinkDesc('Play Video');
+            gsap.to('.video-hover-desc .link-desc > span', {
+              y: '0%',
+              duration: 0.3,
+              delay: 0,
+            });
+          },
+        });
+      }
+
+    }, 500)
+ 
+  };
+
+  // Add this in your useEffect or wherever appropriate to attach the scroll listener
+  useEffect(() => {
+    const onScroll = () => handleScrollPause();
+
+    window.addEventListener('scroll', onScroll);
+
+    // Clean up event listener on unmount
+    return () => {
+      window.removeEventListener('scroll', onScroll);
+    };
+  }, [isPlaying]);
 
 
   const togglePlayPause = () => {
@@ -943,7 +984,10 @@ const CustomYouTubePlayer = ({ setVideoProgress, setVideoCurrentTime, setCopyLin
       });
     } else {
       playerRef.current.internalPlayer.playVideo();
-      windowWidth > 830 && scrollToPercentageOfViewportHeight(140);
+      if(windowWidth > 830){
+         scrollToPercentageOfViewportHeight(140);
+      }
+
       setIsPlayingProp(true);
       setIsPlaying(true);
       
@@ -953,6 +997,7 @@ const CustomYouTubePlayer = ({ setVideoProgress, setVideoCurrentTime, setCopyLin
         delay: 0,
         onComplete:()=>{
           setCopyLinkDesc('Pause Video');
+      
           gsap.to('.video-hover-desc .link-desc > span', {
             y: '0%',
             duration: 0.3,
@@ -981,11 +1026,18 @@ const CustomYouTubePlayer = ({ setVideoProgress, setVideoCurrentTime, setCopyLin
 
 const scrollToPercentageOfViewportHeight = (percentage) => {
   const vh = window.innerHeight * (percentage / 100);
-  window.scrollTo({
-    top: vh,
-    behavior: 'smooth'  // Add smooth scrolling behavior
-  });
+  
+  const performScroll = () => {
+    window.scrollTo({
+      top: vh,
+      behavior: 'smooth',  // Smooth scrolling behavior
+    });
+  };
+
+  // Ensure the scroll happens on the next animation frame
+  requestAnimationFrame(performScroll);
 };
+
 
 
 
