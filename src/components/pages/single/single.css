@@ -304,7 +304,7 @@ body:has(.project-page) .large-arrow-cursor{
   .video-hover-desc p{
       margin:0 !important;
   }
-  .pin-spacer:has(> .main-section-image-wrap), .main-section-image-wrap{
+  .pin-spacer:has(> .main-section-image-wrap),  .pin-spacer:has(> .main-section-image-wrap) .main-section-image-wrap{
     width: 92vw !important;
   }
   .pin-spacer:has(> .main-section-image-wrap){

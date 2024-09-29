@@ -324,20 +324,24 @@
     width: 100%;
 }
 .player {
+    aspect-ratio: 9 / 16;
+    cursor: none;
+    height: 300%;
+    min-height: 300%;
+    margin: 0;
     object-fit: cover;
     padding: 0;
-    cursor: none;
-    margin: 0;
-    width: 50%;
-    height: auto;
-    aspect-ratio: 16/9;
-    scale: 2;
+    scale: 1;
+    min-width: 100%;
+    width: auto;
+    width: auto;
+    display: flex;
+    justify-content: center;
 
 }
  .player div{
     pointer-events: none;
-
-    height: calc(100vh - 2.4vw);
+    width: 100%;
  }            
  
  .progress-bar{
