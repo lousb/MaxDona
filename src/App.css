@@ -52,7 +52,7 @@ body:not(:has(.loading-wrap.is-loading)){
 .page-transitioning *{
     cursor: none !important;
 }
-body:has(.loading-wrap.is-loading) .App > div *, .page-transitioning .App > div *{
+.page-transitioning .App > div *{
     pointer-events: none !important;
 }
 body:has(.loading-wrap.is-loading) .large-arrow-cursor, .page-transitioning .large-arrow-cursor{
