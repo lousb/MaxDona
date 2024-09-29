@@ -142,7 +142,7 @@ body:has(.player__wrapper:hover)  .scroll-notification-single p span{
 .main-video-controls-overlay:not(:has(.stop-progress-toggle)) .main-description-time-wrap{
     opacity: 1;
 }
-.play-text-toggle p{
+.scrolled .play-text-toggle p{
     transition: 500ms ease all 300ms;
     transform: translateY(-20px);
  
@@ -304,7 +304,12 @@ body:has(.project-page) .large-arrow-cursor{
   .video-hover-desc p{
       margin:0 !important;
   }
-
+  .pin-spacer:has(> .main-section-image-wrap), .main-section-image-wrap{
+    width: 92vw !important;
+  }
+  .pin-spacer:has(> .main-section-image-wrap){
+    margin-inline: 4vw !important;
+  }
 
 
   @media only screen and (max-width: 830px){

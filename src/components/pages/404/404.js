@@ -1,8 +1,9 @@
 import React from 'react';
+import styles from './pageNotFound.module.css';
 
 const NotFound = () => {
   return (
-    <div>
+    <div className={`${styles['page-not-found-wrap']}`}>
       <h1>404 - Page Not Found</h1>
       <p>The page you are looking for does not exist.</p>
     </div>
