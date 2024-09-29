@@ -890,7 +890,7 @@ const CustomYouTubePlayer = ({ setVideoProgress, setVideoCurrentTime, setCopyLin
   // State change handler
   const onStateChangeHandler = (e) => {
     console.log(e.data);
-    
+
     if (e.data === window.YT.PlayerState.PLAYING) {
       setIsPlaying(true);
       setIsBuffering(false);
@@ -1034,16 +1034,10 @@ const CustomYouTubePlayer = ({ setVideoProgress, setVideoCurrentTime, setCopyLin
 
 const scrollToPercentageOfViewportHeight = (percentage) => {
   const vh = window.innerHeight * (percentage / 100);
-  
-  const performScroll = () => {
-    window.scrollTo({
-      top: vh,
-      behavior: 'smooth',  // Smooth scrolling behavior
-    });
-  };
-
-  // Ensure the scroll happens on the next animation frame
-  requestAnimationFrame(performScroll);
+  window.scrollTo({
+    top: vh,
+    behavior: 'smooth'  // Add smooth scrolling behavior
+  });
 };
 
 
