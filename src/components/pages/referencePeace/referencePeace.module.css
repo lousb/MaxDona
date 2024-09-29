@@ -422,7 +422,6 @@ div:has(> .rp-description){
     width: 260px;
  }
  .progress{
-    transform: translateY(20px);
     background-color: white;
     height: 3px !important;
     border-radius: 1.5px;

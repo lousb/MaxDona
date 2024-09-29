@@ -881,22 +881,30 @@ const CustomYouTubePlayer = ({ setVideoProgress, setVideoCurrentTime, setCopyLin
   };
 
   const onReady = (event) => {
-    event.target.addEventListener('onStateChange', (e) => {
-      if (e.data === window.YT.PlayerState.PLAYING) {
-        setIsPlaying(true);
-        setIsBuffering(false);
-        startProgressTracking(event.target);
-      } else if (e.data === window.YT.PlayerState.BUFFERING) {
-        setIsBuffering(true);
-      } else if(e.data === window.YT.PlayerState.ENDED) {
-        setIsPlaying(false);
-        setIsBuffering(false);
-        setIsPlayingProp(false);
-      } else {
-        setIsPlaying(false);
-        setIsBuffering(false);
-      }
-    });
+    const player = event.target;
+
+    // Attach the state change handler correctly
+    player.addEventListener('onStateChange', onStateChangeHandler);
+  };
+
+  // State change handler
+  const onStateChangeHandler = (e) => {
+    console.log(e.data);
+    
+    if (e.data === window.YT.PlayerState.PLAYING) {
+      setIsPlaying(true);
+      setIsBuffering(false);
+      startProgressTracking(e.target); // Start tracking progress
+    } else if (e.data === window.YT.PlayerState.BUFFERING) {
+      setIsBuffering(true);
+    } else if (e.data === window.YT.PlayerState.ENDED) {
+      setIsPlaying(false);
+      setIsBuffering(false);
+      setIsPlayingProp(false);
+    } else {
+      setIsPlaying(false);
+      setIsBuffering(false);
+    }
   };
 
   const startProgressTracking = (player) => {
