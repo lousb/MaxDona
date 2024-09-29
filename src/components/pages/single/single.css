@@ -177,7 +177,7 @@ body:has(.player__wrapper:hover)  .scroll-notification-single p span{
 }
   @keyframes scrollText {
     from   { transform: translateY(0%); }
-    to { transform: translateY(-99%); }
+    to {     transform: translateY(-90%);}
   }
 
 

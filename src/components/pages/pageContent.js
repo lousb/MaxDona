@@ -99,6 +99,15 @@ function PageContent() {
    // Initial check
    updateLenisScroll();
 
+   // Listen for URL changes (popstate and hashchange for navigation)
+   const handleUrlChange = () => {
+     // Run the function when the URL changes
+     updateLenisScroll();
+   };
+
+   window.addEventListener('popstate', handleUrlChange); // Detect forward/backward history navigation
+   window.addEventListener('hashchange', handleUrlChange); // Detect changes in the URL hash
+
    // Add event listeners (if needed for specific interactions like mousedown, mouseup)
    window.addEventListener('mousedown', handleMouseDown);
    window.addEventListener('mouseup', handleMouseUp);
@@ -120,6 +129,9 @@ function PageContent() {
    return () => {
      window.removeEventListener('mousedown', handleMouseDown);
      window.removeEventListener('mouseup', handleMouseUp);
+
+     window.removeEventListener('popstate', handleUrlChange);
+     window.removeEventListener('hashchange', handleUrlChange);
 
      if (headerElement) {
        observer.disconnect();

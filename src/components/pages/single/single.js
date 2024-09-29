@@ -880,17 +880,20 @@ const CustomYouTubePlayer = ({ setVideoProgress, setVideoCurrentTime, setCopyLin
     }
   };
 
- const handleStateChange = (event) => {
-   const player = event.target;
+ const onReady = (event) => {
+   playerRef.current = event.target; // Store reference to the player
+ };
 
-   if (event.data === window.YT.PlayerState.PLAYING) {
+ const handleStateChange = (event) => {
+   const playerState = event.data;
+
+   if (playerState === window.YT.PlayerState.PLAYING) {
      setIsPlaying(true);
      setIsBuffering(false);
-     setIsPlayingProp(true);
-     startProgressTracking(player);
-   } else if (event.data === window.YT.PlayerState.BUFFERING) {
+     startProgressTracking(event.target);
+   } else if (playerState === window.YT.PlayerState.BUFFERING) {
      setIsBuffering(true);
-   } else if (event.data === window.YT.PlayerState.ENDED) {
+   } else if (playerState === window.YT.PlayerState.ENDED) {
      setIsPlaying(false);
      setIsBuffering(false);
      setIsPlayingProp(false);
@@ -1014,6 +1017,7 @@ const CustomYouTubePlayer = ({ setVideoProgress, setVideoCurrentTime, setCopyLin
       <YouTube
          videoId={extractVideoId(videoUrl)}
         opts={opts}
+        onReady={onReady}
         onStateChange={handleStateChange}
         ref={playerRef}
         
