@@ -27,6 +27,7 @@
 }
 .my-process-title{
     position: relative;
+    white-space: nowrap;
 }
 .section-1-content > div{
     width: 22%;
@@ -125,10 +126,10 @@
     transition: 0ms 0.5s;
     
 }
-.slide-project:hover p{
+.slide-project.hovered p{
     opacity: 1;
 }
-.slide-project:hover p span{
+.slide-project.hovered p span{
     transition: ease-in-out 1s all 0.2s;
     transform: translateY(0%);
 }
@@ -336,10 +337,10 @@
 .about-contact-block{
     margin-block:5rem;
 }
-.slide-projects-wrap:has(.slide-project:hover) .slide-project{
+.slide-projects-wrap:has(.slide-project.hovered) .slide-project{
     scale: 0.98;
 }
-.slide-project:hover{
+.slide-project.hovered{
     scale: 1 !important;
 }
 

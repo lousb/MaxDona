@@ -367,7 +367,16 @@
     overflow: hidden;
 
     clip-path: inset(0 0 0 0 round 20px);
-    transition: 500ms ease all 300ms, clip-path ease-out 800ms;
+    transition: 500ms ease all 300ms, clip-path ease-out 800ms, width 0.5s linear;
+ }
+ .scroll-notification p span{
+   animation: scrollText 3s infinite;
+   animation-timing-function: cubic-bezier(0.76, 0, 0.24, 1);
+   animation-delay:2500ms;
+ }
+ @keyframes scrollText {
+   from   { transform: translateY(0%); }
+   to {     transform: translateY(-90%);}
  }
  .details-section{
     flex-direction: row-reverse;

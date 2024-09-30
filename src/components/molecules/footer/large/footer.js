@@ -3,6 +3,7 @@ import styles from './footer.module.css';
 import { collection, onSnapshot } from "firebase/firestore";
 import { db } from '../../../../firebase/firebase';
 import { Link } from "react-router-dom";
+import DelayLink from "../../../../utils/delayLink";
 
 function FooterDefault() {
     const [projects, setProjects] = useState([]);
@@ -94,9 +95,9 @@ function FooterDefault() {
                             <div className={styles["footer-archive-div"]}  style={{padding : '0px'}}>ARCHIVE</div>
                             <div className={styles["footer-archive-div"]}>{year}</div>
                             {groupedProjects[year].map((project) => (
-                                <Link key={project.id} to={`/projects/${project.id}`} className="primary-button">
+                                <DelayLink key={project.id} delay={1500}  to={`/projects/${project.id}`} className="primary-button">
                                     {project.displayName}
-                                </Link>
+                                </DelayLink>
                             ))}
                         </div>
                     ))}
@@ -107,9 +108,9 @@ function FooterDefault() {
                             <div className={styles["footer-archive-div"]} style={{padding : '0px'}}>REFERENCE PEACE</div>
                             <div className={styles["footer-archive-div"]}>{year}</div>
                             {groupedReferencePeace[year].map((item) => (
-                                <Link key={item.id} to={`/projects/referencepeace/${item.id}`} className="primary-button">
+                                <DelayLink key={item.id} delay={1500} to={`/reference-peace/${item.id}`} className="primary-button">
                                     {item.displayName}
-                                </Link>
+                                </DelayLink>
                             ))}
                         </div>
                     ))}

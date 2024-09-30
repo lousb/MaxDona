@@ -38,6 +38,7 @@ pointer-events: none;
 .reference-peace-title-wrap .reference-peace-subtitle{
     display: block;
     font-size: 8.65vw;
+    line-height: 1.1em;
 }
 .last-subtext{
     width: 28%;
@@ -69,6 +70,7 @@ font-family: var(--title-family);
 cursor: none;
 text-transform: uppercase;
 font-size: 9vw;
+line-height: 1.1em;
 width: max-content;
 }
 .reference-peace-title-peace > p, .reference-peace-title-reference > p{
@@ -84,7 +86,19 @@ width: max-content;
     position: relative !important;
     margin:0 !important;
     pointer-events: all;
+
     
+}
+.reference-peace-subtext .scroll-notification > p > p{
+    animation: scrollText 3s infinite;
+    animation-timing-function: cubic-bezier(0.76, 0, 0.24, 1);
+    overflow: visible;
+}
+.reference-peace-subtext .scroll-notification > p > p:after{
+    content:'scroll';
+    position: absolute;
+    display: block;
+    margin-top: 1em;
 }
 .reference-peace-subtext{
     height: 9.4vw;

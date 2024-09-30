@@ -857,6 +857,9 @@ const CustomYouTubePlayer = ({ setVideoProgress, setVideoCurrentTime, setCopyLin
   const [isBuffering, setIsBuffering] = useState(false);
   const [progress, setProgress] = useState(0); // New state for progress
   const playerRef = useRef(null);
+  const progressTrackerRef = useRef(null);
+const [videoId, setVideoId] = useState(null);
+
 
   const extractVideoId = (url) => {
     try {
@@ -864,10 +867,19 @@ const CustomYouTubePlayer = ({ setVideoProgress, setVideoCurrentTime, setCopyLin
       const params = new URLSearchParams(parsedUrl.search);
       return params.get('v');
     } catch (error) {
-      console.error('Invalid URL', error);
+      
+      console.error('Invalid URL', error, url);
       return null;
     }
   };
+
+  useEffect(() => {
+    if (videoUrl) {
+      const extractedId = extractVideoId(videoUrl);
+      setVideoId(extractedId);
+    }
+  }, [videoUrl]);
+  
 
   const opts = {
     height: '100%',
@@ -880,49 +892,106 @@ const CustomYouTubePlayer = ({ setVideoProgress, setVideoCurrentTime, setCopyLin
     }
   };
 
+  const onReady = (event) => {
+    playerRef.current = event.target; // Store the player instance when ready
+
+    startProgressTracking(playerRef.current);
+  };
+
  const handleStateChange = (event) => {
-   const player = event.target;
+   const player = playerRef.current;
+
+   // Ensure the player instance is valid
+   if (!player) {
+     return;
+   }
+
+   // Clear previous interval if it exists
+   if (progressTrackerRef.current) {
+     clearInterval(progressTrackerRef.current);
+     progressTrackerRef.current = null; // Reset tracker reference
+   }
 
    if (event.data === window.YT.PlayerState.PLAYING) {
+     console.log('videos playing');
      setIsPlaying(true);
      setIsBuffering(false);
      setIsPlayingProp(true);
-     startProgressTracking(player);
+     // Start progress tracking if not already running
+     setTimeout(() => {
+       if (playerRef.current) { // Check if the player is still valid
+         startProgressTracking(player);
+       }
+     }, 100); 
    } else if (event.data === window.YT.PlayerState.BUFFERING) {
+     console.log('videos buffering');
      setIsBuffering(true);
    } else if (event.data === window.YT.PlayerState.ENDED) {
+     console.log('videos ended');
      setIsPlaying(false);
      setIsBuffering(false);
      setIsPlayingProp(false);
+     gsap.to('.video-hover-desc .link-desc > span', {
+       y: '100%',
+       duration: 0.3,
+       delay: 0,
+       onComplete:()=>{
+         setCopyLinkDesc('Play Video');
+         gsap.to('.video-hover-desc .link-desc > span', {
+           y: '0%',
+           duration: 0.3,
+           delay: 0,
+         });
+       }
+     });
+     clearInterval(progressTrackerRef.current); // Stop progress tracking when video ends
+     progressTrackerRef.current = null; // Reset tracker
    } else {
+     console.log('videos other');
      setIsPlaying(false);
      setIsBuffering(false);
+     clearInterval(progressTrackerRef.current); // Stop progress tracking when video pauses
+     progressTrackerRef.current = null; // Reset tracker
    }
  };
+  
+  
+  
 
-  const startProgressTracking = (player) => {
-    const interval = 500;
+ const startProgressTracking = (player) => {
+   console.log('Starting progress tracking for:', player);
 
-    const updateProgress = () => {
-      const currentTime = player.getCurrentTime();
-      const duration = player.getDuration();
-      const newProgress = (currentTime / duration) * 100;
+   // Prevent starting multiple intervals
+   if (progressTrackerRef.current) {
+     return; 
+   }
 
-      // Convert currentTime to mm:ss format
-      const minutes = Math.floor(currentTime / 60);
-      const seconds = Math.floor(currentTime % 60);
-      const formattedTime = `${minutes.toString().padStart(2, '0')}:${seconds.toString().padStart(2, '0')}`;
+   const interval = 500; // Update every 500ms
+   const updateProgress = () => {
+     try {
+       const currentTime = player.getCurrentTime();
+       const duration = player.getDuration();
 
-      setVideoProgress(newProgress); // Update the progress in the component
-      setVideoCurrentTime(formattedTime); // Update the current time display in mm:ss format
-    };
+       if (duration > 0) { // Ensure duration is valid
+         const newProgress = (currentTime / duration) * 100;
 
-    const progressTracker = setInterval(updateProgress, interval);
+         const minutes = Math.floor(currentTime / 60);
+         const seconds = Math.floor(currentTime % 60);
+         const formattedTime = `${minutes.toString().padStart(2, '0')}:${seconds.toString().padStart(2, '0')}`;
 
-    return () => {
-      clearInterval(progressTracker);
-    };
-  };
+         setVideoProgress(newProgress);
+         setVideoCurrentTime(formattedTime);
+       }
+     } catch (error) {
+       console.error('Error updating progress:', error);
+     }
+   };
+
+   progressTrackerRef.current = setInterval(updateProgress, interval);
+ };
+
+
+
 
 
   const handleScrollPause = () => {
@@ -957,16 +1026,18 @@ const CustomYouTubePlayer = ({ setVideoProgress, setVideoCurrentTime, setCopyLin
 
     window.addEventListener('scroll', onScroll);
 
-    // Clean up event listener on unmount
+    // Clean up event listener and progress tracker on unmount
     return () => {
       window.removeEventListener('scroll', onScroll);
+      clearInterval(progressTrackerRef.current); // Clear progress tracker
     };
   }, [isPlaying]);
+  
 
 
   const togglePlayPause = () => {
     if (isPlaying) {
-      playerRef.current.internalPlayer.pauseVideo();
+      playerRef.current.pauseVideo();
       setIsPlayingProp(false);
       setIsPlaying(false);
 
@@ -984,7 +1055,7 @@ const CustomYouTubePlayer = ({ setVideoProgress, setVideoCurrentTime, setCopyLin
         }
       });
     } else {
-      playerRef.current.internalPlayer.playVideo();
+      playerRef.current.playVideo();
       if(windowWidth > 830){
          scrollToPercentageOfViewportHeight(140);
       }
@@ -1011,13 +1082,17 @@ const CustomYouTubePlayer = ({ setVideoProgress, setVideoCurrentTime, setCopyLin
 
   return (
     <div className={`${styles['player']} ${isPlaying && !isBuffering && styles['playing']} ${isBuffering && styles['buffering']}`} onClick={togglePlayPause}>
-      <YouTube
-         videoId={extractVideoId(videoUrl)}
-        opts={opts}
-        onStateChange={handleStateChange}
-        ref={playerRef}
-        
-      />
+     {videoId ? (
+       <YouTube
+         videoId={videoId}
+         opts={opts}
+         onStateChange={handleStateChange}
+         onReady={onReady}
+         ref={playerRef}
+       />
+     ) : (
+       <div>Loading video...</div> // You can replace this with any placeholder
+     )}
      
    
     </div>

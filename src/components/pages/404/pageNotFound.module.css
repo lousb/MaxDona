@@ -1,3 +1,21 @@
 .page-not-found-wrap{
-    height: 100vh;
+    height: calc(100vh - 84px);
+    width: 92vw;
+    padding-inline:4vw;
+    padding-top:84px;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-evenly;
+}
+.page-not-found-wrap *{
+    width: 100%;
+    text-align: center;
+}
+.page-not-found-heading{
+    width: 100%;
+    text-align: center;
+}
+.page-not-found-title{
+    margin:0;
+    font-size: 20vw !important;
 }

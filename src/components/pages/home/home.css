@@ -934,7 +934,7 @@ body:has(.page-three.visible) .player-project-name .mask-image-wrap{
     height: calc(100vh - 8vw);
 }
 .about-reference-wrap .dynamic-video-player-5{
-    height:calc(100vh - 8vw);
+    height:calc(100vh - 4vw - 84px);
     position: absolute;
 
 }

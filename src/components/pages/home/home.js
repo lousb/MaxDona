@@ -49,17 +49,18 @@ function Home() {
     // Reset hoveredItem when section 3 is not visible
     useEffect(() => {
       if (!isSection3Visible) {
-        handleHoverChange(null)
+        handleHoverChange(null);
         setPrevHover(null);
-      } else {
+      } else if (featuredProjects && featuredProjects[0]) { 
         setPrevHover(featuredProjects[0]);
         handleHoverChange(featuredProjects[0]);
-        if(featuredProjects[0].projectColor
-        ){
+
+        if (featuredProjects[0].projectColor) {
           setProjectColour(featuredProjects[0].projectColor);
         }
       }
-    }, [isSection3Visible]);
+    }, [isSection3Visible, featuredProjects]);
+    
 
     const handleHoverChange = (item) => {
 
@@ -774,7 +775,8 @@ useEffect(() => {
 
       scrollTriggerInstance = ScrollTrigger.create({
         trigger: ".first-two-sections",
-        start: "top top",
+        start: "30px top",
+        end:`bottom+=60px bottom`,
         scrub: false,
         onUpdate: (self) => updateVideoTime(self),
       });
@@ -940,7 +942,7 @@ useEffect(() => {
               muted
               
             >
-              <source src="/test-scroll.mp4" type="video/mp4" />
+              <source src="/scroll.mp4" type="video/mp4" />
             </video>
           }
           <div className="reference-peace-bg-gradient"></div>

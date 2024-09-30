@@ -207,7 +207,15 @@ function About(){
         `${process.env.PUBLIC_URL}/static_webp/aboutservice3.webp`,
       ];
 
-    
+      const [hoveredSlide, setHoveredSlide] = useState(null); // Shared hover state
+
+    const handleMouseEnter = (id) => {
+      setHoveredSlide(id); // Set hovered slide
+    };
+
+    const handleMouseLeave = () => {
+      setHoveredSlide(null); // Reset hover state
+    };
     
     return(
         <main className={`${styles['about-page']}`}>
@@ -277,8 +285,8 @@ function About(){
 
             <div className={`${styles["portfolio-slide"]} ${styles["about-page-slide"]}`} ref={slider1}>
                 <div  className={`${styles["slide-projects-wrap"]}`} ref={imagesWrap1}>
-                    {portfolioImages(1)}
-                    {portfolioImages(2)}
+                    {portfolioImages(1, hoveredSlide, handleMouseEnter, handleMouseLeave)}
+                    {portfolioImages(2, hoveredSlide, handleMouseEnter, handleMouseLeave)}
                 </div>
                
             </div>
@@ -290,9 +298,9 @@ function About(){
                         </p>
                     </div>
                     <div className={`${styles["portfolio-slide-subtext-right"]}`}>
-                        <p className="body">
+                        {/* <p className="body">
                             ( Click project to view )
-                        </p>
+                        </p> */}
                         <button className="primary-button">
                             Full Archive
                         </button>
@@ -394,8 +402,8 @@ function About(){
 
             <div className={`${styles["testimonials-slide"]} ${styles["about-page-slide"]}`} ref={slider2}>
                 <div  className={`${styles["slide-projects-wrap"]}`} ref={imagesWrap2}>
-                    {testimonialImages(1)}
-                    {testimonialImages(2)}
+                    {testimonialImages(1, hoveredSlide, handleMouseEnter, handleMouseLeave)}
+                    {testimonialImages(2, hoveredSlide, handleMouseEnter, handleMouseLeave)}
                 </div>
             </div>
             <div className={`${styles["about-contact-block"]} ${styles["about-contact-block"]}`}>
@@ -407,134 +415,90 @@ function About(){
 
 
 
-const portfolioImages = (i) => {
+const portfolioImages = (i, hoveredSlide, handleMouseEnter, handleMouseLeave) => {
+  const slideData = [
+    { id: 1, name: 'Franco', year: '2022', img: 'Gif1.webp' },
+    { id: 2, name: 'Domengo', year: '2022', img: 'Gif2.webp' },
+    { id: 3, name: 'Cormac', year: '2022', img: 'Gif3.webp' },
+    { id: 4, name: 'Teji', year: '2022', img: 'Gif4.webp' },
+    { id: 5, name: 'Teji', year: '2022', img: 'Gif5.webp' }
+  ];
 
-    return(
-        <div className={`${styles["slide-projects"]} ${i !== 1 ? 'second-' :''}slide-projects`} >
-            
-            <div className={`${styles["slide-project"]}-${i} ${styles["slide-project"]}`}>
-                <div className={`${styles["slide-project-image"]}`}>
-
-                </div>
-                <div className={`${styles['slide-project-details']}`}>
-                    <p className="body" ><span>Franco</span></p>
-                    <p className="body"><span>Old Ways</span></p>
-                    <p className="body"><span>( 2022 )</span></p>
-                </div>
-            </div>
-            <div className={`${styles["slide-project"]}${i} ${styles["slide-project"]}`}>
-                <div className={`${styles["slide-project-image"]}`}>
-
-                </div>
-                <div className={`${styles['slide-project-details']}`}>
-                    <p className="body" ><span>Domengo</span></p>
-                    <p className="body"><span>Old Ways</span></p>
-                    <p className="body"><span>( 2022 )</span></p>
-                </div>
-            </div>
-            <div className={`${styles["slide-project"]}${i} ${styles["slide-project"]}`}>
-                <div className={`${styles["slide-project-image"]}`}>
-
-                </div>
-                <div className={`${styles['slide-project-details']}`}>
-                    <p className="body" ><span>Cormac</span></p>
-                    <p className="body"><span>Old Ways</span></p>
-                    <p className="body"><span>( 2022 )</span></p>
-                </div>
-            </div>
-            <div className={`${styles["slide-project"]}${i} ${styles["slide-project"]}`}>
-                <div className={`${styles["slide-project-image"]}`}>
-
-                </div>
-                <div className={`${styles['slide-project-details']}`}>
-                    <p className="body" ><span>Teji</span></p>
-                    <p className="body"><span>Old Ways</span></p>
-                    <p className="body"><span>( 2022 )</span></p>
-                </div>
-            </div>
-
-            {i===2?<>
-                <div className={`${styles["slide-project"]}-${i} ${styles["slide-project"]}`}>
-                <div className={`${styles["slide-project-image"]}`}>
-
-                </div>
-                <div className={`${styles['slide-project-details']}`}>
-                    <p className="body" ><span>Franco</span></p>
-                    <p className="body"><span>Old Ways</span></p>
-                    <p className="body"><span>( 2022 )</span></p>
-                </div>
-            </div>
-            </>:<>
-                
-            </>}
+  return (
+    <div className={`${styles["slide-projects"]} ${i !== 1 ? 'second-' : ''}slide-projects`}>
+      {slideData.map((slide) => (
+        <div
+          key={slide.id}
+          className={`${styles["slide-project"]} ${styles[`slide-project-${slide.id}`]} ${hoveredSlide === slide.id ? styles['hovered'] : ''}`}
+          onMouseEnter={() => handleMouseEnter(slide.id)}
+          onMouseLeave={handleMouseLeave}
+        >
+          <div
+            className={styles["slide-project-image"]}
+            style={{ backgroundImage: `url(${process.env.PUBLIC_URL}/animated_webp/about/${slide.img})` }}
+          />
+          <div className={styles['slide-project-details']}>
+            <p className="body"><span>{slide.name}</span></p>
+            <p className="body"><span>Old Ways</span></p>
+            <p className="body"><span>({slide.year})</span></p>
+          </div>
         </div>
-    )
-    
-}
+      ))}
+    </div>
+  );
+};
+  
+  
 
 
-const testimonialImages = (i) => {
+const testimonialImages = (i, hoveredSlide, handleMouseEnter, handleMouseLeave) => {
+  const testimonialData = [
+    { id: 1, name: 'Franco', year: '2022', title: 'Old Ways' },
+    { id: 2, name: 'Domengo', year: '2022', title: 'Old Ways' },
+    { id: 3, name: 'Cormac', year: '2022', title: 'Old Ways' },
+    { id: 4, name: 'Teji', year: '2022', title: 'Old Ways' },
+  ];
 
-    return(
-        <div className={`${styles["slide-projects"]} ${i !== 1 ? 'second-' :''}slide-projects`} >
-           <div className={`${styles["slide-project"]}-${i} ${styles["slide-project"]}`}>
-               <div className={`${styles["slide-project-image"]}`}>
-
-               </div>
-               <div className={`${styles['slide-project-details']}`}>
-                   <p className="body" ><span>Franco</span></p>
-                   <p className="body"><span>Old Ways</span></p>
-                   <p className="body"><span>( 2022 )</span></p>
-               </div>
-           </div>
-           <div className={`${styles["slide-project"]}${i} ${styles["slide-project"]}`}>
-               <div className={`${styles["slide-project-image"]}`}>
-
-               </div>
-               <div className={`${styles['slide-project-details']}`}>
-                   <p className="body" ><span>Domengo</span></p>
-                   <p className="body"><span>Old Ways</span></p>
-                   <p className="body"><span>( 2022 )</span></p>
-               </div>
-           </div>
-           <div className={`${styles["slide-project"]}${i} ${styles["slide-project"]}`}>
-               <div className={`${styles["slide-project-image"]}`}>
-
-               </div>
-               <div className={`${styles['slide-project-details']}`}>
-                   <p className="body" ><span>Cormac</span></p>
-                   <p className="body"><span>Old Ways</span></p>
-                   <p className="body"><span>( 2022 )</span></p>
-               </div>
-           </div>
-           <div className={`${styles["slide-project"]}${i} ${styles["slide-project"]}`}>
-               <div className={`${styles["slide-project-image"]}`}>
-
-               </div>
-               <div className={`${styles['slide-project-details']}`}>
-                   <p className="body" ><span>Teji</span></p>
-                   <p className="body"><span>Old Ways</span></p>
-                   <p className="body"><span>( 2022 )</span></p>
-               </div>
-           </div>
-
-           {i===2?<>
-               <div className={`${styles["slide-project"]}-${i} ${styles["slide-project"]}`}>
-               <div className={`${styles["slide-project-image"]}`}>
-
-               </div>
-               <div className={`${styles['slide-project-details']}`}>
-                   <p className="body" ><span>Franco</span></p>
-                   <p className="body"><span>Old Ways</span></p>
-                   <p className="body"><span>( 2022 )</span></p>
-               </div>
-           </div>
-           </>:<>
-
-           </>}
+  return (
+    <div className={`${styles["slide-projects"]} ${i !== 1 ? 'second-' : ''}slide-projects`}>
+      {testimonialData.map((testimonial) => (
+        <div
+          key={testimonial.id}
+          className={`${styles["slide-project"]}-${i} ${styles["slide-project"]} ${hoveredSlide === testimonial.id ? styles['hovered'] : ''}`}
+          onMouseEnter={() => handleMouseEnter(testimonial.id)}
+          onMouseLeave={handleMouseLeave}
+        >
+          <div className={`${styles["slide-project-image"]}`}>
+            {/* Image or background logic can be added here */}
+          </div>
+          <div className={styles['slide-project-details']}>
+            <p className="body"><span>{testimonial.name}</span></p>
+            <p className="body"><span>{testimonial.title}</span></p>
+            <p className="body"><span>({testimonial.year})</span></p>
+          </div>
         </div>
-    )
-    
-}
+      ))}
+
+      {i === 2 && (
+        <div
+          className={`${styles["slide-project"]}-${i} ${styles["slide-project"]} ${hoveredSlide === 1 ? styles['hovered'] : ''}`} // Ensure duplicate hover works
+          onMouseEnter={() => handleMouseEnter(1)}
+          onMouseLeave={handleMouseLeave}
+        >
+          <div className={`${styles["slide-project-image"]}`}>
+            {/* Image or background logic for the duplicated item */}
+          </div>
+          <div className={styles['slide-project-details']}>
+            <p className="body"><span>{testimonialData[0].name}</span></p>
+            <p className="body"><span>{testimonialData[0].title}</span></p>
+            <p className="body"><span>({testimonialData[0].year})</span></p>
+          </div>
+        </div>
+      )}
+    </div>
+  );
+};
+  
+  
 
 export default About;

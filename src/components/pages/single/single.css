@@ -50,11 +50,7 @@ body:has(.player__wrapper:hover) .scroll-notification{
     height:0px;
 }
 
-body:has(.player__wrapper:hover)  .scroll-notification-single p span{
-  animation: scrollText 3s infinite;
-  animation-timing-function: cubic-bezier(0.76, 0, 0.24, 1);
-  animation-delay:2500ms;
-}
+
 .main-section-image-overlay img{
     width: 100%;
     height: 100%;
@@ -175,10 +171,7 @@ body:has(.player__wrapper:hover)  .scroll-notification-single p span{
 .masonry-column{
     height: fit-content;
 }
-  @keyframes scrollText {
-    from   { transform: translateY(0%); }
-    to {     transform: translateY(-90%);}
-  }
+ 
 
 
   .video-hover-desc{

@@ -89,7 +89,7 @@ html.lenis, html.lenis body {
   width:16px;
   height:40px;
   transition: all ease-out 0ms;
-  mask: url(http://localhost:3000/static/media/Black-Arrow.7e8885fd90b0437e76c1.svg);
+  mask: url(/public/Arrow/Black-Arrow.svg);
   mask-size: contain;
   background-color: var(--primary-color);
   position: absolute;
@@ -124,7 +124,7 @@ max-height: none;
 }
 .primary-button.button-gradient::before{
   content:'';
-  mask: url(http://localhost:3000/static/media/Black-Arrow.7e8885fd90b0437e76c1.svg);
+  mask: url(/public/Arrow/Black-Arrow.svg);
   mask-size: contain;
   mask-repeat: no-repeat;
   background-color: var(--primary-color);
@@ -148,7 +148,7 @@ max-height: none;
 
 .primary-button.button-gradient::after{
   content:'';
-  mask: url(http://localhost:3000/static/media/Black-Arrow.7e8885fd90b0437e76c1.svg);
+  mask: url(/public/Arrow/Black-Arrow.svg);
   mask-size: contain;
   mask-repeat: no-repeat;
   background-color: var(--primary-color);
