@@ -1,7 +1,7 @@
 import "./allProjects.css";
 import React, { useEffect, useState } from "react";
 import { useFooter } from '../../../context/FooterContext';
-import { collection, deleteDoc, doc, onSnapshot, updateDoc, query, where, getDocs, orderBy, writeBatch, limit } from "firebase/firestore";
+import { collection, deleteDoc, doc, onSnapshot, updateDoc, query, where, getDocs, orderBy, writeBatch, limit, addDoc, setDoc } from "firebase/firestore";
 import { db } from '../../../firebase/firebase';
 import { Link } from "react-router-dom";
 import { DragDropContext, Droppable, Draggable } from '@hello-pangea/dnd';
@@ -167,6 +167,52 @@ const handleSetFeatured = async (id, isCurrentlyFeatured) => {
     }
   };
 
+  
+
+  const handleDuplicate = async (project, title) => {
+      try {
+        // Determine the collection name based on the project title
+        let collectionName;
+
+        if (title === 'portfolio') {
+          collectionName = "projects"; // Set collection for portfolio
+        } else if (title === 'reference peace') {
+          collectionName = "referencePeace"; // Set collection for reference peace
+        } else {
+          console.error("Project title not recognized: ", title);
+          return; // Early exit if title doesn't match
+        }
+
+        // Get the current count of documents in the collection
+        const snapshot = await getDocs(collection(db, collectionName));
+        const currentCount = snapshot.docs.length; // Count existing documents
+
+        // Create a new display name and ID based on the count
+        const newIndex = currentCount + 1; // Increment the count for the new item
+        const newDisplayName = newIndex < 10 ? `VOLUME0${newIndex}` : `VOLUME${newIndex}`;
+
+        const newProject = {
+          ...project,
+          isActive: true, // Set the duplicated project as active
+          displayName: newDisplayName, // Use the generated display name
+        };
+
+        // Use setDoc to set a custom document ID
+        const docRef = await setDoc(doc(db, collectionName, newDisplayName), {
+          ...newProject,
+          id: newDisplayName // Explicitly set the document ID
+        });
+
+        console.log("Duplicated project added with custom ID: ", newDisplayName);
+      } catch (err) {
+        console.error("Error duplicating project: ", err);
+      }
+  };
+
+
+
+  
+  
 
   return (
     <div className={`ap-${title}-list all-projects-list`}>
@@ -227,6 +273,7 @@ const handleSetFeatured = async (id, isCurrentlyFeatured) => {
                 <Link to={`/projects/update/${project.id}`} state={{ id: project.id }} className="edit-list-item-link">
                   <div className={`edit-list-item`}></div>
                 </Link>
+                {/* <button onClick={() => handleDuplicate(project, title)}>Duplicate</button> */}
                 {title !== 'reference peace'?
                   <div className={`delete-list-item`} onClick={() => handleDelete(project.id, 1)}></div>
                 :

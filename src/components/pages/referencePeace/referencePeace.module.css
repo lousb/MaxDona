@@ -234,7 +234,7 @@ width: max-content;
     justify-content: center;
     width: 22vw;
     object-fit: cover;
-    /* aspect-ratio: 1; */
+    aspect-ratio: 1;
     border-radius:10px;
     transition: all 500ms ease;
    

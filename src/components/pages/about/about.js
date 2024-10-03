@@ -228,7 +228,7 @@ function About(){
                         <Reveal custom={20} elementClass={'title'} element={'h2'} textContent={'told.'}/>
                     </div>
                     <div className={`${styles['section-1-image']} section-1-image`}>
-                    
+                      <img src="/animated_webp/about/aboutHero.webp" alt="max-about-hero"/>
                     </div>
                     <div className={`high-z-index-layer ${styles['section-1-text-wrap']}`}>
                         <div className={`${styles['section-1-text']}`}>

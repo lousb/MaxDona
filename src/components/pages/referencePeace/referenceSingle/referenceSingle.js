@@ -922,7 +922,7 @@ React.useImperativeHandle(ref, () => ({
                   </div>
 
                   <p className={`body link-desc`}>
-                    <span dangerouslySetInnerHTML={{ __html: currentPage - 1 <= 1 ? '': `Page ${currentPage -1},<br/>Page ${currentPage -2}`}}></span>
+                    <span dangerouslySetInnerHTML={{ __html: currentPage - 1 <= 1 ? '': `Page ${currentPage -2},<br/>Page ${currentPage -1}`}}></span>
                   </p>
                 </div>
                 <div

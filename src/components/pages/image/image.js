@@ -3,14 +3,23 @@ import styles from './image.module.css';
 import { useParams } from 'react-router-dom';
 import { doc, getDoc } from 'firebase/firestore';
 import { db } from '../../../firebase/firebase';
+import { useFooter } from '../../../context/FooterContext';
+import DelayLink from '../../../utils/delayLink';
 
 const SingleImageView = () => {
   const { projectId, imageIndex } = useParams();
   const [projectData, setProjectData] = useState(null);
   const [selectedImageIndex, setSelectedImageIndex] = useState(parseInt(imageIndex, 10));
 const [currentBlurhash, setCurrentBlurhash] = useState(null);
-
+const { dispatch } = useFooter();
   
+
+useEffect(() => {
+  dispatch({ type: "Small" });
+  return () => {
+      dispatch({ type: "Default" });
+  };
+}, [dispatch]);
 
 
 
@@ -133,12 +142,13 @@ const [currentBlurhash, setCurrentBlurhash] = useState(null);
 
   return (
     <section className={`single-image-page ${styles['projectPageSection1']}`}>
-      <div className={styles.mainSectionTopDetails}>
+      <div className={`${styles.mainSectionTopDetails} high-z-index-layer`}>
         <h1 className={`title ${styles['project-title']}`}>{projectData && projectData.displayName}</h1>
         <h2 className={`body ${styles['directed-subtext']}`}>{projectData && 'Directed by Max Dona'}</h2>
       </div>
-
+      <DelayLink delay={1500} to={`/projects/${projectData && projectData.displayName}`}>
       <div className={styles.imageWrap}>
+    
         {projectData && (
           <>
             {/* Main Blurhash Fallback */}
@@ -169,21 +179,22 @@ const [currentBlurhash, setCurrentBlurhash] = useState(null);
           </>
         )}
       </div>
+      </DelayLink>
 
-      <div className={styles.buttonWrap}>
+      <div className={`${styles.buttonWrap} high-z-index-layer`}>
         <div className={styles.buttonWrapRight}>
-          <button className={`primary-button ${styles['navigationButton']}`}>Grid View</button>
-          <button className={`primary-button ${styles['mainSectionButtonDetails']}`}>Full Video</button>
+          <DelayLink delay={1500} to={`/projects/${projectData && projectData.displayName}`} className={`primary-button ${styles['navigationButtonPrev']}`}>Full Project</DelayLink>
+          <DelayLink delay={1500} to={`/projects/${projectData && projectData.displayName}`} className={`primary-button ${styles['mainSectionButtonDetails']}`}>Full Video</DelayLink>
         </div>
         <div className={styles.buttonWrapLeft}>
           <button
-            className={`primary-button ${styles['navigationButton']}`}
+            className={`primary-button ${styles['navigationButtonPrev']}`}
             onClick={() => handleImageNavigation(-1)}
           >
             Prev Image
           </button>
           <button
-            className={`primary-button ${styles['navigationButton']}`}
+            className={`primary-button ${styles['navigationButtonNext']}`}
             onClick={() => handleImageNavigation(1)}
           >
             Next Image

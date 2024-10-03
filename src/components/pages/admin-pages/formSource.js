@@ -11,14 +11,12 @@ export const referenceMainSection = [
   id: 'mainDescription1',
   label: 'Main Description 1',
   type: 'text',
-  maxLength: 65,
   placeholder: '...',
 },
 {
   id: 'mainDescription2',
   label: 'Main Description 2',
   type: 'text',
-  maxLength: 65,
   placeholder: '...',
 },  
 ]

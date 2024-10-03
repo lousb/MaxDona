@@ -1,9 +1,10 @@
-import { useContext, useState } from "react"
+import { useContext, useEffect, useState } from "react"
 import "./login.css"
 import { createUserWithEmailAndPassword, signInWithEmailAndPassword } from "firebase/auth";
 import { auth } from "../../../../firebase/firebase";
 import { useNavigate } from "react-router-dom";
 import {AuthContext} from "../../../../context/AuthContext"
+import { useFooter } from "../../../../context/FooterContext";
 
 const Login = () => {
 
@@ -14,7 +15,14 @@ const Login = () => {
   const navigate = useNavigate();
 
   const {dispatch} = useContext(AuthContext);
+const { dispatch: dispatchFooterAction } = useFooter();      // Aliasing footer dispatch
 
+useEffect(() => {
+  dispatchFooterAction({ type: "Small" });
+  return () => {
+    dispatchFooterAction({ type: "Default" });
+  };
+}, [dispatchFooterAction]);
 
   const handLogin = (e)=>{
     e.preventDefault();

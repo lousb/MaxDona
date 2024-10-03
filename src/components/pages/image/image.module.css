@@ -10,9 +10,9 @@
     color: var(--primary-color);
 }
 .projectPageSection1{
-    width:92%;
-    height:90vh;
-    margin: 4%;
+    width:92vw;
+    height:calc(100vh - 4vw);
+    margin: 4vw;
     margin-top: 0;
     display: flex;
     gap:1.5%;
@@ -27,8 +27,16 @@
     justify-content: start;
 
 }
+.projectPageSection1 >a{
+    margin-top: 90px;
+    width: 49.2%;
+    display: flex;
+    flex-direction: column;
+    justify-content: start;
+}
 .single-image{
     position: absolute;
+    left: 0;
 }
 .hiddenPreloadedBlurhash {
   display: none;
@@ -38,12 +46,13 @@
 
     width: 100%;
     position: relative;
-    justify-content: center !important;
-    max-height: calc(100vh - 4vw - 90px);
+    justify-content: start !important;
+    max-height: calc(100vh - 4vw - 140px);
+    cursor: none;
 }
 .imageWrap img{
     width: 100%;
-    max-height: calc(100vh - 4vw - 90px);
+    max-height: calc(100vh - 4vw - 140px);
     object-fit: cover;
     border-radius: 16px;
 }
@@ -59,6 +68,24 @@
 .thumbnailWrap{
     display: none !important;
 }
+.buttonWrapRight, .buttonWrapLeft{
+    gap:1em;
+    display:flex;
+}
+.navigationButtonPrev:hover::after{
+    transform: translateY(-24px) scaleX(-1);
+}
+.navigationButtonPrev::after{
+    transform: scaleX(-1);
+    left: 5px;
+    right:auto
+}
+.navigationButtonPrev{
+    padding-left: 38px;
+    padding-right: 0px;
+    
+}
+
 @media only screen and (max-width:830px){
     .projectPageSection1{
         width: 84%;

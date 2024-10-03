@@ -703,11 +703,11 @@ const ImageSection = ({ groupKey, groupImages, groupIndex, handleImageClick, pro
           {groupImages.map((imageUrl, index) => {
             const totalIndex = calculateTotalIndex(groupIndex, index, projectData);
             return (
-              <Link to={`/projects/${projectId}/${imageUrl.id}`} key={index}>
+              <DelayLink delay={1500} to={`/projects/${projectId}/${imageUrl.id}`} key={index}>
                 <div className="column">
                   <ParallaxImage key={index} imageUrl={imageUrl.url} blurhashUrl={imageUrl.blurhash} />
                 </div>
-              </Link>
+              </DelayLink>
             );
           })}
         </Masonry>

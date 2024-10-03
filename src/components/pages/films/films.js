@@ -165,88 +165,68 @@ function Films() {
     
     
    const slowViewAnimations = () => {
-        const filmProjectItems = document.querySelectorAll('.view-list-item-link');
-        const itemHeight = window.innerHeight * 0.8 - 90;
-        const totalHeight = (data.length - 1) * itemHeight;
-        const maxTranslateY = (data.length - 1) * 100;
+       const filmProjectItems = document.querySelectorAll('.view-list-item-link');
+       const itemHeight = window.innerHeight * 0.7 - 90;
+       const totalHeight = (data.length - 1) * itemHeight;
+       const maxTranslateY = (data.length - 1) * 92;
 
-        ScrollTrigger.create({
-            trigger: '.film-page-wrap',
-            start: 'top top',
-            pin: '.film-page-wrap',
-            end: () => `+=${totalHeight}`,
-            onUpdate: (self) => {
-                const progress = self.progress * maxTranslateY;
-                filmProjectItems.forEach((item) => {
-                    gsap.to(item, { y: `-${progress}%`, ease: 'none' });
-                });
-            },
-        });
+       // Reset items when the top is reached
+       ScrollTrigger.create({
+           trigger: '.film-page-wrap',
+           start: 'top top',
+           pin: '.project-nav-wrap',
+           end: () => `+=${totalHeight}`,
+           onUpdate: (self) => {
+               const progress = self.progress * maxTranslateY;
+               filmProjectItems.forEach((item) => {
+                   gsap.to(item, { y: `-${progress}%`, ease: 'none' });
+               });
+           },
+           invalidateOnRefresh: true, // Forces the animation to reset properly on refresh
+           onLeaveBack: () => {
+               // Ensure everything is reset when scrolling back to the top
+               filmProjectItems.forEach((item) => {
+                   gsap.set(item, { y: '0%' }); // Reset to the initial state
+               });
+           }
+       });
 
-        gsap.fromTo('.film-project-scroll-container', {
-            height: 'calc(70vh - 90px)',
-        }, {
-            height: 'calc(100vh - 4vw - 84px)',
-            scrollTrigger: {
-                trigger: '.page-content',
-                start: 'top top',
-                end: '600',
-                scrub: true,
-                id: "scrub",
-            },
-        });
+       gsap.fromTo('.film-project-scroll-container', {
+           height: 'calc(70vh - 90px)',
+       }, {
+           height: 'calc(100vh - 4vw - 84px)',
+           scrollTrigger: {
+               trigger: '.page-content',
+               start: 'top top',
+               end: '600',
+               scrub: true,
+               id: "scrub",
+               invalidateOnRefresh: true, // Ensure it resets on refresh
+           },
+       });
 
-        gsap.fromTo('.film-project-item, .view-list-item-link', {
-            height: 'calc(70vh - 90px)'
-        }, {
-            height: 'calc(80vh - 90px)',
-            scrollTrigger: {
-                trigger: '.page-content',
-                start: 'top top',
-                end: '200',
-                scrub: true,
-                id: "scrub",
-            },
-        });
+       gsap.to('.film-page-title-wrap', {
+           y: '-300px',
+           scrollTrigger: {
+               trigger: document.body,
+               start: 'top top',
+               end: '500px top',
+               scrub: true,
+               id: "scrub",
+               invalidateOnRefresh: true, // Reset when refreshed
+           },
+       });
 
-        gsap.to('.film-page-title-wrap', {
-            y: '-300px',
-            scrollTrigger: {
-                trigger: document.body,
-                start: 'top top',
-                end: '500px top',
-                scrub: true,
-                id: "scrub",
-            },
-        });
+       // Refresh ScrollTrigger once everything is loaded
+       ScrollTrigger.refresh();
+   };
 
-        //    filmProjectItems.forEach((item) => {
-        //        const detailsElement = item.querySelector('.project-item-details');
-        //        console.log("Creating ScrollTrigger for:", detailsElement);
+   // Ensure ScrollTrigger recalculates after content is loaded or resized
+   window.addEventListener('load', slowViewAnimations);
+   window.addEventListener('resize', () => {
+       ScrollTrigger.refresh(); // Refresh on resize to handle layout changes
+   });
 
-        //        if (detailsElement) {
-        //            const itemRect = item.getBoundingClientRect();
-        //            const start = itemRect.top + window.scrollY;
-        //            const end = start + item.offsetHeight;
-
-        //            ScrollTrigger.create({
-        //                trigger: item,
-        //                start: `-=${window.innerHeight + (window.innerWidth * 0.04) - detailsElement.offsetHeight} top`, // Adjusted start to match the filmProjectItem's top
-        //                end: () => `+=${item.offsetHeight}`, // End is the height of the item to match its end
-        //                scrub: 1,
-        //                markers: true, // Use markers to debug and adjust
-        //                onUpdate: (self) => {
-        //                    // Calculate the Y translation based on scroll progress
-        //                    gsap.to(detailsElement, {
-        //                        y: self.progress * (item.offsetHeight - detailsElement.offsetHeight),
-        //                        duration: 0,
-        //                        overwrite: 'auto',
-        //                    });
-        //                }
-        //            });
-        //        }
-        //    });
-    };
 
 
 
@@ -495,7 +475,7 @@ function Films() {
                 </div>
        
             </div>
-            <div className={`${styles['project-nav-wrap']}`}>
+            <div className={`${styles['project-nav-wrap']} project-nav-wrap`}>
             <AnimatePresence>
                 {activeView === 'slow' && (
                     <motion.div
@@ -633,6 +613,8 @@ const SlowView = ({ data, filmProjectItemsRef, handleDelayStart }) => {
 const MediumView = ({ data, handleDelayStart }) => {
     const [randomImagesWithInfo, setRandomImagesWithInfo] = useState([]);
 
+
+
     useEffect(() => {
         fetchRandomImages();
     }, []);
@@ -648,8 +630,9 @@ const MediumView = ({ data, handleDelayStart }) => {
                         const imageUrl = image.url;
                         const blurhash = image.blurhash;
                         const imageId = image.id;
+                        const projectColor = project.projectColor;
                         if (imageUrl && blurhash) {
-                            allImages.push({ imageUrl, blurhash, project, indexWithinProject, imageId });
+                            allImages.push({ imageUrl, blurhash, project, indexWithinProject, imageId, projectColor });
                         }
                     });
                 }
@@ -659,8 +642,8 @@ const MediumView = ({ data, handleDelayStart }) => {
         const shuffledImages = shuffleArray(allImages);
         const randomImages = shuffledImages.slice(0, 25);
 
-        const imagesWithInfo = randomImages.map(({ imageUrl, blurhash, project, indexWithinProject, imageId }) => {
-            return { imageUrl, blurhash, project, indexWithinProject, imageId };
+        const imagesWithInfo = randomImages.map(({ imageUrl, blurhash, project, indexWithinProject, imageId, projectColor }) => {
+            return { imageUrl, blurhash, project, indexWithinProject, imageId, projectColor };
         });
 
         setRandomImagesWithInfo(imagesWithInfo);

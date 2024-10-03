@@ -214,6 +214,9 @@ body:has(.home) .header-inner-content{
     padding-bottom: 22px;
     height: 120px;
 }
+body:has( .login) .large-arrow-cursor{
+    transform: scale(0) !important;
+}
 .scrolled .header-inner-content{
     height:40px !important;
     padding-block: 22px !important;
@@ -400,9 +403,9 @@ footer .primary-button::before{
 .scrolled .header-toggled-global .header-inner-content {
     height:120px !important;
 }
-body:has(footer.visible) header > div{
+body:has(footer.visible):not(:has(.header-toggled-global)) header > div > div > .header-inner-content{
     transition: 500ms ease transform !important;
-    transform: translateY(-100%);
+    transform: translateY(-100%) !important;
 }
 body:has(footer.visible) .projects-image-wrap{
     transition: 500ms ease-out clip-path;
