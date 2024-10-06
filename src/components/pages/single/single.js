@@ -1019,49 +1019,107 @@ const [videoId, setVideoId] = useState(null);
 
 
   const togglePlayPause = () => {
+    const player = playerRef.current;
+
+    // Check if the player is initialized
+    if (!player) {
+      console.warn('Player is not initialized yet');
+      return; // Early exit if player is not ready
+    }
+
     if (isPlaying) {
-      playerRef.current.pauseVideo();
-      setIsPlayingProp(false);
-      setIsPlaying(false);
+      // If currently playing, attempt to pause
+      try {
+        player.pauseVideo();
+        setIsPlayingProp(false);
+        setIsPlaying(false);
 
-      gsap.to('.video-hover-desc .link-desc > span', {
-        y: '100%',
-        duration: 0.3,
-        delay: 0,
-        onComplete:()=>{
-          setCopyLinkDesc('Play Video');
-          gsap.to('.video-hover-desc .link-desc > span', {
-            y: '0%',
-            duration: 0.3,
-            delay: 0,
-          });
-        }
-      });
-    } else {
-      playerRef.current.playVideo();
-      if(windowWidth > 830){
-         scrollToPercentageOfViewportHeight(140);
+        gsap.to('.video-hover-desc .link-desc > span', {
+          y: '100%',
+          duration: 0.3,
+          delay: 0,
+          onComplete: () => {
+            setCopyLinkDesc('Play Video');
+            gsap.to('.video-hover-desc .link-desc > span', {
+              y: '0%',
+              duration: 0.3,
+              delay: 0,
+            });
+          },
+        });
+      } catch (error) {
+        console.error('Error pausing video:', error);
       }
+    } else {
+      // Attempt to play the video only if the player is ready and not buffering
+      try {
+        // Check if the player is ready and not currently buffering
+        if (player && player.playVideo && player.getPlayerState() !== window.YT.PlayerState.BUFFERING) {
+          player.playVideo();
+          if (windowWidth > 830) {
+            scrollToPercentageOfViewportHeight(140);
+          }
 
-      setIsPlayingProp(true);
-      setIsPlaying(true);
-      
-      gsap.to('.video-hover-desc .link-desc > span', {
-        y: '100%',
-        duration: 0.3,
-        delay: 0,
-        onComplete:()=>{
-          setCopyLinkDesc('Pause Video');
-      
+          setIsPlayingProp(true);
+          setIsPlaying(true);
+
           gsap.to('.video-hover-desc .link-desc > span', {
-            y: '0%',
+            y: '100%',
             duration: 0.3,
             delay: 0,
+            onComplete: () => {
+              setCopyLinkDesc('Pause Video');
+              gsap.to('.video-hover-desc .link-desc > span', {
+                y: '0%',
+                duration: 0.3,
+                delay: 0,
+              });
+            },
           });
+        } else {
+          console.warn('Video player is not ready for playback or is buffering');
         }
-      });
+      } catch (error) {
+        console.error('Error playing video:', error);
+      }
     }
   };
+
+  const handleResize = () => {
+    setIsPlaying(false);
+    setIsBuffering(false);
+    setIsPlayingProp(false);
+    clearInterval(progressTrackerRef.current);
+
+    gsap.to('.video-hover-desc .link-desc > span', {
+      y: '100%',
+      duration: 0.3,
+      delay: 0,
+      onComplete: () => {
+        setCopyLinkDesc('Play Video');
+        gsap.to('.video-hover-desc .link-desc > span', {
+          y: '0%',
+          duration: 0.3,
+          delay: 0,
+        });
+      },
+    });
+
+    if (playerRef.current) {
+      startProgressTracking(playerRef.current);
+    }
+  };
+  
+  useEffect(() => {
+    window.addEventListener('resize', handleResize);
+
+    // Clean up the event listener on unmount
+    return () => {
+      window.removeEventListener('resize', handleResize);
+    };
+  }, []);
+  
+  
 
   return (
     <div className={`${styles['player']} ${isPlaying && !isBuffering && styles['playing']} ${isBuffering && styles['buffering']}`} onClick={togglePlayPause}>

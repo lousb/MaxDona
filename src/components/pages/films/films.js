@@ -88,6 +88,7 @@ function Films() {
         document.documentElement.style.setProperty('--secondary-dark', 'rgb(10, 10, 10)');
 
         document.title = `Archive of Max Dona`;
+       
 
         return () => unsub();
     }, []);
@@ -151,7 +152,10 @@ function Films() {
 
 
        if (activeView === 'slow' && data.length > 0) {
-           slowViewAnimations();
+        
+         
+            slowViewAnimations();
+
        } else if (activeView === 'medium') {
            mediumViewAnimations();
        } else if (activeView === 'fast') {
@@ -166,45 +170,50 @@ function Films() {
     
    const slowViewAnimations = () => {
        const filmProjectItems = document.querySelectorAll('.view-list-item-link');
-       const itemHeight = window.innerHeight * 0.7 - 90;
+       const itemHeight = (window.innerHeight * 0.7) - 90;
        const totalHeight = (data.length - 1) * itemHeight;
        const maxTranslateY = (data.length - 1) * 92;
 
-       // Reset items when the top is reached
+       // Create the ScrollTrigger for pinning and scrolling
        ScrollTrigger.create({
            trigger: '.film-page-wrap',
            start: 'top top',
            pin: '.project-nav-wrap',
            end: () => `+=${totalHeight}`,
+           invalidateOnRefresh: true,
            onUpdate: (self) => {
-               const progress = self.progress * maxTranslateY;
+               const progress = self.progress * maxTranslateY;  // Directly calculate the translation
                filmProjectItems.forEach((item) => {
-                   gsap.to(item, { y: `-${progress}%`, ease: 'none' });
+                   gsap.set(item, { y: `-${progress}%`, overwrite: 'auto' }); // Immediate set without easing
                });
            },
-           invalidateOnRefresh: true, // Forces the animation to reset properly on refresh
            onLeaveBack: () => {
-               // Ensure everything is reset when scrolling back to the top
                filmProjectItems.forEach((item) => {
-                   gsap.set(item, { y: '0%' }); // Reset to the initial state
+                   gsap.set(item, { y: '0%' }); // Reset immediately to initial state
                });
            }
        });
 
+       // Animate height of the scroll container
        gsap.fromTo('.film-project-scroll-container', {
-           height: 'calc(70vh - 90px)',
+           height: 'calc(70vh - 90px)',  // Start value
        }, {
-           height: 'calc(100vh - 4vw - 84px)',
+           height: 'calc(100vh - 4vw - 84px)',  // End value
            scrollTrigger: {
                trigger: '.page-content',
                start: 'top top',
-               end: '600',
+               end: '+=600px',
                scrub: true,
-               id: "scrub",
-               invalidateOnRefresh: true, // Ensure it resets on refresh
-           },
+               id: "scrub-container",
+               invalidateOnRefresh: true,
+               onLeaveBack: () => {
+                   // Reset height manually when scrolling back to the top
+                   gsap.set('.film-project-scroll-container', { height: 'calc(70vh - 90px)' });
+               }
+           }
        });
 
+       // Animate the title as the page scrolls
        gsap.to('.film-page-title-wrap', {
            y: '-300px',
            scrollTrigger: {
@@ -212,17 +221,63 @@ function Films() {
                start: 'top top',
                end: '500px top',
                scrub: true,
-               id: "scrub",
-               invalidateOnRefresh: true, // Reset when refreshed
+               id: "scrub-title",
+               invalidateOnRefresh: true,
+               onLeaveBack: () => {
+                   // Reset height manually when scrolling back to the top
+                   gsap.set('.film-page-title-wrap', { y: '90px' });
+               }
            },
        });
 
-       // Refresh ScrollTrigger once everything is loaded
-       ScrollTrigger.refresh();
+       // Function to ensure refresh after all images load
+       const ensureRefreshAfterLoad = () => {
+           const images = document.querySelectorAll('img');
+           let loadedCount = 0;
+
+           images.forEach((img) => {
+               if (img.complete) {
+                   loadedCount++;
+               } else {
+                   img.onload = () => {
+                       loadedCount++;
+                       if (loadedCount === images.length) {
+                           ScrollTrigger.refresh(); // Refresh once all images load
+                       }
+                   };
+               }
+           });
+
+           if (loadedCount === images.length) {
+               ScrollTrigger.refresh();
+           }
+       };
+
+       // Debounce the refresh to avoid excessive calls
+       const debounce = (func, delay) => {
+           let timeout;
+           return (...args) => {
+               clearTimeout(timeout);
+               timeout = setTimeout(() => func.apply(this, args), delay);
+           };
+       };
+
+       // Ensure refresh after everything has loaded
+       ensureRefreshAfterLoad();
+
+       // Debounced refresh after content settles
+       setTimeout(() => {
+           ScrollTrigger.refresh(true);
+       }, 800);
+
+       // Debounced refresh on window resize
+       window.addEventListener('resize', debounce(() => {
+           ScrollTrigger.refresh();
+       }, 300));  // Adjust the delay as needed
    };
 
+
    // Ensure ScrollTrigger recalculates after content is loaded or resized
-   window.addEventListener('load', slowViewAnimations);
    window.addEventListener('resize', () => {
        ScrollTrigger.refresh(); // Refresh on resize to handle layout changes
    });
@@ -261,8 +316,8 @@ function Films() {
         const filmPageWrap = document.querySelector('.film-page-wrap');
         if (filmPageWrap) {
             if (activeView === 'slow') {
-                const itemHeight = window.innerHeight * 0.8 - 90;
-                filmPageWrap.style.height = `${data.length * itemHeight}px`;
+                const itemHeight = (window.innerHeight * 0.7) - 90;
+                filmPageWrap.style.height = `${data.length * itemHeight - (itemHeight - window.innerHeight ) - (window.innerWidth * 0.04)}px`;
             } else {
                 filmPageWrap.style.height = 'auto';
             }
@@ -546,6 +601,43 @@ function Films() {
 
 const SlowView = ({ data, filmProjectItemsRef, handleDelayStart }) => {
     const [mainImageLoaded, setMainImageLoaded] = useState(false);
+    const [allImagesLoaded, setAllImagesLoaded] = useState(false); // Track if all images are loaded
+
+    useEffect(() => {
+        // Check if all images are loaded whenever the data changes
+        const checkAllImagesLoaded = () => {
+            const images = Array.from(document.images);
+            const allLoaded = images.every(img => img.complete);
+            if (allLoaded) {
+                setAllImagesLoaded(true); // Set state once all images are loaded
+                console.log('all images are loaded')
+            }
+        };
+
+        // Attach an event listener for each image load
+        data.forEach((project, index) => {
+            const imgElement = filmProjectItemsRef.current[index]?.querySelector('img');
+            if (imgElement) {
+                if (imgElement.complete) {
+                    checkAllImagesLoaded(); // Check immediately if already loaded
+                } else {
+                    imgElement.onload = checkAllImagesLoaded; // Check once loaded
+                    imgElement.onerror = checkAllImagesLoaded; // Handle loading errors
+                }
+            }
+        });
+
+        return () => {
+            // Cleanup any potential event listeners when the component unmounts
+            data.forEach((project, index) => {
+                const imgElement = filmProjectItemsRef.current[index]?.querySelector('img');
+                if (imgElement) {
+                    imgElement.onload = null;
+                    imgElement.onerror = null;
+                }
+            });
+        };
+    }, [data, filmProjectItemsRef]);
 
     return (
         <div className={`slow-view  ${styles['film-project-scroll-wrap']}`}>

@@ -106,7 +106,7 @@ background: linear-gradient(90deg, rgba(0,0,0,0.5228466386554622) 0%, rgba(0, 0,
     transform: translateX(0.2em);
 }
 .view-list-item-link{
-    height: calc(70vh - 90px);
+    min-height: calc(70vh - 88px);
     display: block;
 }
 .project-scroll-height a:last-child .film-project-item{
@@ -115,7 +115,7 @@ background: linear-gradient(90deg, rgba(0,0,0,0.5228466386554622) 0%, rgba(0, 0,
 .film-project-scroll-container{
 
     max-height: calc(100vh - 4vw - 84px);
-
+    height: calc(-90px + 70vh);
     overflow-x: hidden;
     border-radius: 18px;
     width: 100%;
@@ -131,12 +131,11 @@ background: linear-gradient(90deg, rgba(0,0,0,0.5228466386554622) 0%, rgba(0, 0,
 .film-project-item{
     padding-left:26px;
     width: calc(100% - 26px);
-    height: calc(70vh - 90px);
+    height: calc(70vh - 87px);
     display: flex;
     flex-direction: column;
-
+    margin-block: -1px;
     justify-content: end;
-    margin-block: -0.5px;
     overflow: hidden;
 
 }
@@ -170,8 +169,12 @@ background: linear-gradient(90deg, rgba(0,0,0,0.5228466386554622) 0%, rgba(0, 0,
     color: white;
     padding-bottom: 8px;
 }
+.film-project-cta::after, .film-project-cta::before{
+    background-color: black;
+}
 .film-project-item:hover .film-project-cta::after{
     transform: translateY(-24px) !important;
+
 }
 .view-switcher-wrap{
     display: flex;
@@ -244,10 +247,11 @@ button.view-toggle-active{
     position: relative;
 }
 .project-scroll-height{
-    display: block;
     width: 100%;
     overflow: hidden;
     border-radius: 18px;
+    display: flex;
+    flex-direction: column;
 }
 .infinite-film-project-item{
     height:fit-content !important;

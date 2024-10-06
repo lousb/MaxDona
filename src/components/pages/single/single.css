@@ -181,7 +181,7 @@ body:has(.player__wrapper:hover) .scroll-notification{
 
       transform-origin: top left;
       transition: transform 500ms ease, clip-path 500ms ease, max-height 500ms ease, max-width 500ms ease, padding 500ms ease, width 500ms ease !important;
-      z-index: 20;
+      z-index: 101;
       scale:1;
 
       padding:12px 14px 12px 42px;
@@ -222,6 +222,9 @@ body:has(.project-page) .large-arrow-cursor{
   
   .scrolled:has(.main-section-image-wrap:hover) .video-hover-desc{
       clip-path: polygon(0 0, 100% 0, 100% 100%, 0% 100%);
+  }
+  .scrolled .main-video-controls-overlay div{
+    pointer-events: none !important;
   }
   .scrolled:not(:has(.main-section-image-wrap:hover)) .video-hover-desc{
       transition: 0s 0.7s, opacity 0.6s 0.1s, clip-path 0.5s 0.1s !important;
