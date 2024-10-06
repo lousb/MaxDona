@@ -158,23 +158,21 @@ const [windowWidth, setWindowWidth] = useState(window.innerWidth);
 
    mm.add("(min-width: 831px)", () => {
 
-   const pinVideoSection = () => {
+
      pinScrollTrigger = ScrollTrigger.create({
        trigger: '.project-page-section-1',
        start: 'top top',
        end: () => sectionRef.current.clientHeight * 1.5,
        pin: `.${styles['main-section-image-wrap']}`,
      });
-   };
 
-   const pinVideoControls = () => {
      pinScrollControlsTrigger = ScrollTrigger.create({
        trigger: '',
        start: 'top top',
        end: () => sectionRef.current.clientHeight * 1.5,
        pin: `.${styles['main-video-controls-overlay']}`,
      });
-   };
+   
 
    const setupAnimations = () => {
      const mainSectionDetails = document.querySelector(`.${styles['main-section-details']}`);
@@ -247,10 +245,6 @@ const [windowWidth, setWindowWidth] = useState(window.innerWidth);
        });
      }
 
- 
-
-     pinVideoSection();
-     pinVideoControls();
    };
    setupAnimations();
   });

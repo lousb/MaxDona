@@ -53,7 +53,7 @@ section{
     cursor: none;
     position: absolute;
     top:0;
-    pointer-events: all;
+    pointer-events: none;
     background-position: center center;
     transform-origin: center;
     background-size: cover;
@@ -66,7 +66,9 @@ section{
    opacity: 1;
   
 }
-
+.mask-image-blurhash-wrap > div{
+    pointer-events: none !important;
+}
 .scrolled .area-1 .mask-image-blurhash-wrap > div{
     height: 100% !important;
     width: 100% !important;
@@ -253,7 +255,7 @@ section{
 }
 
 .mask-image-wrap:hover .details{
-    opacity: 1;
+    opacity: 1 !important;
 }
 
 .mask-image-wrap:hover .scroll-notification{
@@ -304,11 +306,14 @@ section{
     margin-right: 64px;
     margin-bottom: 56px;
     color: white;
-    opacity: 0;
+    opacity: 1;
     transition: all 1000ms ease;
     transition-delay: 4300ms;
     pointer-events: all;
     cursor: none;
+}
+body:has(.loading-wrap.is-loading) .home .scroll-notification{
+    opacity: 0;
 }
 .details-button{
     position: relative;
@@ -448,6 +453,7 @@ body:has(.home .page-two.visible) .dynamic-video-player-1 .mask-image-wrap .deta
 .primary-button.auto-height{
     max-height:fit-content !important;
     line-height: 1.1em !important;
+    color: black;
 }
 .primary-button.auto-height::after{
     transform: translateY(0px) !important;

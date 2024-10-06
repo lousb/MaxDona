@@ -115,12 +115,7 @@ function Home() {
       let mm = gsap.matchMedia();
 
 
-      gsap.fromTo('.scroll-notification', {
-        opacity:0,
-      },{
-        opacity:1,
-        delay:0.1,
-      })
+    
       
       const sectionOneScrollTrigger = () => {
            triggers.push(ScrollTrigger.create({
@@ -128,7 +123,7 @@ function Home() {
           start: "top top",
           pin: ".dynamic-video-player-1",
           pinSpacer:false,
-          end: () => welcomeSectionRef.current.offsetTop + welcomeSectionRef.current.clientHeight - windowHeight - 120,
+          end: () => pageHeight - windowHeight - 120,
         })
       );
       };
@@ -453,7 +448,7 @@ function Home() {
         ScrollTrigger.clearMatchMedia(); // Cleanup on window size change
       };
       
-    }, [windowWidth, windowHeight, welcomeSectionRef, aboutReferenceSectionRef, section3Ref, pageHeight, isSection3Visible]);
+    }, [windowWidth, windowHeight, welcomeSectionRef, aboutReferenceSectionRef, section3Ref, pageHeight]);
 
 
   useEffect(() => {
@@ -494,17 +489,35 @@ function Home() {
   }
 
 
+  setTimeout(()=>{
 
- const updatePageHeight = () => {
-  if (welcomeSectionRef.current && firstThreeSectionsRef.current) {
-    const height = firstThreeSectionsRef.current.offsetHeight;
-    if (window.innerWidth <= 830) {
-      setPageHeight(height + windowHeight); 
-    } else {
-      setPageHeight(height);
-    }
-  }
-};
+  }, [2000])
+
+
+  const updatePageHeight = () => {
+      if (welcomeSectionRef.current && firstThreeSectionsRef.current) {
+          const height = firstThreeSectionsRef.current.offsetHeight;
+          let newPageHeight;
+
+          if (window.innerWidth <= 830) {
+              newPageHeight = height + windowHeight; 
+          } else {
+              newPageHeight = height;
+          }
+
+          // Prevent running if the new height is the same as the current page height
+          if (newPageHeight === pageHeight) {
+              console.log("Page height is the same, not updating.");
+              return; // Exit the function early
+          }
+
+          // Set new page height
+          setPageHeight(newPageHeight);
+          console.log(height);
+      }
+  };
+
+
 
 useEffect(() => {
   updatePageHeight();
@@ -525,21 +538,21 @@ useEffect(() => {
 
 
 useEffect(() => {
-  // Function to update page height when firstThreeSectionsRef height changes
-  const handleHeightChange = () => {
-    updatePageHeight();
-  };
+  const observer = new ResizeObserver(() => {
+      updatePageHeight(); // Call updatePageHeight when size changes
+  });
 
   if (firstThreeSectionsRef.current) {
-    firstThreeSectionsRef.current.addEventListener('transitionend', handleHeightChange);
+      observer.observe(firstThreeSectionsRef.current); // Start observing the target element
   }
 
   return () => {
-    if (firstThreeSectionsRef.current) {
-      firstThreeSectionsRef.current.removeEventListener('transitionend', handleHeightChange);
-    }
+      if (firstThreeSectionsRef.current) {
+          observer.unobserve(firstThreeSectionsRef.current); // Clean up the observer
+      }
+      observer.disconnect(); // Disconnect the observer on unmount
   };
-}, [firstThreeSectionsRef.current, windowWidth]);
+}, [firstThreeSectionsRef.current, windowWidth]); 
 
 useEffect(() => {
   const ref = section3Ref.current;
@@ -1301,6 +1314,7 @@ const handleScroll = () => {
     duration:1,
     });
   }, [currentProject]);
+
 
   
   return (
