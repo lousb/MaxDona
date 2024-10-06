@@ -174,7 +174,6 @@ const [windowWidth, setWindowWidth] = useState(window.innerWidth);
      });
    
 
-   const setupAnimations = () => {
      const mainSectionDetails = document.querySelector(`.${styles['main-section-details']}`);
      const mainSectionImage = document.querySelector(`.${styles['main-section-image']}`);
      const projectPageSection1 = document.querySelector(`.${styles['project-page-section-1']}`);
@@ -245,8 +244,7 @@ const [windowWidth, setWindowWidth] = useState(window.innerWidth);
        });
      }
 
-   };
-   setupAnimations();
+
   });
 
  
@@ -254,7 +252,7 @@ const [windowWidth, setWindowWidth] = useState(window.innerWidth);
    return () => {
      ScrollTrigger.getAll().forEach((trigger) => trigger.kill());
    };
- }, [sectionRef]);
+ }, [sectionRef, projectData]);
   
  useEffect(() => {
     const handleScroll = () => {
@@ -290,7 +288,6 @@ useEffect(() => {
       if (projectSnapshot.exists()) {
         const data = projectSnapshot.data();
         setProjectData(data);
-        console.log(data);
       } else {
         console.error('Project not found.');
       }
@@ -335,10 +332,7 @@ useEffect(() => {
       }
     }
     clickedIndex += imageIndex;
-  
-    // Log the click
-    console.log(`Image clicked - Group Index: ${groupIndex}, Image Index: ${imageIndex}, Total Index: ${clickedIndex}`);
-  
+    
     // Store the current scroll position
     scrollPositionRef.current = window.scrollY;
   
@@ -907,7 +901,6 @@ const [videoId, setVideoId] = useState(null);
    }
 
    if (event.data === window.YT.PlayerState.PLAYING) {
-     console.log('videos playing');
      setIsPlaying(true);
      setIsBuffering(false);
      setIsPlayingProp(true);
@@ -918,10 +911,8 @@ const [videoId, setVideoId] = useState(null);
        }
      }, 100); 
    } else if (event.data === window.YT.PlayerState.BUFFERING) {
-     console.log('videos buffering');
      setIsBuffering(true);
    } else if (event.data === window.YT.PlayerState.ENDED) {
-     console.log('videos ended');
      setIsPlaying(false);
      setIsBuffering(false);
      setIsPlayingProp(false);
@@ -941,7 +932,6 @@ const [videoId, setVideoId] = useState(null);
      clearInterval(progressTrackerRef.current); // Stop progress tracking when video ends
      progressTrackerRef.current = null; // Reset tracker
    } else {
-     console.log('videos other');
      setIsPlaying(false);
      setIsBuffering(false);
      clearInterval(progressTrackerRef.current); // Stop progress tracking when video pauses
@@ -953,7 +943,6 @@ const [videoId, setVideoId] = useState(null);
   
 
  const startProgressTracking = (player) => {
-   console.log('Starting progress tracking for:', player);
 
    // Prevent starting multiple intervals
    if (progressTrackerRef.current) {
