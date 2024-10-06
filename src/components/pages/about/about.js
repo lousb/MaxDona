@@ -6,6 +6,7 @@ import MouseCursor from "../../../utils/mouseCursor";
 import Reveal from "../../../utils/textElementReveal/textElementReveal";
 import { useLocation } from "react-router-dom";
 import ContactBlock from "../../molecules/ContactBlock/contactBlock";
+import DelayLink from "../../../utils/delayLink";
 
 gsap.registerPlugin(ScrollTrigger);
 
@@ -256,8 +257,12 @@ function About(){
                                 </div>
                                 {windowWidth > 830 &&
                                     <>
+                                    <DelayLink to={'https://www.instagram.com/macsdona/'} delay={1500}>
                                     <button className="primary-button button-gradient">Instagram</button>
+                                    </DelayLink>
+                                    <DelayLink to={'/contact'} delay={1500}>
                                     <button className="primary-button button-gradient">Get in Touch</button>
+                                    </DelayLink>
                                     </>
                                 }
                                 
@@ -301,9 +306,12 @@ function About(){
                         {/* <p className="body">
                             ( Click project to view )
                         </p> */}
+                        <DelayLink to={'/archive'} delay={1500}>
                         <button className="primary-button">
                             Full Archive
                         </button>
+                        </DelayLink>
+                     
                     </div>
                 </div>
 
@@ -394,9 +402,12 @@ function About(){
 
                 </div>
                 <div className={`${styles["testimonial-subtext-col-3"]}`}>
-                    <button className="primary-button">
-                        Lets Work
-                    </button>
+                  <DelayLink to={'/contact'} delay={1500}>
+                  <button className="primary-button">
+                      Lets Work
+                  </button>
+                  </DelayLink>
+                   
                 </div>
             </div>
 

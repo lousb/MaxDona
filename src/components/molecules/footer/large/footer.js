@@ -90,17 +90,20 @@ function FooterDefault() {
                 </div>
                 <div className={styles["footer-col-2"]}></div>
                 <div className={`${styles["footer-col-3"]} ${styles["footer-column"]}`}>
-                    {Object.keys(groupedProjects).map((year) => (
+                    <div className={styles["footer-archive-div"]}  style={{padding : '0px'}}>ARCHIVE</div>
+                    {Object.keys(groupedProjects)
+                    .sort((a, b) => b - a) // Sort years in descending order
+                    .map((year) => (
                         <div key={year}>
-                            <div className={styles["footer-archive-div"]}  style={{padding : '0px'}}>ARCHIVE</div>
                             <div className={styles["footer-archive-div"]}>{year}</div>
                             {groupedProjects[year].map((project) => (
-                                <DelayLink key={project.id} delay={1500}  to={`/projects/${project.id}`} className="primary-button">
+                                <DelayLink key={project.id} delay={1500} to={`/projects/${project.id}`} className="primary-button">
                                     {project.displayName}
                                 </DelayLink>
                             ))}
                         </div>
                     ))}
+
                 </div>
                 <div className={`${styles["footer-col-4"]} ${styles["footer-column"]}`}>
                     {Object.keys(groupedReferencePeace).map((year) => (

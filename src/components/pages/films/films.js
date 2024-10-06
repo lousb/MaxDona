@@ -231,18 +231,6 @@ function Films() {
 
 
     function mediumViewAnimations() {
-        gsap.fromTo('.random-masonry-image-view', {
-            marginTop: '10vw'
-        }, {
-            marginTop: '0px',
-            scrollTrigger: {
-                trigger: '.film-page-wrap',
-                start: 'top top',
-                end: '1000',
-                scrub: true,
-                id: "scrub",
-            },
-        });
         gsap.to('.film-page-title-wrap', {
             y: '-30vh',
             scrollTrigger: {
@@ -256,18 +244,7 @@ function Films() {
     }
 
     const fastViewAnimations = () => {
-        gsap.fromTo('.infinite-scroll-map-wrap', {
-            marginTop: '10vw'
-        }, {
-            marginTop: '0px',
-            scrollTrigger: {
-                trigger: '.film-page-wrap',
-                start: 'top top',
-                end: '1000',
-                scrub: true,
-                id: "scrub",
-            },
-        });
+       
         gsap.to('.film-page-title-wrap', {
             y: '-30vh',
             scrollTrigger: {
@@ -408,6 +385,28 @@ function Films() {
             });
         }
     }, [currentProject, activeView]);
+
+    const [slowViewClass, setSlowViewClass] = useState(false);
+    
+
+    useEffect(() => {
+      let timer;
+      if (activeView === 'slow') {
+        // Set the timeout to add the class after 0.8s
+        timer = setTimeout(() => {
+          setSlowViewClass(true);
+        }, 800); // Delay of 0.8 seconds
+      }else{
+        timer = setTimeout(() => {
+          setSlowViewClass(false);
+        }, 0);
+      }
+
+      return () => {
+        clearTimeout(timer);
+        setSlowViewClass(false); // Reset when the view changes
+      };
+    }, [activeView]);
     
     
 
@@ -479,16 +478,16 @@ function Films() {
             <AnimatePresence>
                 {activeView === 'slow' && (
                     <motion.div
-                        className={`${styles['project-wrap']} project-wrap`}
+                        className={`${styles['project-wrap']} project-wrap ${slowViewClass ? styles['slow-view'] : ''}`}
                         key="slow"
-                        initial={{ opacity: 0, y:'20%' }}
-                        animate={{ opacity: 1, y:'0%', transition: { duration: 1, delay: 0.4, ease:[0.76, 0, 0.24, 1] } }}
-                        exit={{ opacity: 0, y:'50%' }}
-                        transition={{ duration: 0.8, ease:[0.76, 0, 0.24, 1] }}
+                        initial={{ opacity: 0, y:window.innerHeight * 0.2 }}
+                        animate={{ opacity: 1, y:'0%', transition: { duration: 1, delay: 0.6, ease:[0.76, 0, 0.24, 1] } }}
+                        exit={{ opacity: 0, y:window.innerHeight * 0.2 }}
+                        transition={{ duration: 0.6, ease:[0.76, 0, 0.24, 1] }}
                     >
                         <SlowView data={data} filmProjectItemsRef={filmProjectItemsRef} handleDelayStart={handleDelayStart}/>
                     </motion.div>
-                )}
+                 )}
                
                {activeView === 'fast' && (
                 <>
@@ -515,10 +514,10 @@ function Films() {
                 <motion.div
                        className={`${styles['project-wrap']} high-z-index-layer project-wrap`}
                        key="fast"
-                       initial={{ opacity: 0, y: '20%' }}
-                       animate={{ opacity: 1, y: '0%', transition: { duration: 1, delay: 0.4, ease: [0.76, 0, 0.24, 1] } }}
-                       exit={{ opacity: 0, y: '20%' }}
-                       transition={{ duration: 0.8, ease: [0.76, 0, 0.24, 1] }}
+                       initial={{ opacity: 0, y: window.innerHeight * 0.2 }}
+                       animate={{ opacity: 1, y: '0%', transition: { duration: 1, delay: 0.6, ease: [0.76, 0, 0.24, 1] } }}
+                       exit={{ opacity: 0, y: window.innerHeight * 0.2 }}
+                       transition={{ duration: 0.6, ease: [0.76, 0, 0.24, 1] }}
                    >
                        <FastView data={data} filmProjectItemsRef={filmProjectItemsRef} onHoverImage={handleHoveredImageChange} handleDelayStart={handleDelayStart} onMouseEnter={handleMouseEnter} onMouseLeave={handleMouseLeave} setCurrentHoveredIndex={setCurrentHoveredIndex}
                        />
@@ -530,10 +529,10 @@ function Films() {
                     <motion.div
                         className={`${styles['project-wrap']} project-wrap`}
                         key="medium"
-                        initial={{ opacity: 0, y:'20%' }}
-                        animate={{ opacity: 1, y:'0%', transition: { duration: 1, delay: 0.4, ease:[0.76, 0, 0.24, 1] } }}
-                        exit={{ opacity: 0, y:'20%' }}
-                        transition={{ duration: 0.8, ease:[0.76, 0, 0.24, 1] }}
+                        initial={{ opacity: 0, y:window.innerHeight * 0.2 }}
+                        animate={{ opacity: 1, y:'0%', transition: { duration: 1, delay: 0.6, ease:[0.76, 0, 0.24, 1] } }}
+                        exit={{ opacity: 0, y:window.innerHeight * 0.2 }}
+                        transition={{ duration: 0.6, ease:[0.76, 0, 0.24, 1] }}
                     >
                         <MediumView data={data} filmProjectItemsRef={filmProjectItemsRef} handleDelayStart={handleDelayStart}/>
                     </motion.div>
@@ -549,14 +548,14 @@ const SlowView = ({ data, filmProjectItemsRef, handleDelayStart }) => {
     const [mainImageLoaded, setMainImageLoaded] = useState(false);
 
     return (
-        <div className={`slow-view ${styles['film-project-scroll-wrap']}`}>
+        <div className={`slow-view  ${styles['film-project-scroll-wrap']}`}>
             <div className={`body film-project-scroll-container ${styles['film-project-scroll-container']}`}>
                 <div className={`project-scroll-height ${styles['project-scroll-height']}`}>
                     {data.map((project, index) => (
                         <DelayLink 
                             onDelayStart={() => handleDelayStart(project.projectColor)}  
                             delay={1500}  
-                            to={`/projects/${project.id}`} 
+                            to={`/archive/${project.id}`} 
                             className={`view-list-item-link ${styles['view-list-item-link']}`} 
                             key={`slow-${project.id}-${index}`} // Ensure unique key
                         >
@@ -616,6 +615,7 @@ const MediumView = ({ data, handleDelayStart }) => {
 
 
     useEffect(() => {
+        
         fetchRandomImages();
     }, []);
 
@@ -715,7 +715,7 @@ const MediumView = ({ data, handleDelayStart }) => {
                         <DelayLink 
                             delay={1500} 
                             onDelayStart={() => handleDelayStart(imageInfo.projectColor)}  
-                            to={`/projects/${imageInfo.project.id}/${imageInfo.imageId}`} 
+                            to={`/archive/${imageInfo.project.id}/${imageInfo.imageId}`} 
                             key={`medium-${imageInfo.project.id}-${index}`} // Ensure unique key
                         >
                             <ParallaxImage 
@@ -845,7 +845,7 @@ const ParallaxImage = ({ imageUrl, blurhash, handleDelayStart }) => {
                     <div className={`project-color`} style={{ backgroundColor: project.projectColor }}></div>
                     <DelayLink
                         delay={1500}
-                        to={`/projects/${project.id}`}
+                        to={`/archive/${project.id}`}
                         onDelayStart={() => handleDelayStart(project.projectColor)}
                         className={`view-list-item-link view-list-item-link `}
                         key={`fast-link-${project.id}-${index}`}

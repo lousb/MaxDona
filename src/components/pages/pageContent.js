@@ -189,21 +189,20 @@ function PageContent() {
                 path="update/:projectId"
                 element={<RequireAuth><UpdateProject/></RequireAuth>}
             />
-            <Route path="/projects/:projectId/:imageIndex" element={<SingleImageView />} />
+        
 
 
           </Route>
           <Route
-                path="projects/:projectId"
+                path="archive/:projectId"
                 element={
   
                     <Single />
                 }
         
-          >
-        
-
+          > 
           </Route>
+          <Route path="/archive/:projectId/:imageIndex" element={<SingleImageView />} />
           <Route path="/login" element={<Login/>}></Route>
           <Route path="*" element={<NotFound/>} />
 

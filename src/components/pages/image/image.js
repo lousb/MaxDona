@@ -104,7 +104,7 @@ useEffect(() => {
       console.log('Navigating from:', prevIndex, 'to:', newImageId); // Debugging log
 
       setCurrentBlurhash(getBlurhashById(projectData, newImageId));
-      window.history.replaceState(null, '', `/#/projects/${projectId}/${newImageId}`);
+      window.history.replaceState(null, '', `/#/archive/${projectId}/${newImageId}`);
 
       return newImageId;
     });
@@ -146,7 +146,7 @@ useEffect(() => {
         <h1 className={`title ${styles['project-title']}`}>{projectData && projectData.displayName}</h1>
         <h2 className={`body ${styles['directed-subtext']}`}>{projectData && 'Directed by Max Dona'}</h2>
       </div>
-      <DelayLink delay={1500} to={`/projects/${projectData && projectData.displayName}`}>
+      <DelayLink delay={1500} to={`/archive/${projectData && projectData.displayName}`}>
       <div className={styles.imageWrap}>
     
         {projectData && (
@@ -183,8 +183,8 @@ useEffect(() => {
 
       <div className={`${styles.buttonWrap} high-z-index-layer`}>
         <div className={styles.buttonWrapRight}>
-          <DelayLink delay={1500} to={`/projects/${projectData && projectData.displayName}`} className={`primary-button ${styles['navigationButtonPrev']}`}>Full Project</DelayLink>
-          <DelayLink delay={1500} to={`/projects/${projectData && projectData.displayName}`} className={`primary-button ${styles['mainSectionButtonDetails']}`}>Full Video</DelayLink>
+          <DelayLink delay={1500} to={`/archive/${projectData && projectData.displayName}`} className={`primary-button ${styles['navigationButtonPrev']}`}>Full Project</DelayLink>
+          <DelayLink delay={1500} to={`/archive/${projectData && projectData.displayName}`} className={`primary-button ${styles['mainSectionButtonDetails']}`}>Full Video</DelayLink>
         </div>
         <div className={styles.buttonWrapLeft}>
           <button

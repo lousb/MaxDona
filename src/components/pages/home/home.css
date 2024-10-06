@@ -316,9 +316,9 @@ section{
 }
 .details-button::after{
     content:'';
-    background-image: url(/public/Arrow/Black-Arrow.svg);
-    background-position: top center;
-    background-size: contain;
+    mask-image: url(/public/Arrow/Black-Arrow.svg);
+    mask-position: top center;
+    mask-size: contain;
     margin-top: 0.18rem;
     margin-bottom:-16px;
     right: 0;
@@ -328,6 +328,7 @@ section{
     position: absolute;
     filter: invert(1);
     transition: 0ms !important;
+    background-color: black;
 
 }
 body:has(.home .page-two.visible) .dynamic-video-player-1 .mask-image-wrap .details{
@@ -428,20 +429,35 @@ body:has(.home .page-two.visible) .dynamic-video-player-1 .mask-image-wrap .deta
 .page-two-row-three{
     width: 85%;
     margin-bottom:20px;
-    display: flex;
-    justify-content: space-between;
+
 }
 .page-two-row-three > .body{
     width: 242px;
+    display: flex;
+    flex-direction: column;
+    gap:2rem;
+    
 }
 .max-location{
     font-size:110px;
 }
-
-
+.player-project-name span{
+    transform: translateY(-250%);
+  
+}
+.primary-button.auto-height{
+    max-height:fit-content !important;
+    line-height: 1.1em !important;
+}
+.primary-button.auto-height::after{
+    transform: translateY(0px) !important;
+    margin-top:6px;
+    right: 26px !important;
+    background-color: black;
+}
 
 .player-project-name p{
-    height: 16px;
+    height: fit-content;
     line-height: 16px;
     display: flex;
     margin:0;

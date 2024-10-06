@@ -24,7 +24,7 @@ export const DelayLink = ({
   }, [timeout]);
 
   const handleClick = e => {
-    // if trying to navigate to current page stop everything
+    // if trying to navigate to current page, stop everything
     if (location?.pathname === to) return;
 
     onDelayStart(e, to);
@@ -34,23 +34,41 @@ export const DelayLink = ({
 
     e.preventDefault();
 
-    // Add the class when the delay starts
-    document.body.classList.add("page-transitioning");
+    // Check if the link is external (starts with http or https)
+    if (to.startsWith("http://") || to.startsWith("https://")) {
+      // Add the class when the delay starts
+      document.body.classList.add("page-transitioning");
 
-    timeout = setTimeout(() => {
-      if (replace) {
-        navigate(to, { replace: true });
-      } else {
-        navigate(to);
-      }
-      onDelayEnd(e, to);
+      // Use setTimeout for the delay before opening in a new tab
+      timeout = setTimeout(() => {
+        window.open(to, "_blank"); // Open in new tab for both http and https
+        onDelayEnd(e, to);
 
-      // Remove the class when the delay ends
-      document.body.classList.remove("page-transitioning");
+        // Remove the class when the delay ends
+        document.body.classList.remove("page-transitioning");
 
-      // Dispatch the custom event after the navigation
-      window.dispatchEvent(new Event('routeChange'));
-    }, delay);
+        // Dispatch the custom event after the navigation
+        window.dispatchEvent(new Event("routeChange"));
+      }, delay);
+    } else {
+      // Internal navigation logic
+      document.body.classList.add("page-transitioning");
+
+      timeout = setTimeout(() => {
+        if (replace) {
+          navigate(to, { replace: true });
+        } else {
+          navigate(to);
+        }
+        onDelayEnd(e, to);
+
+        // Remove the class when the delay ends
+        document.body.classList.remove("page-transitioning");
+
+        // Dispatch the custom event after the navigation
+        window.dispatchEvent(new Event("routeChange"));
+      }, delay);
+    }
   };
 
   return <Link {...rest} to={to} onClick={handleClick} />;

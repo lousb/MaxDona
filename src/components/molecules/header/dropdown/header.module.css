@@ -564,8 +564,7 @@ header > div{
   .header-hero-cta{
     display: none;
     pointer-events: all;
-    transition: 500ms ease all;
-    transition-delay: 0.4s;
+    transition: 500ms ease all 1.2s;
   }
   .header-toggled .header-hero-cta{
     transition: 200ms ease all;

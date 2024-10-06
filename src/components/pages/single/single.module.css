@@ -214,7 +214,7 @@
 .details-title{
     width: 100%;
     margin-bottom: 20px !important;
-    word-break: break-all;
+    word-break: break-word;
     -moz-hyphens: manual;
     -ms-hyphens: manual;
     hyphens: manual;

@@ -39,18 +39,16 @@ function Home() {
     const [projectColour, setProjectColour] = useState(0);
 
     const section3Ref = useRef(null);
-    const [isSection3Visible, setIsSection3Visible] = useState(false);
-    const [lastScrollTop, setLastScrollTop] = useState(0);
     
-
-
+    const [isSection3Visible, setIsSection3Visible] = useState(false);
     const [hoveredItem, setHoveredItem] = useState(null);
 
     // Reset hoveredItem when section 3 is not visible
     useEffect(() => {
       if (!isSection3Visible) {
-        handleHoverChange(null);
-        setPrevHover(null);
+        handleHoverChange(projectNavData[0]);
+        setPrevHover(projectNavData[0]);
+        setHoveredItem(projectNavData[0]);
       } else if (featuredProjects && featuredProjects[0]) { 
         setPrevHover(featuredProjects[0]);
         handleHoverChange(featuredProjects[0]);
@@ -63,21 +61,23 @@ function Home() {
     
 
     const handleHoverChange = (item) => {
+      if(item!= prevHover){
+        gsap.to('.player-project-name span',{
+          y:'250%',
+          duration:0.5,
+          ease:'ease-in-out',
 
-      gsap.to('.player-project-name span',{
-        y:'150%',
-        duration:0.5,
-        ease:'ease-in-out',
+          onComplete: ()=>{
+            setHoveredItem(item);
+            gsap.to('.player-project-name span',{
+            y:'0%',
 
-        onComplete: ()=>{
-          setHoveredItem(item);
-          gsap.to('.player-project-name span',{
-          y:'0%',
-          
-       
-          })
-        }
-      })
+
+            })
+          }
+        })
+      }
+     
 
     };
 
@@ -548,13 +548,18 @@ useEffect(() => {
 
   const observer = new IntersectionObserver(
     ([entry]) => {
-      if (entry.isIntersecting && window.scrollY < ref.offsetTop) {
+      const scrollPosition = window.scrollY;
+      const sectionTop = ref.offsetTop;
+      
+      if (entry.isIntersecting || scrollPosition > sectionTop) {
+        // Once the user has scrolled into the section, make it visible and keep it visible
         setIsSection3Visible(true);
-      } else if (!entry.isIntersecting && window.scrollY < ref.offsetTop) {
+      } else if (!entry.isIntersecting && scrollPosition < sectionTop) {
+        // If the user is above the section, set it to false
         setIsSection3Visible(false);
       }
     },
-    { threshold: 0.03 } // Adjust the threshold as needed
+    { threshold: 0.03 } // Trigger when user scrolls 0.03 into the section
   );
 
   observer.observe(ref);
@@ -564,7 +569,8 @@ useEffect(() => {
       observer.unobserve(ref);
     }
   };
-}, [section3Ref.current]); // Dependency array
+}, [section3Ref]);
+ // Dependency array
 
 
 
@@ -578,7 +584,7 @@ useEffect(() => {
             <section className="page" ref={welcomeSectionRef} style={{ height: pageHeight }}>
         
                 <div className={`${windowWidth < 830 ? 'small-dynamic-video-player':''} dynamic-video-player dynamic-video-player-1`} ref={imageRef} >
-                    <DynamicVideoPlayer index={1} data={projectNavData} hoveredItem={hoveredItem} image="/franco.png" isSection3Visible={isSection3Visible} section={1} windowWidth={windowWidth}/>
+                    <DynamicVideoPlayer index={1} data={projectNavData} hoveredItem={hoveredItem} image="/animated-cormac.webp" isSection3Visible={isSection3Visible} section={1} windowWidth={windowWidth}/>
                     
                 </div>
                 {windowWidth < 830 ? <Section1 windowWidth={windowWidth}/>:<></>}
@@ -598,7 +604,7 @@ useEffect(() => {
             <Section4 windowWidth={windowWidth}/>
             <div className="about-reference-wrap" ref={aboutReferenceSectionRef}>
               <div className="dynamic-video-player dynamic-video-player-5">
-                <DynamicVideoPlayer image={'/animated_webp/visiontovision3.webp'} section={5} index={5}/>
+                <DynamicVideoPlayer image={'/animated_webp/home/visiontovision3.webp'} section={5} index={5}/>
              
               </div>
               <Section5 title={'About'}/>
@@ -924,12 +930,26 @@ useEffect(() => {
     <div className={`mask-mouse-area area-${index} ${windowWidth < 830 && index === 1 && progress <= 79 ? 'reduced-height':''}`} style={ windowWidth < 830 ? {height: `${maskHeight}px`} : {}}>
       
       <DelayLink
-        to={`${hoveredItem ? `/projects/${hoveredItem.displayName}` : (data && data.length > 0 ? data[0].link : '')}`} // Specify the destination link here
+        to={
+          hoveredItem && hoveredItem.displayName && isSection3Visible
+            ? `/archive/${hoveredItem.displayName}`
+            : data && data.length > 0
+            ? data[0].link
+            : index === 3
+            ? 'https://www.instagram.com/macsdona/' // External link
+            : index === 4
+            ? '/about' // Internal link
+            : index === 5
+            ? '/reference-peace' // Internal link
+            : ''
+        } // Specify the destination link here
         delay={2000} // Set the delay in milliseconds (e.g., 1000ms = 1 second)
-        onDelayStart={handleDelayStart} // Callback when delay starts
+     
+        onDelayStart={()=>index===1 && hoveredItem ? handleDelayStart(hoveredItem.projectColor): null} // Callback when delay starts
         onDelayEnd={handleDelayEnd} // Callback when delay ends and navigation happens
         style={ windowWidth < 830 && index === 1 ? {height: `${maskHeight}px`} : {}}
       >
+       
         <div className="mask-image-wrap" style={ windowWidth < 830 && index === 1 ? {height: `${maskHeight}px`, maxHeight: `${maskHeight}px`} : {}} ref={maskRef} >
           <div>
             {index === 1 &&
@@ -951,7 +971,7 @@ useEffect(() => {
               src={image}
               style={{...initialStyles, ...windowWidth < 830 && index === 1 ? {height: `${maskHeight}px`} : {}}}
               ref={imageRef}
-              alt="Franco"
+              alt="Dynamic Video Image"
               loading="lazy"
             />
           {hoveredItem && 
@@ -979,7 +999,7 @@ useEffect(() => {
           </div>
           <div className="details">
             <div className="player-project-name">
-              {hoveredItem ? ( // Check if an item is hovered
+              {hoveredItem && hoveredItem.displayName && isSection3Visible ? ( // Check if an item is hovered
                 <div>
                   <p className="artist-name">
                     <span className="artist-name-span">{hoveredItem.displayName}</span>
@@ -997,23 +1017,24 @@ useEffect(() => {
                     <p className="artist-name">
                       <span className="artist-name-span">{data[0].textContent}</span>
                     </p>
+                   
                     <p>
-                      <span>{data[0].projectName}</span>
+                      <span className="artist-name-span"></span>
                     </p>
-                    <p>
-                      <span className="details-button">Full Project</span>
+                    <p className="home-details-cta">
+                      <span className="details-button">{data[0].projectName}</span>
                     </p>
                   </div>
                 ) : (
                   <div>
-                    {/* Render a default message or placeholder content when no data is available */}
-                    {index == 5 ?
-                     <a className="primary-button insta-button">Instagram</a>
-                    :
-                      <p>No data available</p>
-
-
-                    }
+                    
+                    {index == 3 ? (
+                      <a className="primary-button insta-button auto-height">See more on<br/>Instagram</a>
+                    ) : index == 4 ? (
+                      <a className="primary-button auto-height">Learn about<br/>My Process</a>
+                    ) : index == 5 ? (
+                      <a className="primary-button insta-button auto-height">Explore my<br/>Magazine</a>
+                    ) : null}
 
                   </div>
                 )
@@ -1066,10 +1087,8 @@ const Section1 = () =>{
             <div className="see-my-work high-z-index-layer">              
               <Reveal custom={2.5} variant={'opacity'} elementClass="body" element={'div'} textContent={'NAVIGATING AN UN-INTERRUPTED STREAM OF MODERN CREATIVITY, BY DOCUMENTING A CURATED LINEUP OF ARTISTS & PROLIFICS.'}/>
               <DelayLink
-               to={`/films`} // Specify the destination link here
+               to={`/archive`} // Specify the destination link here
                delay={1500} // Set the delay in milliseconds (e.g., 1000ms = 1 second)
-               onDelayStart={handleDelayStart} // Callback when delay starts
-               onDelayEnd={handleDelayEnd} // Callback when delay ends and navigation happens
               >
                 <button className=" primary-button button-gradient">Full Archive</button>
               </DelayLink>
@@ -1117,7 +1136,7 @@ const Section2 = ({windowWidth}) => {
             </span>
             </div>
             <div className="page-two-row-two high-z-index-layer">
-                <Reveal custom={2} textContent={'& Based In'} element={"span"} elementClass={"body born-in"}/>
+                <Reveal custom={2} textContent={'Based In'} element={"span"} elementClass={"body born-in"}/>
                 <span className="title max-location">
                     <Reveal textContent={'Sydney,'} element={"div"} elementClass={'title'}/>
                     <Reveal textContent={'Australia.'} element={"div"} elementClass={'title'}/>
@@ -1126,9 +1145,11 @@ const Section2 = ({windowWidth}) => {
             <div className="page-two-row-three high-z-index-layer">
                 <span className="body">
                     <Reveal custom={2} textContent={'I’M DRIVEN BY SHARING AND  VISUALISING COLLABORATIVE IDEAS THROUGH THE LENSE OF LOCAL & INTERNATIONAL PROJECTS.'} element={"div"}/>
-                  </span>
-                  <span className="my-work-cta">
-                     <Reveal custom={2} variant={'opacity'} textContent={'My work'} element={'button'} elementClass={"primary-button button-gradient"} onClick={()=>scrollToPercentageOfViewportHeight(190)} />
+                    <DelayLink  delay={1500} to={'/archive'}>
+                      <Reveal custom={2} variant={'opacity'} textContent={'My work'} element={'button'} elementClass={"primary-button button-gradient"} onClick={()=>scrollToPercentageOfViewportHeight(190)} />
+
+                    </DelayLink>
+
                   </span>
             </div>
            
@@ -1313,12 +1334,12 @@ const handleScroll = () => {
         </div>
         <span className="heading home-project-list"  onMouseLeave={()=>handleMouseLeave()}>
         {featuredProjects.length > 0 ? (
-            featuredProjects.map((project) => (
+            featuredProjects.map((project, index) => (
               <div key={project.id} className={`title ${prevHover && prevHover.id === project.id ? "prev-hover" : ""}`}  onMouseEnter={() => handleMouseEnter(project)}>
                 <div className="project-color" style={{ backgroundColor: `${projectColour}` }}></div>
                 <DelayLink 
-                  to={`projects/${project.displayName}`}
-                  delay={2000} // Set the delay in milliseconds (e.g., 1000ms = 1 second)
+                  to={`archive/${project.displayName}`}
+                  delay={1500} // Set the delay in milliseconds (e.g., 1000ms = 1 second)
                   onDelayStart={()=>handleDelayStart(project.projectColor)} // Callback when delay starts
                   onDelayEnd={handleDelayEnd} // Callback when delay ends and navigation happens
 
@@ -1332,6 +1353,14 @@ const handleScroll = () => {
                   />
                 </DelayLink>
                 <img src={project.mainFeaturedImage?.blurhash} alt={project.id} style={{display:'none'}}/>
+                {index === 0 && (
+                  <img 
+                    src={project.mainFeaturedImage?.url} 
+                    alt={project.displayName} 
+                    style={{display:'none'}}
+                    className="featured-project-image"
+                  />
+                )}
               </div>
             ))
           ) : (
@@ -1365,7 +1394,10 @@ const handleScroll = () => {
           ))} */}
         </span>
       </div>
-      <button className="primary-button high-z-index-layer button-gradient">Full Archive</button>
+      <DelayLink delay={1500} to='/archive' className='high-z-index-layer'>
+        <button className="primary-button high-z-index-layer button-gradient">Full Archive</button>
+
+      </DelayLink>
     </section>
   );
 };
@@ -1380,9 +1412,9 @@ const Section4 = ({windowWidth}) => {
   const imageWrapRef = useRef(null);
 
   const serviceImage = [
-    `${process.env.PUBLIC_URL}/animated-cormac.webp`,
-    `${process.env.PUBLIC_URL}/Franco.png`,
-    `${process.env.PUBLIC_URL}/animated-cormac.webp`,
+    `${process.env.PUBLIC_URL}/animated_webp/home/service1.webp`,
+    `${process.env.PUBLIC_URL}/animated_webp/home/service2.webp`,
+    `${process.env.PUBLIC_URL}/animated_webp/home/service3.webp`,
   ];
   
 
@@ -1462,7 +1494,7 @@ const Section4 = ({windowWidth}) => {
         </div>
    
         <div>
-          <p className="primary-button what-i-do-cta button-gradient insta-button">Instagram</p>
+          <a className="primary-button what-i-do-cta button-gradient insta-button" href="https://www.instagram.com/macsdona/" target="_blank">Instagram</a>
         </div>
       </div>
       <div
@@ -1532,10 +1564,10 @@ const Section4 = ({windowWidth}) => {
       </div>
       <div className="page-four-dynamic-wrap">
         <div className="dynamic-video-player dynamic-video-player-4">
-          <DynamicVideoPlayer image={'/animated_webp/visiontovision1.webp'} section={4} index={4} />
+          <DynamicVideoPlayer image={'/animated_webp/home/visiontovision1.webp'} section={4} index={3} />
         </div>
         <div className="dynamic-video-player dynamic-video-player-4 middle">
-          <DynamicVideoPlayer image={'/animated_webp/visiontovision2.webp'} section={4} index={4} />
+          <DynamicVideoPlayer image={'/animated_webp/home/visiontovision2.webp'} section={4} index={4} />
         </div>
       </div>
     </div>

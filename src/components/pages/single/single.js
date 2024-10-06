@@ -703,7 +703,7 @@ const ImageSection = ({ groupKey, groupImages, groupIndex, handleImageClick, pro
           {groupImages.map((imageUrl, index) => {
             const totalIndex = calculateTotalIndex(groupIndex, index, projectData);
             return (
-              <DelayLink delay={1500} to={`/projects/${projectId}/${imageUrl.id}`} key={index}>
+              <DelayLink delay={1500} to={`/archive/${projectId}/${imageUrl.id}`} key={index}>
                 <div className="column">
                   <ParallaxImage key={index} imageUrl={imageUrl.url} blurhashUrl={imageUrl.blurhash} />
                 </div>
@@ -1209,14 +1209,14 @@ const NavigationSection = ({ currentIndex, projectList, currentProject }) => {
   return (
     <div className={`${styles['navigation-section']} high-z-index-layer`}>
       <div className={`${styles['nav-button']} ${styles['prev']}`} >
-        <DelayLink to={`/projects/${getPrevProjectId()}`} className={`heading`}   delay={2000} >Prev</DelayLink>
+        <DelayLink to={`/archive/${getPrevProjectId()}`} className={`heading`}   delay={2000} >Prev</DelayLink>
 
       </div>
       <div className={`${styles['project-nav-indicator']} body`}>
         {currentProject}
       </div>
       <div  className={`${styles['nav-button']} ${styles['next']}`} >
-        <DelayLink to={`/projects/${getNextProjectId()}`} className={`heading`}  delay={2000}  >Next</DelayLink>
+        <DelayLink to={`/archive/${getNextProjectId()}`} className={`heading`}  delay={2000}  >Next</DelayLink>
 
       </div>
     </div>
