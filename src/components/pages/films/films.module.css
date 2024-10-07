@@ -169,9 +169,14 @@ background: linear-gradient(90deg, rgba(0,0,0,0.5228466386554622) 0%, rgba(0, 0,
     padding-block:1em;
 }
 .film-project-title{
+
     margin: 0;
     color: white;
     padding-bottom: 8px;
+}
+.film-project-title, .film-project-title span{
+    font-family: var(--second-family) !important;
+    letter-spacing: -0.02em !important;
 }
 .film-project-cta::after, .film-project-cta::before{
     background-color: black;

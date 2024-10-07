@@ -5,6 +5,11 @@
     url("./fonts/DonaGrotesk.ttf") format("truetype");
 }
 
+@font-face {
+  font-family: "Tusker-Second";   /*Can be any text*/
+  src: local("TuskerGrotesk"),
+    url("./fonts/TuskerGrotesk.ttf") format("truetype");
+}
 
 /* define component style guide here */
 :root {
@@ -16,7 +21,7 @@
 
   --body-family: 'Synonym', sans-serif;
   --title-family: 'Tusker', sans-serif;
-  --second-family: 'Tursker-Second', sans-serif;
+  --second-family: 'Tusker-Second', sans-serif;
 
   --font-size-heading-link: 6.95vw;
   --font-size-heading-mobile: 56px;
