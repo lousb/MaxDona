@@ -1,7 +1,8 @@
 @font-face {
   font-family: "Tusker";   /*Can be any text*/
   src: local("DonaGrotesk"),
-    url("./fonts/DonaGrotesk.otf") format("opentype");
+    url("./fonts/DonaGrotesk.otf") format("opentype"),
+    url("./fonts/DonaGrotesk.ttf") format("truetype");
 }
 
 
