@@ -13,6 +13,7 @@ import Footer from './components/molecules/footer/large/footer.js';
 import MouseCursor from "./utils/mouseCursor";
 import { HeaderProvider } from "./utils/headerContext.js";
 import { LoadingProvider } from "./utils/LoadingContext.js";
+import ErrorBoundary from "./utils/ErrorBoundary.js";
 
 
 
@@ -23,13 +24,14 @@ function App() {
   return (
 
       <div className="App">
+        <ErrorBoundary>
         {/* <div className='grid-overlay'></div> */}
           <Header/>
           <LoadingProvider>
             <PageContent/> 
           </LoadingProvider>
           <MouseCursor/>
-   
+          </ErrorBoundary>
 
 
         
