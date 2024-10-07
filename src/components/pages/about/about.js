@@ -157,10 +157,8 @@ function About(){
    useLayoutEffect(() => {
         const handleHover = (event) => {
             if (event.type === 'mouseenter') {
-                console.log('Slider2 is hovered');
                 setIsHovered(true);
             } else if (event.type === 'mouseleave') {
-                console.log('Slider2 is not hovered');
                 setIsHovered(false);
             }
         };
@@ -269,8 +267,8 @@ function About(){
                             </div>
                             <div className={`${styles['section-2-heading-title']}`}>
                                 <Reveal elementClass={'title'} element={'h2'} textContent={'YOUR'}/>
-                                <Reveal elementClass={'title'} element={'h2'} textContent={'PASSION,'}/>
-                                <Reveal elementClass={'title'} element={'h2'} textContent={'MY CRAFT,'}/>
+                                <Reveal elementClass={'title'} element={'h2'} textContent={'PASSION.'}/>
+                                <Reveal elementClass={'title'} element={'h2'} textContent={'MY CRAFT.'}/>
                                 <Reveal elementClass={'title'} element={'h2'} textContent={'PERFECTLY'}/>
                                 <Reveal elementClass={'title'} element={'h2'} textContent={'SYNCED.'}/>
                                 {windowWidth <= 830 &&
@@ -450,8 +448,8 @@ const portfolioImages = (i, hoveredSlide, handleMouseEnter, handleMouseLeave) =>
           />
           <div className={styles['slide-project-details']}>
             <p className="body"><span>{slide.name}</span></p>
-            <p className="body"><span>Old Ways</span></p>
             <p className="body"><span>({slide.year})</span></p>
+            <p className={`primary-button ${styles['primary-button']}`}><span>Full Project</span></p>
           </div>
         </div>
       ))}
@@ -464,10 +462,10 @@ const portfolioImages = (i, hoveredSlide, handleMouseEnter, handleMouseLeave) =>
 
 const testimonialImages = (i, hoveredSlide, handleMouseEnter, handleMouseLeave) => {
   const testimonialData = [
-    { id: 1, name: 'Franco', year: '2022', title: 'Old Ways' },
-    { id: 2, name: 'Domengo', year: '2022', title: 'Old Ways' },
-    { id: 3, name: 'Cormac', year: '2022', title: 'Old Ways' },
-    { id: 4, name: 'Teji', year: '2022', title: 'Old Ways' },
+    { id: 1, name: 'Franco' },
+    { id: 2, name: 'Domengo' },
+    { id: 3, name: 'Cormac'},
+    { id: 4, name: 'Teji' },
   ];
 
   return (
@@ -479,13 +477,12 @@ const testimonialImages = (i, hoveredSlide, handleMouseEnter, handleMouseLeave) 
           onMouseEnter={() => handleMouseEnter(testimonial.id)}
           onMouseLeave={handleMouseLeave}
         >
-          <div className={`${styles["slide-project-image"]}`}>
+          <div className={`${styles["slide-project-image"]} ${styles["testimonial-image"]}`}>
             {/* Image or background logic can be added here */}
           </div>
           <div className={styles['slide-project-details']}>
             <p className="body"><span>{testimonial.name}</span></p>
-            <p className="body"><span>{testimonial.title}</span></p>
-            <p className="body"><span>({testimonial.year})</span></p>
+            <p className={`primary-button ${styles['primary-button']}`}><span>Full Project</span></p>
           </div>
         </div>
       ))}
@@ -501,8 +498,7 @@ const testimonialImages = (i, hoveredSlide, handleMouseEnter, handleMouseLeave) 
           </div>
           <div className={styles['slide-project-details']}>
             <p className="body"><span>{testimonialData[0].name}</span></p>
-            <p className="body"><span>{testimonialData[0].title}</span></p>
-            <p className="body"><span>({testimonialData[0].year})</span></p>
+            <p className={`primary-button ${styles['primary-button']}`}><span>Full Project</span></p>
           </div>
         </div>
       )}

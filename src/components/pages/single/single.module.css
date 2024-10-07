@@ -282,7 +282,7 @@
     cursor:none;
 }
 .title-section{
-    margin-top:4vw;
+    margin-block:4vw;
     display: flex;
     justify-content: center;
 }

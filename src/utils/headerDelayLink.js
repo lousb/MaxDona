@@ -13,23 +13,17 @@ const DelayLink = ({ delay = 0, onDelayStart = () => {}, onDelayEnd = () => {}, 
   }, [timeoutId]);
 
   const handleClick = (e) => {
-    console.log("Link clicked");
 
     // If trying to navigate to current page, stop everything
     const currentUrl = new URL(window.location.href);
     const targetUrl = new URL(to, window.location.origin);
 
-    console.log("Current URL:", currentUrl.href);
-    console.log("Target URL:", targetUrl.href);
-
     if (currentUrl.pathname === targetUrl.pathname && currentUrl.search === targetUrl.search && currentUrl.hash === targetUrl.hash) {
-      console.log("Already on the target page");
       return;
     }
 
     onDelayStart(e, to);
     if (e.defaultPrevented) {
-      console.log("Event default prevented");
       return;
     }
 
@@ -37,10 +31,8 @@ const DelayLink = ({ delay = 0, onDelayStart = () => {}, onDelayEnd = () => {}, 
 
     // Add the class when the delay starts
     document.body.classList.add("page-transitioning");
-    console.log("Delay started");
 
     const id = setTimeout(() => {
-      console.log("Navigating to:", to);
       window.location.href = to;
       onDelayEnd(e, to);
 

@@ -95,13 +95,16 @@
    
 }
 .slide-project-image{
-    background-image: url(/public/domengo.png);
+    /* background-image: url(/public/domengo.png); */
     background-position: center center;
     background-size: cover;
     width: 100%;
     height: 100%;
     border-radius: 20px;
     cursor: none;
+}
+.testimonial-image{
+    background-image: url(/public/testimonialPlaceholder.webp);
 }
 
 .slide-project{
@@ -120,13 +123,26 @@
 }
 .slide-project-details p{
     display: block;
-    height: 18px;
+    height: 1em;
     overflow: hidden;
     margin: 0;
     display: flex;
     opacity: 0;
     transition: all 500ms ease;
 
+}
+.slide-project-details .primary-button{
+    padding-bottom: 8px;
+    margin-top:-0.3em;
+    font-size: 18px;
+    cursor: none;
+}
+.slide-project-details .primary-button:after{
+    width: 15px;
+    right:10px;
+    transition: 500ms ease all 500ms !important;
+    transform: translateY(24px) !important;
+    background-color: black;
 }
 .slide-project-details p span{
 
@@ -136,6 +152,10 @@
 }
 .slide-project.hovered p{
     opacity: 1;
+}
+.slide-project.hovered p::after{
+    transition: 1000ms ease all 300ms !important;
+    transform: translateY(0px) !important;
 }
 .slide-project.hovered p span{
     transition: ease-in-out 1s all 0.2s;

@@ -27,8 +27,9 @@ function Films() {
     const loadedImages = useRef(new Set()); // Cache to store loaded images
 
 
-    const handleHoveredImageChange = ({ url, blurhash }) => {
-        setHoveredImage({ url, blurhash });
+    const handleHoveredImageChange = ({ url, blurhash, displayName, projectColor }) => {
+
+        setHoveredImage({ url, blurhash, displayName, projectColor });
 
         // Check if the image was already loaded before
         if (loadedImages.current.has(url)) {
@@ -463,6 +464,10 @@ function Films() {
       };
     }, [activeView]);
     
+    // useEffect(() => {
+    //     console.log('hovered image:', hoveredImage);
+    // }, [hoveredImage]);
+    
     
 
     return (
@@ -495,18 +500,19 @@ function Films() {
                     className={`${styles['floating-project-thumb-wrap']} floating-project-thumb-wrap`}
                 >
                     <div>
-                        <ParallaxImage
-                            imageUrl={!mainImageLoaded ? hoveredImage?.blurhash : hoveredImage?.url}
-                            className={`${styles['floating-project-image']} floating-project-image`}
-                        />
+                        <DelayLink delay={1500} to={`/archive/${hoveredImage?.displayName}`} onDelayStart={() => handleDelayStart(hoveredImage?.projectColor)} >
+                            <ParallaxImage
+                                imageUrl={hoveredImage?.url}
+                                blurhash={hoveredImage?.blurhash}
+                                className={`${styles['floating-project-image']} floating-project-image`}
+                            />
+                            <div className={`${styles['fast-view-button']}`}>
+                                <p className="primary-button">Full Project</p>
+                            </div>
+                        </DelayLink>
+                        
 
-                        {/* Invisible main image for loading */}
-                        <img
-                            src={hoveredImage.url}
-                            alt="Main featured"
-                            style={{ display: 'none' }}
-                            onLoad={() => handleImageLoad(hoveredImage.url)}
-                        />
+                       
 
                         <div className={`body ${styles['floating-project-name']} floating-project-name`}></div>
                     </div>
@@ -601,43 +607,7 @@ function Films() {
 
 const SlowView = ({ data, filmProjectItemsRef, handleDelayStart }) => {
     const [mainImageLoaded, setMainImageLoaded] = useState(false);
-    const [allImagesLoaded, setAllImagesLoaded] = useState(false); // Track if all images are loaded
-
-    useEffect(() => {
-        // Check if all images are loaded whenever the data changes
-        const checkAllImagesLoaded = () => {
-            const images = Array.from(document.images);
-            const allLoaded = images.every(img => img.complete);
-            if (allLoaded) {
-                setAllImagesLoaded(true); // Set state once all images are loaded
-                console.log('all images are loaded')
-            }
-        };
-
-        // Attach an event listener for each image load
-        data.forEach((project, index) => {
-            const imgElement = filmProjectItemsRef.current[index]?.querySelector('img');
-            if (imgElement) {
-                if (imgElement.complete) {
-                    checkAllImagesLoaded(); // Check immediately if already loaded
-                } else {
-                    imgElement.onload = checkAllImagesLoaded; // Check once loaded
-                    imgElement.onerror = checkAllImagesLoaded; // Handle loading errors
-                }
-            }
-        });
-
-        return () => {
-            // Cleanup any potential event listeners when the component unmounts
-            data.forEach((project, index) => {
-                const imgElement = filmProjectItemsRef.current[index]?.querySelector('img');
-                if (imgElement) {
-                    imgElement.onload = null;
-                    imgElement.onerror = null;
-                }
-            });
-        };
-    }, [data, filmProjectItemsRef]);
+   
 
     return (
         <div className={`slow-view  ${styles['film-project-scroll-wrap']}`}>
@@ -885,13 +855,23 @@ const ParallaxImage = ({ imageUrl, blurhash, handleDelayStart }) => {
       >
         <img
           ref={imageRef}
-          src={imageUrl}
+          src={blurhash}
           alt="Parallax Image"
-          className={styles['masonry-image']}
+          className={`${styles['masonry-image']} ${styles['blurhash-image']}`}
           style={{
             transform: `translate(${maskPosition.x}px, ${maskPosition.y}px) scale(1.1)`,
           }}
         />
+        <img
+          ref={imageRef}
+          src={imageUrl}
+          alt="Parallax Image"
+          className={`${styles['masonry-image']} ${styles['loaded-image']}`}
+          style={{
+            transform: `translate(${maskPosition.x}px, ${maskPosition.y}px) scale(1.1)`,
+          }}
+        />
+     
       </div>
     );
   };
@@ -903,8 +883,8 @@ const ParallaxImage = ({ imageUrl, blurhash, handleDelayStart }) => {
 
     const infiniteScrollData = data.length < 5 ? [...data, ...data.slice(0, 5 - data.length)] : data;
 
-    const handleHoverImage = (url, blurhash, index, project) => {
-        onHoverImage({ url, blurhash });
+    const handleHoverImage = (url, blurhash, index, project, displayName, projectColor) => {
+        onHoverImage({ url, blurhash, displayName, projectColor });
         setCurrentHoveredIndex(index);
 
         onMouseEnter(project);
@@ -916,6 +896,20 @@ const ParallaxImage = ({ imageUrl, blurhash, handleDelayStart }) => {
 
         onMouseLeave();
     };
+
+    useEffect(() => {
+        // Access the correct properties from the project directly, not mainFeaturedImage
+        const project = infiniteScrollData[lastHoveredIndex];
+
+        if (project) {
+            const { url, blurhash } = project.mainFeaturedImage || {};
+            const displayName = project.displayName;
+            const projectColor = project.projectColor;
+
+            // Pass the correct values to onHoverImage
+            onHoverImage({ url, blurhash, displayName, projectColor });
+        }
+    }, []);  
 
     useEffect(() => {
         if (currentHoveredIndex !== null && currentHoveredIndex !== lastHoveredIndex) {
@@ -943,7 +937,7 @@ const ParallaxImage = ({ imageUrl, blurhash, handleDelayStart }) => {
                         key={`fast-link-${project.id}-${index}`}
                     >
                         <div
-                            onMouseEnter={() => handleHoverImage(project?.mainFeaturedImage?.url, project?.mainFeaturedImage?.blurhash, index, project)}
+                            onMouseEnter={() => handleHoverImage(project?.mainFeaturedImage?.url, project?.mainFeaturedImage?.blurhash, index, project, project?.displayName, project?.projectColor)}
                             onMouseLeave={handleMouseLeave}
                             className={`infinite-film-project-item  film-project-item ${styles['infinite-film-project-item']} ${(lastHoveredIndex === index || currentHoveredIndex === index) ? 'hovered-project' : ''}`}
                             key={`fast-item-${project.id}-${index}`}

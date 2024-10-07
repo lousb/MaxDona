@@ -10,10 +10,11 @@
 
 .hamburger-button > path{
 
-    transition: all 500ms ease-out;
+    transition: all 500ms ease-out !important;
+    transform-origin: center right;
     transition-delay: 100ms;
     stroke: var(--primary-color) !important;
-    clip-path: polygon(0 0, 100% 0, 100% 100%, 0 100%);
+    transform: scaleX(1);
 }
 
 
@@ -27,5 +28,6 @@
     transform-origin: right center;
 }
 .hamburger-button.active .line-1, .hamburger-button.active .line-3  {
-    clip-path: polygon(100% 0, 100% 0, 100% 100%, 100% 100%);
+    transition: all 500ms ease-out !important;
+    transform: scaleX(0);
 }

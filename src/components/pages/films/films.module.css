@@ -112,6 +112,10 @@ background: linear-gradient(90deg, rgba(0,0,0,0.5228466386554622) 0%, rgba(0, 0,
 .project-scroll-height a:last-child .film-project-item{
     border-radius: 0px 0px 20px 20px;
 }
+.loaded-image{
+    position:absolute;
+
+}
 .film-project-scroll-container{
 
     max-height: calc(100vh - 4vw - 84px);
@@ -335,6 +339,25 @@ button.view-toggle-active{
     border-radius: 16px;
     transition: 500ms ease all;
 }
+.fast-view-button{
+    filter: invert(1);
+    margin-top:-50px;
+    margin-left: 28px;
+    overflow: hidden;
+    pointer-events: none;
+}
+.fast-view-button > p{
+    transform: translateY(100%);
+    transition: 500ms ease all;
+    margin-bottom: 0px;
+    color: black;
+}
+.fast-view-button > p::after{
+    background-color: black;
+}
+.floating-project-thumb-wrap:hover .fast-view-button > p{
+    transform: translateY(0%);
+}
 .floating-project-thumb-wrap img, .floating-project-thumb-wrap div{
    width: 100%;
 }
@@ -343,6 +366,8 @@ button.view-toggle-active{
 }
 .floating-project-thumb-wrap img{
     pointer-events: all;
+    aspect-ratio: 1;
+    cursor: none;
 }
 .infinite-scroll-map-wrap {
     width: 64vw;
@@ -390,7 +415,8 @@ button.view-toggle-active{
     height: 22vw;
 }
 .parallax-image-wrap{
-    overflow: hidden;
+    clip-path: inset(0 0 0 0 round 14px);
+
     /* height: 22vw; */
     width: 22vw;
     border-radius: 14px;

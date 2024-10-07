@@ -150,7 +150,6 @@ const ReferenceSingle = () =>{
         if (projectSnapshot.exists()) {
           const data = projectSnapshot.data();
           setProjectData(data);
-          console.log(data);
         } else {
           console.error('Project not found.');
         }
@@ -170,9 +169,6 @@ const ReferenceSingle = () =>{
       }
     }
     clickedIndex += imageIndex;
-
-    // Log the click
-    console.log(`Image clicked - Group Index: ${groupIndex}, Image Index: ${imageIndex}, Total Index: ${clickedIndex}`);
 
     // Store the current scroll position
     scrollPositionRef.current = window.scrollY;
@@ -620,7 +616,6 @@ const PDFViewer = React.forwardRef(({ pdfLink, pdfType, currentPage, nextPageNum
   let {x, y} = useMousePosition('.App');
 
   const handleDocumentLoadSuccess = useCallback((document) => {
-    console.log("Document loaded successfully:", document);
     if (mode === 'double' && page % 2 !== 0) {
       setPage(prevPage => Math.max(prevPage - 1, 1)); // Ensure even page number in double mode
     }

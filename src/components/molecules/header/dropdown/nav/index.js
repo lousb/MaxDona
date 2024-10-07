@@ -44,14 +44,10 @@ const handleDesc = (desc) =>{
  
 }
 
-const handleDelayEnd = (e, to) => {
-  console.log("Delay end triggered for:", to);
-};
+
 
   const socialLinks = [
-    { text: "Contact", link: "/#/contact" },
-    { text: "Instagram", link: "https://www.instagram.com/" },
-    { text: "Youtube", link: "https://www.youtube.com/" },
+    { text: "Instagram", link: "https://www.instagram.com/macsdona/" },
   ];
 
   const navigationLinks = [
@@ -62,7 +58,7 @@ const handleDelayEnd = (e, to) => {
     { text: "Reference Peace", link: "/#/reference-peace", desc:'A Max Dona<br/>Magazine', class:'reference-peace-link' },
   ];
 
-  const maxLinkCount = Math.max(navigationLinks.length, socialLinks.length);
+  const maxLinkCount = Math.max(socialLinks.length);
 
 
 
@@ -74,13 +70,22 @@ const handleDelayEnd = (e, to) => {
       const { text = '', link = '#' } = links[index] || {};
       const isEmptyLink = text.trim() === '';
       const linkClassName = `${styles["header-subtext-link"]} header-subtext-link primary-button ${isEmptyLink ? styles["empty-menu-link"] : ''}`;
+      const isExternalLink = link.startsWith('http://') || link.startsWith('https://');
+
       return (
-        <a className={linkClassName} href={link} key={index}>
+        <a
+          className={linkClassName}
+          href={link}
+          key={index}
+          target={isExternalLink ? '_blank' : '_self'}  // Open in new tab for external links
+          rel={isExternalLink ? 'noopener noreferrer' : ''}  // Security best practice for external links
+        >
           {isEmptyLink ? '' : text}
         </a>
       );
     });
   };
+  
 
   return (
     <div className={`header-menu ${styles["header-menu"]}`}>
@@ -93,7 +98,6 @@ const handleDelayEnd = (e, to) => {
            className={`header-menu-link ${styles["header-menu-link"]}`}
            delay={1500} // 1.5 seconds delay
            onDelayStart={handleDelayStart}
-           onDelayEnd={handleDelayEnd}
            onMouseEnter={() => handleDesc(linkObj.desc)} // Update currentDesc on hover
            to={linkObj.link}
            key={linkObj.text}
@@ -114,6 +118,9 @@ const handleDelayEnd = (e, to) => {
             <motion.div custom={1} variants={opacity} animate={!isActive ? 'closed' : 'open'} className={`${styles["menu-time-wrap"]} ${ !isActive ? styles["empty-menu-link"] : ''}`}>
               <Clock />
             </motion.div>
+            <p className="body">
+              This is a Pre-Production Desktop Demo<br/><br/>Margin of error on Desktop & Mobile
+            </p>
             {generateAnchorTags(socialLinks)}
           </div>
         </div>

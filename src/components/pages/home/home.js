@@ -320,25 +320,6 @@ function Home() {
   
       mm.add("(max-width: 830px)", () => {
 
-        // triggers.push(ScrollTrigger.create({
-        //   trigger: '.first-two-sections',
-        //   start: "top top",
-        //   pin: ".dynamic-video-player-1 .text-content-mobile-scrollbar",
-        //   pinSpacer:false,
-        //   end: `bottom bottom`,
- 
-        // }));
-
-        // triggers.push(ScrollTrigger.create({
-        //   trigger: '.about-reference-wrap',
-        //   start: `-=${windowHeight} top`,
-        //   pin: ".page-five-right > div",
-        //   pinSpacer:false,
-        //   end:()=> `+=${windowWidth * 5}`,
-        //   markers: true,
-        //   scrub: true,
-
-        // }));
         
 
      let initialHeight = windowWidth * 0.88;
@@ -364,9 +345,6 @@ function Home() {
 
              // Calculate the new height, ensuring it stays within the initialHeight to maxHeight range
              const newHeight = Math.min(initialHeight + scrollDistance, maxHeight);
-
-             // Debugging: log the height to ensure it's calculated
-             console.log('New Height:', newHeight);
 
              // Apply the calculated height to the .mask-mouse-area element
              gsap.set('.dynamic-video-player-5 .mask-mouse-area, .dynamic-video-player-5 .mask-mouse-area > a, .dynamic-video-player-5 .mask-mouse-area > a > div, .dynamic-video-player-5 .mask-mouse-area .mask-image', {
@@ -415,8 +393,21 @@ function Home() {
     
 
         gsap.to(".mask-image, .scroll-video, .mask-image-blurhash-wrap", {
-          '-webkit-filter':'blur(10px)',
-          filter: 'blur(10px)',
+          '-webkit-filter':'blur(20px)',
+          filter: 'blur(20px)',
+          scrollTrigger: {
+            trigger: '.page-six',
+            start: `${windowWidth * 3.6} bottom`,
+            end:()=>'+=100px',
+            scrub: 2,
+            id: "scrub",
+          },
+
+        });
+
+        gsap.to(".mask-mouse-area.area-5 .details", {
+  
+          opacity: '0',
           scrollTrigger: {
             trigger: '.page-six',
             start: `${windowWidth * 3.6} bottom`,
@@ -507,13 +498,11 @@ function Home() {
 
           // Prevent running if the new height is the same as the current page height
           if (newPageHeight === pageHeight) {
-              console.log("Page height is the same, not updating.");
               return; // Exit the function early
           }
 
           // Set new page height
           setPageHeight(newPageHeight);
-          console.log(height);
       }
   };
 
@@ -822,9 +811,6 @@ useEffect(() => {
     return a * (1 - t) + b * t;
   }
 
-  useEffect(()=>{
-    console.log(index + hoveredItem)
-  }, [hoveredItem])
 
 
 
@@ -959,7 +945,6 @@ useEffect(() => {
         delay={2000} // Set the delay in milliseconds (e.g., 1000ms = 1 second)
      
         onDelayStart={()=>index===1 && hoveredItem ? handleDelayStart(hoveredItem.projectColor): null} // Callback when delay starts
-        onDelayEnd={handleDelayEnd} // Callback when delay ends and navigation happens
         style={ windowWidth < 830 && index === 1 ? {height: `${maskHeight}px`} : {}}
       >
        
@@ -1355,7 +1340,6 @@ const handleScroll = () => {
                   to={`archive/${project.displayName}`}
                   delay={1500} // Set the delay in milliseconds (e.g., 1000ms = 1 second)
                   onDelayStart={()=>handleDelayStart(project.projectColor)} // Callback when delay starts
-                  onDelayEnd={handleDelayEnd} // Callback when delay ends and navigation happens
 
                 >
                   <Reveal
@@ -1380,32 +1364,7 @@ const handleScroll = () => {
           ) : (
             <p>No featured projects available.</p>
           )}
-          {/* {data.map((item) => (
-            <div
-              key={item.id}
-              className={`title ${prevHover && prevHover.id === item.id ? "prev-hover" : ""}`}
-              onMouseEnter={() => handleMouseEnter(item)}
-              
-              
-            >
-              <div className="project-color" style={{ backgroundColor: `${projectColour}` }}></div>
-              <DelayLink 
-                to={item.link}
-                delay={2000} // Set the delay in milliseconds (e.g., 1000ms = 1 second)
-                onDelayStart={handleDelayStart} // Callback when delay starts
-                onDelayEnd={handleDelayEnd} // Callback when delay ends and navigation happens
-               
-              >
-                <Reveal
-                  key={item.id}
-                  custom={item.id}
-                  textContent={item.textContent}
-                  element="div"
-                  elementClass={`title featured-project-link`}
-                />
-              </DelayLink>
-            </div>
-          ))} */}
+          
         </span>
       </div>
       <DelayLink delay={1500} to='/archive' className='high-z-index-layer'>
@@ -1433,7 +1392,6 @@ const Section4 = ({windowWidth}) => {
   
 
   const handleMouseMove = (event) => {
-    console.log(windowWidth)
     if (containerRef.current && imageWrapRef.current && windowWidth > 830) {
       const containerRect = containerRef.current.getBoundingClientRect();
       const mouseRelativeY = event.clientY - containerRect.top;
@@ -1456,7 +1414,6 @@ const Section4 = ({windowWidth}) => {
   
 
   const toggleService = () => {
-    console.log(windowWidth)
       if(toggle || windowWidth <= 830){
         setToggle(false);
       } else {
@@ -1466,7 +1423,6 @@ const Section4 = ({windowWidth}) => {
   }
 
   const serviceImageAnimation = (i) => () => {
-    console.log(windowWidth)
     if(windowWidth >= 830){
     gsap.to('.page-four-service-image', {
         y: `-${((window.innerWidth * 0.11) * (i - 1)) + (i - 1) * 20}px`,
@@ -1478,7 +1434,6 @@ const Section4 = ({windowWidth}) => {
   };
 
   useEffect(() => {
-    console.log(windowWidth)
     if (containerRef.current && imageWrapRef.current && windowWidth >= 830) {
       const containerHeight = containerRef.current.clientHeight;
       const imageWrapHeight = imageWrapRef.current.clientHeight;
@@ -1571,7 +1526,6 @@ const Section4 = ({windowWidth}) => {
           to={`/contact`} // Specify the destination link here
           delay={1500} // Set the delay in milliseconds (e.g., 1000ms = 1 second)
           onDelayStart={handleDelayStart} // Callback when delay starts
-          onDelayEnd={handleDelayEnd} // Callback when delay ends and navigation happens
         >
           <div className="primary-button button-gradient">Let's work</div>
         </DelayLink>
@@ -1643,7 +1597,6 @@ const Section5 = () =>{
         to={`/about`} 
         delay={1500} 
         onDelayStart={handleDelayStart} 
-        onDelayEnd={handleDelayEnd} 
         >
           <Reveal variant={'opacity'} textContent={"Get to know me"} element={'p'} elementClass={"primary-button button-gradient"}/>
 
@@ -1740,9 +1693,6 @@ const scrollToPercentageOfViewportHeight = (percentage) => {
 
   };
 
-  const handleDelayEnd = (e, to) => {
-    // You can perform actions when the delay ends and navigation happens, if needed
-    console.log(`Delay ended for link to ${to}`);
-  };
+  
 
 export default Home;

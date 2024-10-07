@@ -101,7 +101,6 @@ useEffect(() => {
       let newIdIndex = (currentIdIndex + increment + totalImages) % totalImages;
       const newImageId = imageIds[newIdIndex];
 
-      console.log('Navigating from:', prevIndex, 'to:', newImageId); // Debugging log
 
       setCurrentBlurhash(getBlurhashById(projectData, newImageId));
       window.history.replaceState(null, '', `/#/archive/${projectId}/${newImageId}`);
@@ -115,8 +114,6 @@ useEffect(() => {
   
   
   const handleImageLoad = () => {
-    // After the main image loads, update the blurhash for the current image
-    console.log('image loaded');
     setCurrentBlurhash(getBlurhashById(projectData, selectedImageIndex));
   };
   

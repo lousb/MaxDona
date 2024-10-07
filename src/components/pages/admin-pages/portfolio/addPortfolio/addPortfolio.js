@@ -62,7 +62,6 @@ const [imageFiles, setImageFiles] = useState(Array.from({ length: 25 }, () => []
           'state_changed',
           (snapshot) => {
             const progress = (snapshot.bytesTransferred / snapshot.totalBytes) * 100;
-            console.log('Upload is ' + progress + '% done');
             setPerc(progress);
           },
           (error) => {
@@ -200,9 +199,7 @@ const handleRemoveField = (section) => {
 };
 
   
-useEffect(() => {
-    console.log(sectionOrder);
-  }, [sectionOrder]);
+
 
   
 
@@ -532,9 +529,7 @@ if (isFeatured) {
 setImageFiles(updatedImageFiles);
 };
   
-useEffect(() => {
-    console.log(initialSections);
-  }, [initialSections]);
+
   
 
   
