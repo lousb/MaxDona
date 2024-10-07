@@ -1,8 +1,9 @@
 @font-face {
   font-family: "Tusker";   /*Can be any text*/
   src: local("DonaGrotesk"),
-    url("./fonts/DonaGrotesk.otf") format("truetype");
+    url("./fonts/DonaGrotesk.otf") format("opentype");
 }
+
 
 /* define component style guide here */
 :root {
@@ -14,6 +15,7 @@
 
   --body-family: 'Synonym', sans-serif;
   --title-family: 'Tusker', sans-serif;
+  --second-family: 'Tursker-Second', sans-serif;
 
   --font-size-heading-link: 6.95vw;
   --font-size-heading-mobile: 56px;

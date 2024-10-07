@@ -10,7 +10,6 @@ import Footer from './components/molecules/footer/large/footer.js';
 
 
 //context - Make sure to use the correct import name here
-import './fonts/TuskerGrotesk-6700Bold.ttf'
 import MouseCursor from "./utils/mouseCursor";
 import { HeaderProvider } from "./utils/headerContext.js";
 import { LoadingProvider } from "./utils/LoadingContext.js";
