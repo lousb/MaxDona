@@ -237,7 +237,27 @@ width: max-content;
     aspect-ratio: 1;
     border-radius:10px;
     transition: all 500ms ease;
+    position: relative;
    
+}
+
+.parallax-button{
+    position: absolute;
+    pointer-events: none;
+    bottom:24px;
+    left: 28px;
+    overflow: hidden;
+}
+.parallax-button p{
+    transition: 500ms ease all;
+    color:white;
+    transform: translateY(100%);
+}
+.parallax-image-wrap:hover .parallax-button p{
+    transform: translateY(0%);
+}
+.parallax-button p::after{
+    background-color: white;
 }
 .parallax-image-wrap img{
     object-fit: cover;

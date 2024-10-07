@@ -10,6 +10,7 @@ function FooterDefault() {
     const [referencePeace, setReferencePeace] = useState([]);
     const [isVisible, setIsVisible] = useState(false);
     const footerRef = useRef(null);
+    const MAX_INDEX = 10;
 
     useEffect(() => {
         const options = {
@@ -30,6 +31,7 @@ function FooterDefault() {
             }
         };
     }, []);
+
 
     useEffect(() => {
         const unsubscribeProjects = onSnapshot(collection(db, "projects"), (snapshot) => {
@@ -92,31 +94,40 @@ function FooterDefault() {
                 <div className={`${styles["footer-col-3"]} ${styles["footer-column"]}`}>
                     <div className={styles["footer-archive-div"]}  style={{padding : '0px'}}>ARCHIVE</div>
                     {Object.keys(groupedProjects)
-                    .sort((a, b) => b - a) // Sort years in descending order
-                    .map((year) => (
+                      .sort((a, b) => b - a) // Sort years in descending order
+                      .map((year) => (
                         <div key={year}>
-                            <div className={styles["footer-archive-div"]}>{year}</div>
-                            {groupedProjects[year].map((project) => (
-                                <DelayLink key={project.id} delay={1500} to={`/projects/${project.id}`} className="primary-button">
-                                    {project.displayName}
-                                </DelayLink>
-                            ))}
+                          <div className={styles["footer-archive-div"]}>{year}</div>
+                          {groupedProjects[year].slice(0, MAX_INDEX - 1).map((project) => (
+                            <DelayLink key={project.id} delay={1500} to={`/projects/${project.id}`} className="primary-button">
+                              {project.displayName}
+                            </DelayLink>
+                          ))}
+                          
                         </div>
-                    ))}
-
+                        
+                      ))
+                      
+                    }
+                    <DelayLink delay={1500} to={`/reference-peace/`} className={`primary-button ${styles['footer-column-cta']}`}>
+                    FULL ARCHIVE
+                    </DelayLink>
                 </div>
                 <div className={`${styles["footer-col-4"]} ${styles["footer-column"]}`}>
-                    {Object.keys(groupedReferencePeace).map((year) => (
-                        <div key={year}>
-                            <div className={styles["footer-archive-div"]} style={{padding : '0px'}}>REFERENCE PEACE</div>
-                            <div className={styles["footer-archive-div"]}>{year}</div>
-                            {groupedReferencePeace[year].map((item) => (
-                                <DelayLink key={item.id} delay={1500} to={`/reference-peace/${item.id}`} className="primary-button">
-                                    {item.displayName}
-                                </DelayLink>
-                            ))}
-                        </div>
+                {Object.keys(groupedReferencePeace).map((year) => (
+                      <div key={year}>
+                        <div className={styles["footer-archive-div"]} style={{ padding: '0px' }}>REFERENCE PEACE</div>
+                        <div className={styles["footer-archive-div"]}>{year}</div>
+                        {groupedReferencePeace[year].slice(0, MAX_INDEX - 1).map((item) => (
+                          <DelayLink key={item.id} delay={1500} to={`/reference-peace/${item.id}`} className="primary-button">
+                            {item.displayName}
+                          </DelayLink>
+                        ))}
+                      </div>
                     ))}
+                    <DelayLink delay={1500} to={`/reference-peace/`} className={`primary-button ${styles['footer-column-cta']}`}>
+                      Reference Peace
+                    </DelayLink>
                 </div>
             </div>
             <div className={styles["bottom-footer-area"]}>

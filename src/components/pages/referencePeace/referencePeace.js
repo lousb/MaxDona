@@ -454,7 +454,10 @@ useLayoutEffect(() => {
                   :
                   data.map((project, index) => (
                       <div className={`projects-image ${styles['projects-image']}`}>
-                          <ParallaxImage  imageUrl={project.mainFeaturedImage}></ParallaxImage>
+                        <DelayLink delay={1500} to={`/reference-peace/${project.id}`}>
+                        <ParallaxImage  imageUrl={project.mainFeaturedImage} projectName={project.id}></ParallaxImage>
+                        </DelayLink>
+                          
                       </div>
                   ))
                   }
@@ -542,7 +545,7 @@ const formatDate = (dateStr) => {
 };
 
 
-const ParallaxImage = ({ imageUrl, blurhash, handleDelayStart }) => {
+const ParallaxImage = ({ imageUrl, projectName }) => {
   const [isHovered, setIsHovered] = useState(false);
   const [maskPosition, setMaskPosition] = useState({ x: 0, y: 0 });
   const imageRef = useRef(null);
@@ -608,6 +611,9 @@ const ParallaxImage = ({ imageUrl, blurhash, handleDelayStart }) => {
           transform: `translate(${maskPosition.x}px, ${maskPosition.y}px) scale(1.1)`,
         }}
       />
+      <div className={`${styles['parallax-button']}`}>
+          <p className="primary-button">Full Volume</p>
+      </div>
     </div>
   );
 };

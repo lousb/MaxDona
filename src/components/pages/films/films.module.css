@@ -1,3 +1,10 @@
+@font-face {
+  font-family: "Tusker-Second";   /*Can be any text*/
+  src: local("TuskerGrotesk"),
+    url("../../..//fonts/TuskerGrotesk.ttf") format("truetype");
+}
+  
+
 .film-page-wrap{
     width:92%;
     margin-inline:4%;

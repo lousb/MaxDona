@@ -2,8 +2,8 @@
     height: fit-content;
 }
 .contact-page{
-    width:92%;
-    margin-inline: 4%;
+    width:92vw;
+    margin-inline: 4vw;
 
 }
 .contact-page .mask-image{
@@ -213,6 +213,18 @@ a{
     
 .contact-image-wrap .mask-image{
     width: 100% !important;
+}
+.contact-page .details, .contact-player-project-name{
+    pointer-events: none !important;
+}
+.contact-player-project-name p{
+    color: black;
+    pointer-events: none !important;
+}
+.contact-player-project-name p::after{
+    margin-top:6px !important;
+    background-color: black;
+    transform: translateY(0px) !important;
 }
 
 @media only screen and (max-width:900px){

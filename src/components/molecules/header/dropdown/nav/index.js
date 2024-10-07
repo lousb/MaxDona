@@ -119,7 +119,7 @@ const handleDesc = (desc) =>{
               <Clock />
             </motion.div>
             <p className="body">
-              This is a Pre-Production Desktop Demo<br/><br/>Margin of error on Desktop & Mobile
+              Pre-Production Desktop Demo;<br/><br/>Margin of error on Desktop, Tablet & Mobile.
             </p>
             {generateAnchorTags(socialLinks)}
           </div>

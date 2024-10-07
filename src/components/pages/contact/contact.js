@@ -5,6 +5,7 @@ import gsap from "gsap";
 import { useLocation } from "react-router-dom";
 import Reveal from "../../../utils/textElementReveal/textElementReveal";
 import ContactBlock from "../../molecules/ContactBlock/contactBlock";
+import DelayLink from "../../../utils/delayLink";
 
 function Contact(){
 
@@ -105,7 +106,7 @@ function Contact(){
             </div>
               <img className="mask-image" src={image} style={initialStyles} ref={imageRef} alt="Franco" />
               <div className="details">
-                <div className="player-project-name">
+                <div className="contact-player-project-name">
                   <p className="primary-button">
                     Instagram
                   </p>
@@ -131,7 +132,10 @@ function Contact(){
                     </div>
                 </div>
                 <div className="contact-image-wrap">
-                    <DynamicVideoPlayer image={'./maxPortrait.jpg'}/>
+                  <DelayLink to={'https://www.instagram.com/macsdona/'} delay={1500}>
+                  <DynamicVideoPlayer image={'./maxPortrait.webp'}/>
+                  </DelayLink>
+                   
                   
 
                 </div>
