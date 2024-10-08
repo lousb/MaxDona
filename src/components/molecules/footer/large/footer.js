@@ -84,10 +84,10 @@ function FooterDefault() {
                         </div>
                     </div>
                     <div className={styles["find-me-wrap"]}>
+                        <DelayLink to={'https://instagram.com/macsdona'} delay={1500}>
+                        <p className="primary-button">Instagram</p>
+                        </DelayLink>
                         
-                        <a className="primary-button">Instagram</a>
-                        <a className="primary-button">Youtube</a>
-                        <a className="primary-button">Contact</a>
                     </div>
                 </div>
                 <div className={styles["footer-col-2"]}></div>
