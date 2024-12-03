@@ -1,11 +1,10 @@
 .page-not-found-wrap{
-    height: calc(100vh - 84px);
-    width: 92vw;
-    padding-inline:4vw;
+    min-height: calc(100vh - 84px);
+    width: 100vw;
     padding-top:84px;
     display: flex;
     flex-direction: column;
-    justify-content: space-evenly;
+    justify-content: space-between;
 }
 .page-not-found-wrap *{
     width: 100%;
@@ -18,4 +17,15 @@
 .page-not-found-title{
     margin:0;
     font-size: 20vw !important;
+}
+.page-not-found-title-overlay{
+
+    top:0;
+    left: 0;
+
+}
+.page-not-found-wrap canvas{
+   height: calc(100vh - 84px - (100px * 1.1) - (18px * 3) - 6vw);
+   padding-bottom: 4vw;
+
 }

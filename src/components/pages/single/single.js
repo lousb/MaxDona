@@ -197,18 +197,31 @@ const [windowWidth, setWindowWidth] = useState(window.innerWidth);
     
 
 
-     if (mainSectionImage) {
-       gsap.to(mainSectionImage, {
-         width: '100%',
-         scrollTrigger: {
-           start: '100px',
-           end: () => sectionRef.current.clientHeight / 0.75,
-           scrub: 1.5,
-           id: 'scrub',
-           trigger: sectionRef.current,
-         },
-       });
-     }
+    if (mainSectionImage) {
+      // Force a layout recalculation before starting the animation
+      requestAnimationFrame(() => {
+        gsap.set(mainSectionImage, { width: '49%' });
+
+        gsap.fromTo(mainSectionImage, 
+          {
+            width: '49%',
+          },
+          {
+            width: '100%',
+            scrollTrigger: {
+              start: 'top top', 
+              end: () => sectionRef.current.clientHeight / 0.75,
+              scrub: 1.5,
+              id: 'scrub',
+              trigger: document.documentElement,
+            },
+          }
+        );
+      });
+    }
+    
+    
+    
 
 
       
@@ -300,6 +313,7 @@ useEffect(() => {
         ...doc.data(),
       }));
       setProjectList(projectListData);
+      window.scrollTo({ top: 0, behavior: 'auto' });
 
     } catch (error) {
       console.error('Error fetching project data or list:', error);
@@ -529,7 +543,7 @@ const renderSection = (section, index) => {
               </div>
 
             
-            <section>
+            <section className={styles['project-page-data']}>
 
           {projectData && (
                   <>
@@ -1232,7 +1246,21 @@ const LargeImageSection = ({ sectionKey, value }) => {
 };
 
 const NavigationSection = ({ currentIndex, projectList, currentProject }) => {
-  // Ensure projectList is not empty
+  const [clickedButton, setClickedButton] = useState(null); // Track the clicked button
+  const location = useLocation(); // Get the current route
+
+  // Reset clickedButton whenever the route changes
+  useEffect(() => {
+    setClickedButton(null);
+  }, [location]);
+
+  const handleDelayStart = (color, button) => {
+    if (color) {
+      document.documentElement.style.setProperty('--secondary-dark', color);
+    }
+    setClickedButton(button); // Update the clicked button
+  };
+
   if (projectList.length === 0) {
     return null; // or some placeholder UI
   }
@@ -1247,18 +1275,78 @@ const NavigationSection = ({ currentIndex, projectList, currentProject }) => {
     return projectList[(currentIndex + 1) % projectList.length]?.id;
   };
 
+  const getPrevProjectColor = () => {
+    if (projectList.length === 0) return null;
+    return projectList[(currentIndex - 1 + projectList.length) % projectList.length]?.projectColor;
+  };
+
+  const getNextProjectColor = () => {
+    if (projectList.length === 0) return null;
+    return projectList[(currentIndex + 1) % projectList.length]?.projectColor;
+  };
+
   return (
     <div className={`${styles['navigation-section']} high-z-index-layer`}>
-      <div className={`${styles['nav-button']} ${styles['prev']}`} >
-        <DelayLink to={`/archive/${getPrevProjectId()}`} className={`heading`}   delay={2000} >Prev</DelayLink>
-
+      <div
+        className={`${styles['nav-button']} ${styles['prev']} ${
+          clickedButton === 'prev' ? styles.clicked : ''
+        }`}
+      >
+        <DelayLink
+          to={`/archive/${getPrevProjectId()}`}
+          className={`heading`}
+          delay={2000}
+        >
+          <span className={styles['prev-arrow']}>
+            <span className={styles['prev-arrow-bg']}>
+              <span className={styles['prev-arrow-bg-top']}></span>
+              <span
+                className={styles['prev-arrow-bg-bottom']}
+                style={{ backgroundColor: getPrevProjectColor() }}
+              ></span>
+            </span>
+          </span>
+          Prev
+          <span
+            className={styles['prev-second']}
+            style={{ color: getPrevProjectColor() }}
+            onClick={() => handleDelayStart(getPrevProjectColor(), 'prev')}
+          >
+            Prev
+          </span>
+        </DelayLink>
       </div>
       <div className={`${styles['project-nav-indicator']} body`}>
         {currentProject}
       </div>
-      <div  className={`${styles['nav-button']} ${styles['next']}`} >
-        <DelayLink to={`/archive/${getNextProjectId()}`} className={`heading`}  delay={2000}  >Next</DelayLink>
-
+      <div
+        className={`${styles['nav-button']} ${styles['next']} ${
+          clickedButton === 'next' ? styles.clicked : ''
+        }`}
+      >
+        <DelayLink
+          to={`/archive/${getNextProjectId()}`}
+          className={`heading`}
+          delay={2000}
+        >
+          Next
+          <span
+            className={styles['next-second']}
+            style={{ color: getNextProjectColor() }}
+            onClick={() => handleDelayStart(getNextProjectColor(), 'next')}
+          >
+            Next
+          </span>
+          <span className={styles['next-arrow']}>
+            <span className={styles['next-arrow-bg']}>
+              <span className={styles['next-arrow-bg-top']}></span>
+              <span
+                className={styles['next-arrow-bg-bottom']}
+                style={{ backgroundColor: getNextProjectColor() }}
+              ></span>
+            </span>
+          </span>
+        </DelayLink>
       </div>
     </div>
   );

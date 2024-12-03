@@ -246,9 +246,9 @@ body:has( .reference-peace-single):not(:has( .header-toggled-global)) .header-in
 body:has(.main-section-video-wrap:hover) .video-rp-hover-svg-wrap > svg > path{
   transform: translateY(0%);
 }
-body:has(.project-page) .large-arrow-cursor{
+/* body:has(.project-page) .large-arrow-cursor{
   transition: transform 500ms ease 400ms, max-height 500ms ease, max-width 500ms ease, margin 500ms ease 400ms, filter 300ms ease 0ms, scale 300ms ease;
-}
+} */
 
 
 body:has(.main-section-video-wrap:hover) .video-rp-hover-desc{

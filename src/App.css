@@ -38,12 +38,7 @@ body:not(:has(.loading-wrap.is-loading)){
     z-index: 9999 !important;
 }
 
-.page-transitioning .arrow-cursor-image, body:has(.loading-wrap.is-complete) .App > .large-arrow-cursor >  .arrow-cursor-image, .loading-wrap.is-loading .arrow-cursor-image {
-    transition: all 0.2s ease-out, transform 100s linear, filter 200s 0s !important;
-    transform: translateY(-100%) !important;
-    scale: 1 !important;
-    filter: 0;
-}
+
 .page-content{
     background-color: white;
 
@@ -56,7 +51,11 @@ body:not(:has(.loading-wrap.is-loading)){
     pointer-events: none !important;
 }
 body:has(.loading-wrap.is-loading) .large-arrow-cursor, .page-transitioning .large-arrow-cursor{
-    scale:1 !important;
+    transform: translate(-184px, -184px) !important;
+    scale: 0.2 !important;
+}
+body:has(.loading-wrap.is-loading):has(.transition-overlay:hover) .large-arrow-cursor, .page-transitioning:has(.transition-overlay:hover) .large-arrow-cursor{
+    clip-path: polygon(0 0, 45em 0, 45em 100%, 0% 100%);
 }
 body:has(.loading-wrap.is-complete) .mask-image-wrap{
     clip-path: inset(100% 0 0 0 round 40px);
@@ -113,15 +112,42 @@ body:has(.reference-peace-first-page:hover) .large-arrow-cursor{
 
     position: absolute;
     height:84px;
-    width:84px;
-  
-
+    width: max-content;
+    display: flex;
+    clip-path: polygon(0 0, 84px 0, 84px 100%, 0% 100%);
+    max-width: 85px !important;
     z-index: 10;
     pointer-events: none;
     transform-origin: top left;
-    transition: transform 500ms ease, max-height 500ms ease, max-width 500ms ease, margin 500ms ease, filter 300ms ease 0ms, scale 300ms ease;
-    overflow: hidden;
+    transition: transform 500ms ease, max-height 500ms ease, max-width 500ms ease, margin 500ms ease, filter 300ms ease 0ms, scale 500ms ease, clip-path 500ms ease;
     background-repeat: repeat-y;
+}
+.arrow-cursor-text{
+    opacity: 1 !important;
+    overflow: visible;
+    font-size: calc(84px * 1.2);
+    height: 0.9em;
+    margin-top: -0.2em;
+    padding-left: 92px;
+    display: flex;
+    flex-direction: column;
+    color:white;
+    animation: moveUp 0.64s linear infinite;
+    animation-play-state: paused;
+}
+body:has(.loading-wrap.is-loading) .arrow-cursor-text, .page-transitioning .arrow-cursor-text{
+    animation-play-state: running;
+}
+@keyframes moveUp {
+  0% {
+    transform: translateY(0);
+  }
+  100% {
+    transform: translateY(-100px);
+  }
+}
+.arrow-cursor-text{
+    cursor:'Loading';
 }
 body:has(header .header-menu-link:hover) .large-arrow-cursor{
 transition: transform 500ms ease, max-height 500ms ease, max-width 500ms ease, margin 500ms ease, filter 500ms ease 0ms;
@@ -137,7 +163,7 @@ body:has(.header-menu-subtext-links:hover) .large-arrow-cursor, body:has(.header
     position: absolute;
     top:0;
     content: '';
-    height:calc(84px * 200);
+    height: 84px;
     width:85px;
     background: white;
     mask-repeat: repeat-y;
@@ -164,8 +190,11 @@ body:has(.header-menu-subtext-links:hover) .large-arrow-cursor, body:has(.header
     display: flex;
     justify-content: center ;
     align-items: center;
+ 
 }
-
+.page-transitioning .App > div .transition-overlay{
+    pointer-events: all !important;
+}
 .page-transitioning .transition-overlay{
     transition: 1100ms cubic-bezier(0.76, 0, 0.24, 1), background-color 500ms ease ;
 }
@@ -286,12 +315,12 @@ body:has(.contact-page) .header-logo-link{
 body:has(.header-toggled-global) .large-arrow-cursor{
     z-index: 9998;
     scale:1;
-    transform: translate(-50%, -50%) !important;
+    transform: translate(-40px, -50%) !important;
 }
 body:has(.header-menu-link:hover) .large-arrow-cursor{
     transform-origin: top left;
     transform: scale(0.2) !important;
-    margin-top:-48px;
+    margin-top:-46px;
     margin-left:-38px;
 }
 body:has(.page-three-wrap:hover) .large-arrow-cursor{
@@ -339,7 +368,7 @@ body:has(header .header-menu-link:nth-child(5):hover) .large-arrow-cursor{
 }
 body:not(.page-transitioning):has( .masonry-section:hover) .large-arrow-cursor, body:not(.page-transitioning):has(.random-masonry-image-view:hover) .large-arrow-cursor{
 
-    transform:translate(-50%, -50%) scale(0.6) !important;
+    transform:translate(-40px, -50%) scale(0.6) !important;
   
     
 }
@@ -439,7 +468,7 @@ body:has(.film-page-wrap.fast-active) .header-wrap {
 }
 body:has(.header-toggled-global) .large-arrow-cursor, .page-transitioning .App > .large-arrow-cursor, body:has(.loading-wrap.is-loading) .large-arrow-cursor{
     height: 84px;
-    width: 84px;
+    width: auto;
 }
 
 

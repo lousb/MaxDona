@@ -20,7 +20,7 @@ function Loading() {
                 onComplete: () => {
                     setTimeout(() => {
                         setIsLoading(false);
-                    }, 500);
+                    }, 0);
                 }
             });
         }, 1000);

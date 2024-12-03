@@ -505,6 +505,90 @@ const testimonialImages = (i, hoveredSlide, handleMouseEnter, handleMouseLeave) 
     </div>
   );
 };
+
+const InstagramGallery = ({ i, hoveredSlide, handleMouseEnter, handleMouseLeave }) => {
+  const [instagramPosts, setInstagramPosts] = useState([]);
+  const [error, setError] = useState(null);
+
+  useEffect(() => {
+    const fetchInstagramPosts = async () => {
+      const accessToken = "YOUR_ACCESS_TOKEN"; // Replace with your valid access token
+      
+      try {
+        const response = await fetch(
+          `https://graph.instagram.com/me/media?fields=id,caption,media_type,media_url,permalink,thumbnail_url&access_token=${accessToken}`
+        );
+
+        if (!response.ok) {
+          throw new Error(`Error: ${response.status} ${response.statusText}`);
+        }
+
+        const data = await response.json();
+        setInstagramPosts(data.data);
+      } catch (err) {
+        console.error('Failed to fetch Instagram posts:', err);
+        setError(err.message);
+      }
+    };
+
+    fetchInstagramPosts();
+  }, []);
+
+  if (error) {
+    return <div>Error: {error}</div>;
+  }
+
+  if (instagramPosts.length === 0) {
+    return <div>Loading Instagram posts...</div>;
+  }
+
+  return (
+    <div className={`${styles["slide-projects"]} ${i !== 1 ? 'second-' : ''}slide-projects`}>
+      {instagramPosts.map((post) => (
+        <div
+          key={post.id}
+          className={`${styles["slide-project"]}-${i} ${styles["slide-project"]} ${hoveredSlide === post.id ? styles['hovered'] : ''}`}
+          onMouseEnter={() => handleMouseEnter(post.id)}
+          onMouseLeave={handleMouseLeave}
+        >
+          <a href={post.permalink} target="_blank" rel="noopener noreferrer">
+            <div className={`${styles["slide-project-image"]} ${styles["instagram-image"]}`}>
+              <img src={post.media_url} alt={post.caption || "Instagram Post"} />
+            </div>
+          </a>
+          <div className={styles['slide-project-details']}>
+            <p className="body"><span>{post.caption || "Instagram Post"}</span></p>
+            <p className={`primary-button ${styles['primary-button']}`}>
+              <span>View on Instagram</span>
+            </p>
+          </div>
+        </div>
+      ))}
+
+      {i === 2 && instagramPosts[0] && (
+        <div
+          className={`${styles["slide-project"]}-${i} ${styles["slide-project"]} ${hoveredSlide === instagramPosts[0].id ? styles['hovered'] : ''}`}
+          onMouseEnter={() => handleMouseEnter(instagramPosts[0].id)}
+          onMouseLeave={handleMouseLeave}
+        >
+          <a href={instagramPosts[0].permalink} target="_blank" rel="noopener noreferrer">
+            <div className={`${styles["slide-project-image"]}`}>
+              <img src={instagramPosts[0].media_url} alt={instagramPosts[0].caption || "Instagram Post"} />
+            </div>
+          </a>
+          <div className={styles['slide-project-details']}>
+            <p className="body"><span>{instagramPosts[0].caption || "Instagram Post"}</span></p>
+            <p className={`primary-button ${styles['primary-button']}`}>
+              <span>View on Instagram</span>
+            </p>
+          </div>
+        </div>
+      )}
+    </div>
+  );
+};
+
+
   
   
 

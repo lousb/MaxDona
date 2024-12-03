@@ -172,7 +172,10 @@ body:has(.player__wrapper:hover) .scroll-notification{
     height: fit-content;
 }
  
-
+body.scrolled:has(.main-section-image-wrap:hover) .large-arrow-cursor{
+    max-height: 0px !important;
+    max-width: 0px !important;
+}
 
   .video-hover-desc{
       height:fit-content;
@@ -181,7 +184,7 @@ body:has(.player__wrapper:hover) .scroll-notification{
 
       transform-origin: top left;
       transition: transform 500ms ease, clip-path 500ms ease, max-height 500ms ease, max-width 500ms ease, padding 500ms ease, width 500ms ease !important;
-      z-index: 101;
+      z-index: 8;
       scale:1;
 
       padding:12px 14px 12px 42px;
@@ -192,6 +195,9 @@ body:has(.player__wrapper:hover) .scroll-notification{
       border-radius: 4px;
       overflow: hidden;
       pointer-events: none;
+  }
+  body.scrolled:has(.main-section-image-wrap:hover) .large-arrow-cursor{
+    z-index: 7 !important;
   }
 
   .video-hover-svg-wrap{
@@ -210,23 +216,26 @@ body:has(.player__wrapper:hover) .scroll-notification{
     transition: 500ms ease;
     fill: var(--primary-color);
 }
-body:has(.main-section-image-wrap:hover) .video-hover-svg-wrap > svg > path{
+body:has(.main-section-image:hover) .video-hover-svg-wrap > svg > path{
     transform: translateY(0%);
 }
-body:has(.project-page) .large-arrow-cursor{
-    transition: transform 500ms ease 400ms, max-height 500ms ease, max-width 500ms ease, margin 500ms ease 400ms, filter 300ms ease 0ms, scale 300ms ease;
+body:not(.scrolled) .main-section-image{
+    max-width: 49%;
 }
+/* body:has(.project-page) .large-arrow-cursor{
+    transition: transform 500ms ease 400ms, max-height 500ms ease, max-width 500ms ease, margin 500ms ease 400ms, filter 300ms ease 0ms, scale 300ms ease;
+} */
 .scrolled:has(.project-page) .large-arrow-cursor{
     transition: transform 500ms ease 0ms, max-height 500ms ease, max-width 500ms ease, margin 500ms ease 0ms, filter 300ms ease 0ms, scale 300ms ease;
 }
   
-  .scrolled:has(.main-section-image-wrap:hover) .video-hover-desc{
+  .scrolled:has(.main-section-image:hover) .video-hover-desc{
       clip-path: polygon(0 0, 100% 0, 100% 100%, 0% 100%);
   }
   .scrolled .main-video-controls-overlay div{
     pointer-events: none !important;
   }
-  .scrolled:not(:has(.main-section-image-wrap:hover)) .video-hover-desc{
+  .scrolled:not(:has(.main-section-image:hover)) .video-hover-desc{
       transition: 0s 0.7s, opacity 0.6s 0.1s, clip-path 0.5s 0.1s !important;
       opacity: 0;
       clip-path: polygon(0 0, 0 0, 0 100%, 0 100%);
@@ -284,28 +293,28 @@ body:has(.project-page) .large-arrow-cursor{
 
   }
 
-  .scrolled:not(:has(.main-section-image-wrap:hover)) .video-hover-desc  .link-desc > span{
+  .scrolled:not(:has(.main-section-image:hover)) .video-hover-desc  .link-desc > span{
       transition: 500ms ease all !important;
       transform: translateY(100%) !important;
       color: white !important;
   }
-  .scrolled:has(.main-section-image-wrap:hover) .video-hover-desc{
+  .scrolled:has(.main-section-image:hover) .video-hover-desc{
       transition: transform 500ms ease 0s, width 500ms ease 0s, max-height 500ms ease 0s, max-width 500ms ease 0s, padding 500ms ease 0.5s, clip-path 500ms ease 0s !important;
       clip-path: polygon(100% 0, 0 0, 0 100%, 100% 100%) !important;
   }
-  .scrolled:has(.main-section-image-wrap:hover) .video-hover-desc > p  > span{
+  .scrolled:has(.main-section-image:hover) .video-hover-desc > p  > span{
       transition: clip-path 500ms ease-out 0s, filter 500ms ease 0ms !important;
       clip-path: polygon(0 0, 100% 0, 100% 100%, 0% 100%) !important;
   }
   .video-hover-desc p{
       margin:0 !important;
   }
-  .pin-spacer:has(> .main-section-image-wrap),  .pin-spacer:has(> .main-section-image-wrap) .main-section-image-wrap{
+  .pin-spacer:has(> .main-section-image-wrap){
     width: 92vw !important;
   }
-  .pin-spacer:has(> .main-section-image-wrap){
+  /* .pin-spacer:has(> .main-section-image-wrap){
     margin-inline: 4vw !important;
-  }
+  } */
 
 
   @media only screen and (max-width: 830px){

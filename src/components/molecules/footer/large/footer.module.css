@@ -86,8 +86,10 @@ a{
     position: absolute;
     bottom: 0;
 }
+
 .find-me-wrap p{
     margin:0;
+    color:#181818 !important;
 }
 .flag-wrap{
     display: flex;
