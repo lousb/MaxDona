@@ -50,7 +50,7 @@
     pointer-events: all;
     width: 49%;
     max-width: 100%;
-    border-radius: 20px;
+    border-radius: 10px;
     overflow: hidden;
     height: calc(100vh - 8vw);
     position: relative;
@@ -75,7 +75,7 @@
     display: flex;
     flex-direction: column;
     justify-content: end;
-    width: 50%;
+    width: calc(49.2% - 4vw);
 
 }
 .main-description-wrap{
@@ -163,7 +163,7 @@
     opacity: 1;
 }
 .details-section-image-wrap{
-    border-radius: 20px;
+    border-radius: 10px;
     width: 49.2%;
     height: calc(100vh - 90px);
     overflow: hidden;
@@ -196,7 +196,7 @@
 }
 .parallax-image-wrap{
     overflow: hidden;
-    border-radius: 14px;
+    border-radius: 10px;
     display: flex;
     justify-content: center;
     transition: all 500ms ease;
@@ -244,7 +244,7 @@
     background-position: center center !important;
     height: calc(100vh - 90px);
     cursor: none;
-    border-radius: 20px;
+    border-radius: 10px;
     width:100%;
     background: #EEEEEE;
 }
@@ -281,7 +281,7 @@
 .large-section, .large-section img{
     width: 100%;
     height: 100%;
-    border-radius: 20px;
+    border-radius: 10px;
     object-fit: cover;
 }
 .large-section img{
@@ -326,7 +326,7 @@
 .player__wrapper{
     height: calc(100vh - 2.4vw);
     overflow: hidden;
-    border-radius: 24px;
+    border-radius: 10px;
     display: flex;
     justify-content: center;
     align-items: center;
@@ -355,8 +355,8 @@
  
  .progress-bar{
     background-color: #ffffff30;
-    border-radius: 20px;
-    clip-path: inset(0 100% 0 0 round 20px);
+    border-radius: 10px;
+    clip-path: inset(0 100% 0 0 round 10px);
     display: flex;
     align-items: end;
     position:absolute;
@@ -375,7 +375,7 @@
     border-radius: 1.5px;
     overflow: hidden;
 
-    clip-path: inset(0 0 0 0 round 20px);
+    clip-path: inset(0 0 0 0 round 10px);
     transition: 500ms ease all 300ms, clip-path ease-out 800ms, width 0.5s linear;
  }
  .scroll-notification p span{

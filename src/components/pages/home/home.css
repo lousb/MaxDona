@@ -113,13 +113,13 @@ section{
 }
 
 .mask-image-wrap{
-    border-radius: 20px;
+    border-radius: 10px;
     overflow: hidden;
     margin-left:-5px;
     position: relative;
     height:calc(95vh - 180px);
     max-height: 100%;
-    clip-path: inset(0 0 0 0 round 20px);
+    clip-path: inset(0 0 0 0 round 10px);
     transition: transform 0.5s ease 0s, clip-path 1400ms cubic-bezier(0.60, 0, 0.24, 1) 200ms;
 }
 .home-project-list > .title{
@@ -754,7 +754,7 @@ body:has(.featured-project-link:hover) .home-hover-desc > p  > span, body:has(.i
     position: absolute;
     width: 22vw;
     height: 11vw;
-    clip-path: inset( 100% 0 0 0  round 20px);
+    clip-path: inset( 100% 0 0 0  round 10px);
     right:0;
     top:0;
     transition: ease-out clip-path 500ms;
@@ -762,7 +762,7 @@ body:has(.featured-project-link:hover) .home-hover-desc > p  > span, body:has(.i
 }
 .page-four-service-image{
     transition: 400ms ease-out all 0s;
-    border-radius: 20px;
+    border-radius: 10px;
     margin-bottom: 20px;
     width: 22vw;
     height: 11vw;
@@ -774,10 +774,10 @@ body:has(.featured-project-link:hover) .home-hover-desc > p  > span, body:has(.i
 }
 .service-toggle-desc .page-four-service-image-wrap{
     transition-delay: 0.2s !important;
-    clip-path: inset( 100% 0 0 0  round 20px);
+    clip-path: inset( 100% 0 0 0  round 10px);
 }
 .service-image-mobile{
-    border-radius: 20px;
+    border-radius: 10px;
     margin-bottom: 2em;
     aspect-ratio: 16 / 9;
     object-fit: cover;
@@ -802,7 +802,7 @@ body:has(.featured-project-link:hover) .home-hover-desc > p  > span, body:has(.i
     margin:0;
 }
 .page-four-middle-wrap:has( .title:hover) .page-four-service-image-wrap{
-    clip-path: inset(0 0 0 0 round 20px);
+    clip-path: inset(0 0 0 0 round 10px);
     transition-delay: 0.3s;
 }
 .page-four-service:has( .title:hover  ) > .service-desc{
@@ -810,7 +810,7 @@ body:has(.featured-project-link:hover) .home-hover-desc > p  > span, body:has(.i
 }
 .service-toggle-desc .page-four-service-image-wrap{
     transition-delay: 0s;
-    clip-path: inset( 100% 0 0 0 round 20px) !important;
+    clip-path: inset( 100% 0 0 0 round 10px) !important;
 }
 .service-toggle-image .service-desc{
     transition-delay: 0s;
@@ -1231,7 +1231,7 @@ transform:translateY(-30px)
     }
     .reference-peace-bg-gradient{
         background-color: black;
-        border-radius: 20px;
+        border-radius: 10px;
         opacity: 0.3;
         width: 100%;
         height: 100%;

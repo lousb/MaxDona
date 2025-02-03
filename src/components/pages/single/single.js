@@ -489,7 +489,7 @@ const renderSection = (section, index) => {
                       <Reveal textContent={projectData.displayName} element={"h1"} elementClass={`heading`}/>
                     </span>
                     <span>
-                      <Reveal custom={2} textContent={'Directed by Max Dona'} element={"h2"} elementClass={`body ${styles['directed-subtext']}`}/>
+                      <Reveal custom={2} textContent={`${projectData.role ? projectData.role : ''} by Max Dona`} element={"h2"} elementClass={`body ${styles['directed-subtext']}`}/>
                     </span>
                     <div className={`${styles['main-description-wrap']}`}>
                     <div className={`${styles['main-description-wrap-left']}`}>

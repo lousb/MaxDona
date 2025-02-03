@@ -2,7 +2,21 @@
 .all-projects-page-wrap svg *{
     transition: 500ms ease all;
 }
-
+.formInput.role > div{
+    display: flex;
+    width: 50%;
+    align-items: center;
+}
+.formInput.role input{
+    border: 0;
+    border-bottom: 2px solid var(--outline-color);
+    flex-grow: 1;
+}
+.formInput.role .body{
+    font-family: var(--title-family);
+    text-transform: uppercase;
+    font-size: 28px;
+}
 .all-projects-page-wrap:has(.projectname input:active) svg .title path, .all-projects-page-wrap:has(.projectname input:focus) svg .title path, .all-projects-page-wrap:has(.projectname input:hover) svg .title path{
     fill:var(--project-color) !important;
 }

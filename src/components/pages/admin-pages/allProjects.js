@@ -241,7 +241,7 @@ const handleSetFeatured = async (id, isCurrentlyFeatured) => {
                             {project.displayName}
                           </div>
                           <div className={`${title}-${project.displayName}-actions list-item-actions`}>
-                          <Link to={`/projects/${project.id}`} className="view-list-item-link">
+                          <Link to={`/archive/${project.id}`} className="view-list-item-link">
                               <div className={`view-list-item`}></div>
                             </Link>
                             <div className="remove-featured-button" onClick={() => handleRemoveFeatured(project.id)}>

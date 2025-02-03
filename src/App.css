@@ -50,12 +50,13 @@ body:not(:has(.loading-wrap.is-loading)){
 .page-transitioning .App > div *{
     pointer-events: none !important;
 }
-body:has(.loading-wrap.is-loading) .large-arrow-cursor, .page-transitioning .large-arrow-cursor{
-    transform: translate(-184px, -184px) !important;
-    scale: 0.2 !important;
-}
 body:has(.loading-wrap.is-loading):has(.transition-overlay:hover) .large-arrow-cursor, .page-transitioning:has(.transition-overlay:hover) .large-arrow-cursor{
     clip-path: polygon(0 0, 45em 0, 45em 100%, 0% 100%);
+}
+
+.header-transitioning .large-arrow-cursor, body:has(.loading-wrap:hover) .large-arrow-cursor, body:has(.loading-wrap.is-loading):has(.transition-overlay:hover) .large-arrow-cursor, .page-transitioning:has(.transition-overlay:hover) .large-arrow-cursor{
+    transform: translate(-184px, -184px) !important;
+    scale: 0.2 !important;
 }
 body:has(.loading-wrap.is-complete) .mask-image-wrap{
     clip-path: inset(100% 0 0 0 round 40px);

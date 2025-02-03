@@ -31,6 +31,7 @@ const DelayLink = ({ delay = 0, onDelayStart = () => {}, onDelayEnd = () => {}, 
 
     // Add the class when the delay starts
     document.body.classList.add("page-transitioning");
+    document.body.classList.add("header-transitioning");
 
     const id = setTimeout(() => {
       window.location.href = to;
@@ -38,6 +39,7 @@ const DelayLink = ({ delay = 0, onDelayStart = () => {}, onDelayEnd = () => {}, 
 
       // Remove the class when the delay ends
       document.body.classList.remove("page-transitioning");
+      document.body.classList.remove("header-transitioning");
 
       // Dispatch the custom event after the navigation
       window.dispatchEvent(new Event('routeChange'));

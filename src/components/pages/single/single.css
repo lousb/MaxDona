@@ -91,10 +91,10 @@ body:has(.player__wrapper:hover) .scroll-notification{
     width: 13em;
 }
 .scrolled .progress-bar{
-    clip-path: inset(0 0 0 0 round 20px);
+    clip-path: inset(0 0 0 0 round 10px);
 }
 .stop-progress-toggle{
-    clip-path: inset(0 100% 0 0 round 20px);
+    clip-path: inset(0 100% 0 0 round 10px);
     transition-delay: 0ms;
     margin-right: 60px !important;
     opacity: 0 !important;
@@ -111,7 +111,7 @@ body:has(.player__wrapper:hover) .scroll-notification{
 
 }
 .stop-progress-toggle > div{
-    clip-path: inset(0 100% 0 0 round 20px);
+    clip-path: inset(0 100% 0 0 round 10px);
 }
 .single-click-anywhere{
     position: absolute !important;

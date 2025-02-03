@@ -7,12 +7,12 @@ import { useFooter } from "../../../../../context/FooterContext";
 import { projectMainSection, projectDetailSection, textSectionSource, titleSectionSource } from '../../formSource';
 import { getStorage, ref, uploadBytesResumable, getDownloadURL } from "firebase/storage";
 import { encode } from 'blurhash';
-import MainHero from "./SVG/MainHeroSVG";
-import FiftyFifty from "./SVG/fiftyfiftySVG";
-import LargeImage from "./SVG/LargeImageSVG";
-import Masonry from "./SVG/MasonrySVG";
-import Text from "./SVG/TextSVG";
-import Title from "./SVG/TitleSVG";
+import MainHero from "../SVG/MainHeroSVG";
+import FiftyFifty from "../SVG/fiftyfiftySVG";
+import LargeImage from "../SVG/LargeImageSVG";
+import Masonry from "../SVG/MasonrySVG";
+import Text from "../SVG/TextSVG";
+import Title from "../SVG/TitleSVG";
 import { DragDropContext, Droppable, Draggable } from '@hello-pangea/dnd';
 
 
@@ -102,6 +102,7 @@ const [imageFiles, setImageFiles] = useState(Array.from({ length: 25 }, () => []
   const handleInput = (e) => {
     const id = e.target.id;
     const value = e.target.value;
+   
     setData({ ...data, [id]: value });
   };
 
@@ -209,27 +210,28 @@ const handleAdd = async (e) => {
   e.preventDefault();
 
   try {
-    const projectData = {
-      displayName: data.displayName,
-      releaseDate: data.releaseDate,
-      videoLink: data.videoLink,
-      focusGenre: data.focusGenre,
-      videoName: data.videoName,
-      projectColor: primaryColor,
-      isFeatured: false,
-      featuredIndex:null,
-      mainDescription1: data.mainDescription1,
-      mainDescription2: data.mainDescription2,
-      mainFeaturedImage: mainFeaturedImage ? mainFeaturedImage : null,
-      timeStamp: serverTimestamp(),
-      sectionOrder: sectionOrder,
-      featuredOrder:1,
-      imageUrls: {},
-      details: {},
-      textSections: {},
-      titleSections: {},
-      largeImageSections: {}, 
-    };
+  const projectData = {
+    displayName: data.displayName,
+    releaseDate: data.releaseDate,
+    videoLink: data.videoLink,
+    focusGenre: data.focusGenre,
+    videoName: data.videoName,
+    role: data.role, 
+    projectColor: primaryColor,
+    isFeatured: false,
+    featuredIndex: null,
+    mainDescription1: data.mainDescription1,
+    mainDescription2: data.mainDescription2,
+    mainFeaturedImage: mainFeaturedImage ? mainFeaturedImage : null,
+    timeStamp: serverTimestamp(),
+    sectionOrder: sectionOrder,
+    featuredOrder: 1,
+    imageUrls: {},
+    details: {},
+    textSections: {},
+    titleSections: {},
+    largeImageSections: {},
+  };
 
     if (mainFeaturedImage) {
       const name = new Date().getTime() + mainFeaturedImage.name;
@@ -598,17 +600,39 @@ return (
     />
   </div>
   {projectMainSection.map((input) => (
-    <div className={`formInput ${getClassNameFromLabel(input.label)}`} key={input.id}>
-      <label>{input.label}</label>
-      <input
-        id={input.id}
-        type={input.type}
-        placeholder={input.placeholder}
-        onChange={handleInput}
-        maxLength={input.maxLength || null}
-        required
-      />
-    </div>
+    <>
+    {input.id != 'role' ? 
+      <div className={`formInput ${getClassNameFromLabel(input.label)}`} key={input.id}>
+        <label>{input.label}</label>
+        <input
+          id={input.id}
+          type={input.type}
+          placeholder={input.placeholder}
+          onChange={handleInput}
+          maxLength={input.maxLength || null}
+          required
+        />
+      </div>:
+      <div className={`formInput role ${getClassNameFromLabel(input.label)}`} key={input.id}>
+        <label>{input.label}</label>
+        <div><input
+          id={input.id}
+          type={input.type}
+          placeholder={input.placeholder}
+          onChange={handleInput}
+          maxLength={input.maxLength || null}
+          required
+        />
+        <span className='body'>
+          By Max Dona
+        </span></div>
+        
+        
+      </div>
+
+    }
+    </>
+    
   ))}
 
  

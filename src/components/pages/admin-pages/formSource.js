@@ -85,6 +85,12 @@ export const projectMainSection = [
     maxLength: 65,
     placeholder: '...',
   },
+  {
+    id: 'role',
+    label: 'Role',
+    type: 'text',
+    placeholder: 'e.g Directed, Filmed',
+  },
 ];
 
 export const projectDetailSection = [

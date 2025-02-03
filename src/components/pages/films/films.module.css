@@ -117,7 +117,7 @@ background: linear-gradient(90deg, rgba(0,0,0,0.5228466386554622) 0%, rgba(0, 0,
     display: block;
 }
 .project-scroll-height a:last-child .film-project-item{
-    border-radius: 0px 0px 20px 20px;
+    border-radius: 0px 0px 10px 10px;
 }
 .loaded-image{
     position:absolute;
@@ -128,7 +128,7 @@ background: linear-gradient(90deg, rgba(0,0,0,0.5228466386554622) 0%, rgba(0, 0,
     max-height: calc(100vh - 4vw - 84px);
     height: calc(-90px + 70vh);
     overflow-x: hidden;
-    border-radius: 18px;
+    border-radius: 10px;
     width: 100%;
     overflow-y: hidden;
 
@@ -196,7 +196,7 @@ background: linear-gradient(90deg, rgba(0,0,0,0.5228466386554622) 0%, rgba(0, 0,
     display: flex;
     flex-direction: column;
     justify-content: space-between;
-    border-radius: 10px;
+    border-radius: 5px;
     position: fixed;
     top: calc(100vh - 8vw - 140px);
     right: 4vw;
@@ -265,7 +265,7 @@ button.view-toggle-active{
 .project-scroll-height{
     width: 100%;
     overflow: hidden;
-    border-radius: 18px;
+    border-radius: 10px;
     display: flex;
     flex-direction: column;
 }
@@ -320,7 +320,7 @@ button.view-toggle-active{
     align-items: end;
 }
 .random-masonry-image{
-    border-radius: 14px;
+    border-radius: 10px;
       
     width:100% !important;
 
@@ -333,7 +333,7 @@ button.view-toggle-active{
     width: 22vw;
     height: 22vw;
     padding-bottom:0vw;
-    border-radius: 16px;
+    border-radius: 10px;
     margin-right:4vw;
     margin-top:90px;
     overflow: hidden;
@@ -348,7 +348,7 @@ button.view-toggle-active{
     padding: 0 !important;
     height: 0vw;
     overflow: hidden;
-    border-radius: 16px;
+    border-radius: 10px;
     transition: 500ms ease all;
 }
 .fast-view-button{
@@ -427,11 +427,11 @@ button.view-toggle-active{
     height: 22vw;
 }
 .parallax-image-wrap{
-    clip-path: inset(0 0 0 0 round 14px);
+    clip-path: inset(0 0 0 0 round 10px);
 
     /* height: 22vw; */
     width: 22vw;
-    border-radius: 14px;
+    border-radius: 10px;
     display: flex;
     justify-content: center;
     transition: all 500ms ease;

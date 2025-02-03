@@ -1,6 +1,6 @@
 
 .reference-peace-page:has( .reference-peace-title-wrap p:hover) .trail-image{
-    clip-path: inset(0 0 0 0 round 20px) !important;
+    clip-path: inset(0 0 0 0 round 10px) !important;
     scale: 1;
 
 }
@@ -72,7 +72,7 @@
 }
 .pdf-canvas-hover-desc-wrap > .canvas-hover-desc-wrap-left, .pdf-canvas-hover-desc-wrap > .canvas-hover-desc-wrap-right{
     width: 24%;
-    border-radius: 20px;
+    border-radius: 10px;
     /* background-color: red; */
     height: 100%;
     pointer-events: all;
@@ -196,7 +196,7 @@ body:has( .reference-peace-single):not(:has( .header-toggled-global)) .header-in
     overflow: hidden;
 }
 .pdf-section canvas{
-    border-radius: 20px;
+    border-radius: 10px;
 }
 .reference-peace-contact-block{
     width: 92%;

@@ -49,14 +49,35 @@ const SpaceInvaders = () => {
 
     window.addEventListener("keydown", handleKeyDown);
 
+    const offCanvas = document.createElement("canvas");
+    const offCtx = offCanvas.getContext("2d");
+    offCanvas.width = width;
+    offCanvas.height = height;
+
     const loop = () => {
+    
+      // Clear the canvas
       ctx.clearRect(0, 0, width, height);
+
+      // Draw the player
       player.update(ctx);
       player.draw(ctx);
 
-      if (!gameStartedRef.current) {
-        drawStartScreen(ctx); // Draw the start screen
-      }
+      // Draw invaders
+      invaders.forEach((invader) => {
+        invader.draw(ctx);
+      });
+
+      // Draw projectiles
+      projectiles.forEach((proj) => {
+        proj.update(ctx);
+      });
+
+      // Check for collisions
+      player.checkCollision(invaders);
+      invaders.forEach((invader) => {
+        invader.checkCollision(projectiles);
+      });
 
       invaderManager.move(); // Move all invaders collectively
 
@@ -176,90 +197,104 @@ const SpaceInvaders = () => {
     }
   }
 
-  class Player {
-    constructor(x, y) {
-      this.x = x;
-      this.y = y;
-      this.width = playerSize;
-      this.height = playerSize;
-      this.active = true;
+class Player {
+  constructor(x, y) {
+    this.x = x;
+    this.y = y;
+    this.width = playerSize;
+    this.height = playerSize;
+    this.active = true;
 
-      this.moveLeft = false;
-      this.moveRight = false;
-      this.isShooting = false;
+    this.moveLeft = false;
+    this.moveRight = false;
+    this.isShooting = false;
 
-      window.addEventListener("keydown", (e) => {
-        if (!gameStartedRef.current) return; // Prevent actions until game starts
+    // Add event listeners only once
+    this.addEventListeners();
+  }
 
-        if (e.key === "ArrowLeft") {
-          this.moveLeft = true; // Set left movement flag
-        } else if (e.key === "ArrowRight") {
-          this.moveRight = true; // Set right movement flag
-        } else if (e.key === " ") {
-          if (!this.isShooting) {
-            this.isShooting = true; // Set shooting flag
-            // Shoot
-            const projectile = new Projectile(this.x + this.width / 2, this.y);
-            projectiles.push(projectile);
-          }
-        }
-      });
-
-      // Reset movement flags on keyup
-      window.addEventListener("keyup", (e) => {
-        if (e.key === "ArrowLeft") {
-          this.moveLeft = false; // Reset left movement flag
-        } else if (e.key === "ArrowRight") {
-          this.moveRight = false; // Reset right movement flag
-        } else if (e.key === " ") {
-          this.isShooting = false; // Reset shooting flag when space is released
-        }
-      });
+  addEventListeners() {
+    // Prevent multiple listeners by checking if they already exist
+    if (!this.keydownListener) {
+      this.keydownListener = (e) => this.handleKeyDown(e);
+      window.addEventListener("keydown", this.keydownListener);
     }
 
-    // Check for collisions with invaders
-    checkCollision(invaders) {
-      invaders.forEach((invader) => {
-        if (
-          invader.active &&
-          invader.x < this.x + this.width &&
-          invader.x + invader.width > this.x &&
-          invader.y < this.y + this.height &&
-          invader.y + invader.height > this.y
-        ) {
-          alert("You big stinker!"); // Alert on collision
-          resetGame(); // Reset the game on collision
-          invader.active = false; // Deactivate invader on collision
-        }
-      });
-    }
-
-    update(ctx) {
-      if (this.moveLeft && this.x > 0) {
-        this.x -= 2; // Move left
-      }
-      if (this.moveRight && this.x < canvasRef.current.width - this.width) {
-        this.x += 2; // Move right
-      }
-
-      // Remove inactive projectiles
-      projectiles.forEach((proj, index) => {
-        if (!proj.active) {
-          projectiles.splice(index, 1);
-        }
-      });
-
-      // Update the projectiles
-      projectiles.forEach((proj) => {
-        proj.update(ctx);
-      });
-    }
-
-    draw(ctx) {
-      ctx.fillStyle = "black";
-      ctx.fillRect(this.x, this.y, this.width, this.height); // Draw the player
+    if (!this.keyupListener) {
+      this.keyupListener = (e) => this.handleKeyUp(e);
+      window.addEventListener("keyup", this.keyupListener);
     }
   }
+
+  handleKeyDown(e) {
+    if (!gameStartedRef.current) return; // Prevent actions until game starts
+
+    if (e.key === "ArrowLeft") {
+      this.moveLeft = true; // Set left movement flag
+    } else if (e.key === "ArrowRight") {
+      this.moveRight = true; // Set right movement flag
+    } else if (e.key === " " && !this.isShooting) {
+      this.isShooting = true; // Set shooting flag
+      // Shoot a single bullet
+      const projectile = new Projectile(this.x + this.width / 2 - 2.5, this.y); // Center the bullet
+      projectiles.push(projectile);
+    }
+  }
+
+  handleKeyUp(e) {
+    if (e.key === "ArrowLeft") {
+      this.moveLeft = false; // Reset left movement flag
+    } else if (e.key === "ArrowRight") {
+      this.moveRight = false; // Reset right movement flag
+    } else if (e.key === " ") {
+      // Reset shooting flag when space is released
+      this.isShooting = false;
+    }
+  }
+
+  // Check for collisions with invaders
+  checkCollision(invaders) {
+    invaders.forEach((invader) => {
+      if (
+        invader.active &&
+        invader.x < this.x + this.width &&
+        invader.x + invader.width > this.x &&
+        invader.y < this.y + this.height &&
+        invader.y + invader.height > this.y
+      ) {
+        alert("You big stinker!"); // Alert on collision
+        resetGame(); // Reset the game on collision
+        invader.active = false; // Deactivate invader on collision
+      }
+    });
+  }
+
+  update(ctx) {
+    if (this.moveLeft && this.x > 0) {
+      this.x -= 2; // Move left
+    }
+    if (this.moveRight && this.x < canvasRef.current.width - this.width) {
+      this.x += 2; // Move right
+    }
+
+    // Remove inactive projectiles
+    projectiles.forEach((proj, index) => {
+      if (!proj.active) {
+        projectiles.splice(index, 1);
+      }
+    });
+
+    // Update the projectiles
+    projectiles.forEach((proj) => {
+      proj.update(ctx);
+    });
+  }
+
+  draw(ctx) {
+    ctx.fillStyle = "black";
+    ctx.fillRect(Math.round(this.x), Math.round(this.y), this.width, this.height); // Draw the player
+  }
+}
 
   class Projectile {
     constructor(x, y) {

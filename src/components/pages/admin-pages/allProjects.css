@@ -257,9 +257,9 @@ h2{
 .project-sidebar{
     width: 22vw;
     height: calc(100vh - 240px);
-    position: sticky;
+    position: fixed;
     top:0;
-    left: 0;
+    left: 4vw;
     padding-top:120px;
     margin-top: -120px ;
 

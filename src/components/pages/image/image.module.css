@@ -54,7 +54,7 @@
     width: 100%;
     max-height: calc(100vh - 4vw - 140px);
     object-fit: cover;
-    border-radius: 16px;
+    border-radius: 10px;
 }
 .buttonWrap{
     position: absolute;

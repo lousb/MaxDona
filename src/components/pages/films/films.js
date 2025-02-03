@@ -637,7 +637,7 @@ const SlowView = ({ data, filmProjectItemsRef, handleDelayStart }) => {
                                             {project.displayName}
                                         </h2>
                                         <h3 className={`body ${styles['film-project-director']} ${styles['film-project-desc-item']}`} >
-                                            Directed by Max Dona
+                                            {project.role ? project.role : ''} by Max Dona
                                         </h3>
                                         <div className={`body ${styles['film-project-video-name']} ${styles['film-project-desc-item']}`} >
                                             {project.videoName} ({new Date(project.releaseDate).getFullYear()})
@@ -650,7 +650,7 @@ const SlowView = ({ data, filmProjectItemsRef, handleDelayStart }) => {
                                             <Reveal custom={0} textContent={project.displayName} element={"span"} elementClass={`heading`} />
                                         </h2>
                                         <h3 className={`body ${styles['film-project-director']} ${styles['film-project-desc-item']}`} >
-                                            <Reveal custom={1} textContent={"Directed by Max Dona"} element={'p'} elementClass={"body"} />
+                                            <Reveal custom={1} textContent={`${project.role ? project.role : ''} by Max Dona`} element={'p'} elementClass={"body"} />
                                         </h3>
                                         <div className={`body ${styles['film-project-video-name']} ${styles['film-project-desc-item']}`} >
                                             <Reveal custom={2} textContent={`${project.videoName} (${new Date(project.releaseDate).getFullYear()})`} element={'p'} elementClass={"body"} />
