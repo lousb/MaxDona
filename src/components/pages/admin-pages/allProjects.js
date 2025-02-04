@@ -5,7 +5,8 @@ import { collection, deleteDoc, doc, onSnapshot, updateDoc, query, where, getDoc
 import { db } from '../../../firebase/firebase';
 import { Link } from "react-router-dom";
 import { DragDropContext, Droppable, Draggable } from '@hello-pangea/dnd';
-
+import Reveal from "../../../utils/textElementReveal/textElementReveal";
+import { motion, AnimatePresence } from "framer-motion";
 
 const AllProjects = () => {
   const { dispatch } = useFooter();
@@ -39,6 +40,8 @@ const AllProjects = () => {
 const ProjectList = ({ title, featured }) => {
   const [data, setData] = useState([]);
   const [featuredData, setFeaturedData] = useState([]);
+  const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false);
+  const [projectToDelete, setProjectToDelete] = useState(null);
 
   useEffect(() => {
     let unsubFeatured;
@@ -210,12 +213,35 @@ const handleSetFeatured = async (id, isCurrentlyFeatured) => {
   };
 
 
+const handleDeleteConfirm = async () => {
+  if (projectToDelete) {
+    try {
+      if (title === 'portfolio') {
+        await deleteDoc(doc(db, "projects", projectToDelete));
+      } else if (title === 'reference peace') {
+        await deleteDoc(doc(db, "referencePeace", projectToDelete));
+      }
+      setData(data.filter((item) => item.id !== projectToDelete));
+    } catch (err) {
+      console.log(err);
+    } finally {
+      setIsDeleteModalOpen(false); // Close the modal
+      setProjectToDelete(null); // Reset the project to delete
+    }
+  }
+};
 
   
   
 
   return (
     <div className={`ap-${title}-list all-projects-list`}>
+      <DeleteConfirmationModal
+        isOpen={isDeleteModalOpen}
+        onClose={() => setIsDeleteModalOpen(false)}
+        onConfirm={handleDeleteConfirm}
+        projectToDelete={projectToDelete}
+      />
       <div className="all-projects-list-title">
         <h2>{title}</h2>
         {title === 'reference peace' ?  <Link to="/projects/referencepeace/new" title={title} className="add-project"></Link> : featured ? '' : <Link to="/projects/new" title={title} className="add-project"></Link>}
@@ -267,7 +293,7 @@ const handleSetFeatured = async (id, isCurrentlyFeatured) => {
                 {project.displayName}
               </div>
               <div className={`${title}-${project.displayName}-actions list-item-actions`}>
-                <Link to={`/${title === 'reference peace'?'reference-peace':'projects'}/${project.id}`} className="view-list-item-link">
+                <Link to={`/${title === 'reference peace'?'reference-peace':'archive'}/${project.id}`} className="view-list-item-link">
                   <div className={`view-list-item`}></div>
                 </Link>
                 <Link to={`/projects/update/${project.id}`} state={{ id: project.id }} className="edit-list-item-link">
@@ -275,9 +301,19 @@ const handleSetFeatured = async (id, isCurrentlyFeatured) => {
                 </Link>
                 {/* <button onClick={() => handleDuplicate(project, title)}>Duplicate</button> */}
                 {title !== 'reference peace'?
-                  <div className={`delete-list-item`} onClick={() => handleDelete(project.id, 1)}></div>
+                  <div className={`delete-list-item`} 
+                  onClick={() => {
+                    setProjectToDelete(project.id, 1); // Set the project ID to delete
+                    setIsDeleteModalOpen(true); // Open the modal
+                  }}
+                  ></div>
                 :
-                  <div className={`delete-list-item`} onClick={() => handleDelete(project.id, 2)}></div>
+                  <div className={`delete-list-item`} 
+                  onClick={() => {
+                    setProjectToDelete(project.id, 2); // Set the project ID to delete
+                    setIsDeleteModalOpen(true); // Open the modal
+                  }}
+                  ></div>
                 }
                 {title !== 'reference peace' && (
                   <div className={`add-featured-button ${project.isFeatured && 'featured-active'}`} onClick={() => handleSetFeatured(project.id, project.isFeatured)}>
@@ -294,5 +330,48 @@ const handleSetFeatured = async (id, isCurrentlyFeatured) => {
     </div>
   );
 };  
+
+
+
+const DeleteConfirmationModal = ({ isOpen, onClose, onConfirm, projectToDelete }) => {
+  const handleContentClick = (e) => {
+    e.stopPropagation();
+  };
+
+  return (
+    <AnimatePresence>
+      {isOpen && (
+        <motion.div
+          className="delete-modal-overlay"
+          onClick={onClose}
+          initial={{ opacity: 0 }}
+          animate={{ opacity: 1 }}
+          exit={{ opacity: 0 }}
+          transition={{ duration: 0.3 }}
+        >
+          <motion.div
+            className="delete-modal-content"
+            onClick={handleContentClick}
+            initial={{ clipPath: "inset(0 0 100% 0 round 10px);" }} // Start fully hidden
+            animate={{ clipPath: "inset(0% 0 0 0 round 10px)" }} // Reveal fully
+            exit={{ clipPath: "inset(100% 0 0 0 round 10px)" }} // Hide again
+            transition={{ duration: 1, ease: [0.76, 0, 0.24, 1] }}
+          >
+            <h2>Are you sure you want to delete this project?</h2>
+            <Reveal textContent={projectToDelete} element={"span"} elementClass={"body"} />
+            <div className="delete-modal-actions">
+              <button onClick={onConfirm} className="body delete-action">
+                Bun it
+              </button>
+              <button onClick={onClose} className="body cancel-action">
+                No
+              </button>
+            </div>
+          </motion.div>
+        </motion.div>
+      )}
+    </AnimatePresence>
+  );
+};
 
 export default AllProjects;

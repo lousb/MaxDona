@@ -20,7 +20,7 @@
     display: flex;
     flex-direction: column;
     align-items: center;
-    border-radius: 20px;
+    border-radius: 10px;
     border:1px solid var(--outline-color);
     background-color: white;
     overflow: hidden;
@@ -36,7 +36,9 @@
 .list-wrap{
     height:fit-content;
     overflow-x: hidden;
-
+    display: flex;
+    flex-direction: column;
+    align-items: center;
     width: 100%;
 }
 h2{
@@ -248,6 +250,9 @@ h2{
     border: none !important;
     border-radius: 20px;
 }
+.featured-list-wrap{
+    cursor:grab;
+}
 .add-projects-list input{
     color: rgb(67, 67, 67) !important;
 }
@@ -372,4 +377,91 @@ h2{
 .uploaded-image-wrap > p > span{
     font-size: 2em;
     display: block;
+}
+
+.delete-modal-overlay{
+    position: fixed;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.10);
+    top:0;
+    left: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+.delete-modal-content{
+    clip-path: inset(0 0 100% 0 round 10px);
+    background-color: white;
+    width: 450px;
+    max-width: 80vw;
+    padding:40px;
+    border-radius: 10px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    transition: 1000ms cubic-bezier(0.76, 0, 0.24, 1) all;
+}
+.delete-modal-content h2{
+    margin:0;
+    text-align: center;
+    font-size: 36px !important;
+}
+.delete-modal-actions{
+    display: flex;
+    justify-content: center;
+    gap: 1em;
+
+}
+.delete-modal-content .text-reveal-container{
+    padding-block:40px;
+    width: fit-content !important;
+}
+.delete-modal-actions > button{
+    border:0px;
+    padding:20px 40px;
+    border-radius: 10px;
+    cursor:pointer;
+    position: relative;
+    overflow: hidden;
+}
+.delete-modal-actions > button::after{
+    content:'';
+    position: absolute;
+    top:100%;
+    left:0;
+    background-color: black;
+    width: 100%;
+    height: 100%;
+    opacity: 0.05;
+    scale: 0.9;
+    mix-blend-mode: color-burn;
+    transition: 1000ms cubic-bezier(0.76, 0, 0.24, 1) all;
+    border-radius: 10px;
+}
+.delete-modal-actions > button:hover::after{
+    top:0;
+    scale:1;
+}
+.delete-action{
+    background-color: #EC3333;
+    color:white
+
+}
+.delete-action::before{
+    content: url(/public/icons/remove.svg);
+    filter: invert(1) brightness(11);
+    height: 1em;
+    display: inline-block;
+    scale: 0.8;
+    transform-origin: bottom center;
+    z-index: 1100;
+    padding-right: 0.5em;
+    
+}
+.all-projects-list:has( .delete-modal-overlay) .list-wrap{
+    pointer-events: none;
+}
+.delete-modal-overlay.open .delete-modal-content{
+    clip-path: inset(0 0 0 0 round 10px);
 }
