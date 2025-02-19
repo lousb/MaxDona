@@ -2,15 +2,38 @@
 .all-projects-page-wrap svg *{
     transition: 500ms ease all;
 }
-.formInput.role > div{
+.formInput > div{
     display: flex;
     width: 50%;
     align-items: center;
 }
-.formInput.role input{
+.formInput.map input{
     border: 0;
     border-bottom: 2px solid var(--outline-color);
     flex-grow: 1;
+}
+form.uploading > div{
+    opacity: 0.5;
+    pointer-events: none;
+}
+form.uploading > button{
+    pointer-events: none;
+}
+form.uploading > button span::after{
+    content:'...';
+    animation: revealClip 2s linear infinite;
+
+}
+@keyframes revealClip {
+  0% {
+    clip-path: inset(0 100% 0 0);
+  }
+ 80% {
+    clip-path: inset(0 0 0 0);
+  }
+  100% {
+    clip-path: inset(0 0 0 0);
+  }
 }
 .formInput.role .body{
     font-family: var(--title-family);

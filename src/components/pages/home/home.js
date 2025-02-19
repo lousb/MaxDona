@@ -1136,13 +1136,13 @@ const Section2 = ({windowWidth}) => {
             <div className="page-two-row-two high-z-index-layer">
                 <Reveal custom={2} textContent={'Based In'} element={"span"} elementClass={"body born-in"}/>
                 <span className="title max-location">
-                    <Reveal textContent={'Sydney,'} element={"div"} elementClass={'title'}/>
-                    <Reveal textContent={'Australia.'} element={"div"} elementClass={'title'}/>
+                    <Reveal textContent={'Sydney'} element={"div"} elementClass={'title'}/>
+                    <Reveal textContent={'Australia'} element={"div"} elementClass={'title'}/>
                 </span>
             </div>
             <div className="page-two-row-three high-z-index-layer">
                 <span className="body">
-                    <Reveal custom={2} textContent={'I’M DRIVEN BY SHARING AND  VISUALISING COLLABORATIVE IDEAS THROUGH THE LENSE OF LOCAL & INTERNATIONAL PROJECTS.'} element={"div"}/>
+                    <Reveal custom={2} textContent={'SHARING AND COLLABORATIVE IDEAS THROUGH THE LENSE OF LOCAL & INTERNATIONAL PROJECTS.'} element={"div"}/>
                     <DelayLink  delay={1500} to={'/archive'}>
                       <Reveal custom={2} variant={'opacity'} textContent={'My work'} element={'button'} elementClass={"primary-button button-gradient"} onClick={()=>scrollToPercentageOfViewportHeight(190)} />
 
@@ -1585,8 +1585,8 @@ const Section5 = () =>{
       </div>
       <div className="page-five-right ">
         <div>
-        <Reveal textContent={'Vision'} element={"h2"} elementClass={"heading"}/>
-        <Reveal textContent={'To Vision'} element={"h2"} elementClass={"heading"}/>
+        <Reveal textContent={'Vision'} element={"h2"} elementClass={"title"}/>
+        <Reveal textContent={'To Vision'} element={"h2"} elementClass={"title"}/>
         </div>
        
         <div className="home-about-desc">

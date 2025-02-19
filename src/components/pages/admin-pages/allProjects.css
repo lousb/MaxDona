@@ -459,9 +459,6 @@ h2{
     padding-right: 0.5em;
     
 }
-.all-projects-list:has( .delete-modal-overlay) .list-wrap{
+.all-projects-content:has( .delete-modal-overlay) .list-wrap{
     pointer-events: none;
-}
-.delete-modal-overlay.open .delete-modal-content{
-    clip-path: inset(0 0 0 0 round 10px);
 }

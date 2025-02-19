@@ -32,7 +32,9 @@ section{
     object-position: center center;
     transform: scale(1.05);
 }
-
+.page-five-right h2{
+    margin:0;
+}
 .dynamic-video-player{
 
     background-color: white;
